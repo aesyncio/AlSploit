@@ -1,0 +1,5 @@
+local LocalPlayer = game:GetService("Players").LocalPlayer
+
+local SecretCode = LocalPlayer.Name .. LocalPlayer.UserId * 69 / 420
+
+print(SecretCode)
