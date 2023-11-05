@@ -197,11 +197,11 @@ task.spawn(function()
 	
 	task.spawn(function()
 		while task.wait() do
-			local NearestPlayerWithLowestHealth = FindNearestPlayerWithLowestHealth()
+			local NearestPlayer= FindNearestPlayer
 			local Weapon = GetWeapon()
 			
-			if IsAlive(LocalPlayer) and NearestPlayerWithLowestHealth and Weapon and GetMatchState() ~= 0 then
-				KillauraHit(NearestPlayerWithLowestHealth, Weapon)
+			if IsAlive(LocalPlayer) and NearestPlayer and Weapon and GetMatchState() ~= 0 then
+				KillauraHit(NearestPlayer, Weapon)
 			end
 		end
 	end)
