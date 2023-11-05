@@ -1,9 +1,35 @@
+local LocalPlayer = game.Players.LocalPlayer
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Remotes = ReplicatedStorage:WaitForChild("Remotes", 9e9)
+local Balls = workspace:WaitForChild("Balls", 9e9)
 
-local function HitBall()
+function IsTarget()
+	local Value = false
+	
+	if LocalPlayer.Character:FindFirstChild("Highlight") then
+		Value = true
+	end
+	
+	return Value
+end
+
+function HitBall()
 	Remotes:WaitForChild("ParryButtonPress"):Fire()	
 end
 
-HitBall()
+task.spawn(function()
+	Balls.ChildAdded:Connect(function(Ball)
+		local OldPosition = Ball.Position
+
+		while task.wait() do
+			local Magnitude = (Ball.Position - game.Workspace.CurrentCamera.Focus.Position).Magnitude
+			local Velocity = (OldPosition - Ball.Position).Magnitude
+			
+			if (Magnitude / Velocity) <= 10 then
+				HitBall()
+			end
+		end
+	end)
+end)
