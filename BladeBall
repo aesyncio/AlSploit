@@ -29,6 +29,8 @@ task.spawn(function()
 			
 			if (Magnitude / Velocity) <= 10 then
 				HitBall()
+				
+				print("e")
 			end
 		end
 	end)
