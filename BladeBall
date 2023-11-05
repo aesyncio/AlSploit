@@ -15,22 +15,33 @@ function IsTarget()
 	return Value
 end
 
+function IsAlive(Player)
+	Player = Player or LocalPlayer
+	if not Player.Character then return false end
+	if not Player.Character:FindFirstChild("Head") then return false end
+	if not Player.Character:FindFirstChild("Humanoid") then return false end
+	if Player.Character:FindFirstChild("Humanoid").Health < 0.11 then return false end
+	if not Player.Character:FindFirstChild("HumanoidRootPart") then return false end
+
+	return true
+end
+
 function HitBall()
 	Remotes:WaitForChild("ParryButtonPress"):Fire()	
 end
 
 task.spawn(function()
 	Balls.ChildAdded:Connect(function(Ball)
-		local OldPosition = Ball.Position
-
 		while task.wait() do
-			local Magnitude = (Ball.Position - game.Workspace.CurrentCamera.Focus.Position).Magnitude
-			local Velocity = (OldPosition - Ball.Position).Magnitude
 			
-			if (Magnitude / Velocity) <= 10 then
-				HitBall()
+			if IsAlive() and IsTarget() then
+				local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Ball.Position).Magnitude
 				
-				print("e")
+				if Magnitude <= 18 then
+					HitBall()
+
+					print("e")
+				end
 			end
 		end
 	end)
