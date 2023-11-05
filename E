@@ -172,7 +172,7 @@ task.spawn(function()
 		local LocalPlayerHumanoidRootPart = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 		local EnemyHumanoidRootPart = Enemy.Character:FindFirstChild("HumanoidRootPart")
 		
-		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+		local SelfPosition = LocalPlayerHumanoidRootPart.Position + ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 		
 		task.spawn(function()
 			if Settings.KillAura.MultiAura == true then
