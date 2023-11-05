@@ -22,10 +22,40 @@ function IsAlive(Player)
 	if not Player.Character:FindFirstChild("Humanoid") then return false end
 	if Player.Character:FindFirstChild("Humanoid").Health < 0.11 then return false end
 	if not Player.Character:FindFirstChild("HumanoidRootPart") then return false end
+local LocalPlayer = game.Players.LocalPlayer
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Remotes = ReplicatedStorage:WaitForChild("Remotes", 9e9)
+local Balls = workspace:WaitForChild("Balls", 9e9)
+
+function IsTarget()
+	local Value = false
+	
+	if LocalPlayer.Character:FindFirstChild("Highlight") then
+		Value = true
+	end
+	
+	return Value
+end
+
+function IsAlive(Player)
+	Player = Player or LocalPlayer
+	if not Player.Character then return false end
+	if not Player.Character:FindFirstChild("Head") then return false end
+	if not Player.Character:FindFirstChild("Humanoid") then return false end
+	if Player.Character:FindFirstChild("Humanoid").Health < 0.11 then return false end
+	if not Player.Character:FindFirstChild("HumanoidRootPart") then return false end
 
 	return true
 end
-
+	
+	task.spawn(function()
+		if game.PlaceId == "13772394625" then
+			
+		end
+	end)
+	
 function HitBall()
 	Remotes:WaitForChild("ParryButtonPress"):Fire()	
 end
@@ -41,6 +71,27 @@ task.spawn(function()
 					HitBall()
 
 					print("e")
+				end
+			end
+		end
+	end)
+end)
+	return true
+end
+
+function HitBall()
+	Remotes:WaitForChild("ParryButtonPress"):Fire()	
+end
+
+task.spawn(function()
+	Balls.ChildAdded:Connect(function(Ball)
+		while task.wait() do
+			
+			if IsAlive() and IsTarget() then
+				local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Ball.Position).Magnitude
+				
+				if Magnitude <= 24 then
+					HitBall()
 				end
 			end
 		end
