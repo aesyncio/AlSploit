@@ -40,11 +40,11 @@ function FindNearestPlayerWithLowestHealth()
 
 	for i, v in pairs(game.Players:GetPlayers()) do
 		if IsAlive(v) and v ~= LocalPlayer and v.Team ~= LocalPlayer.Team then
-			local Health = v:GetAttribute("Health")
+			local Health = v.Character:GetAttribute("Health")
 
 			if Health < NearestPlayerHealth then
-				NearestPlayerHealth = Health
 				NearestPlayerWithLowestHealth = v
+				NearestPlayerHealth = Health			
 			end
 		end
 	end
