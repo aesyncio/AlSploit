@@ -1,0 +1,9 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Remotes = ReplicatedStorage:WaitForChild("Remotes", 9e9)
+
+local function HitBall()
+	Remotes:WaitForChild("ParryButtonPress"):Fire()	
+end
+
+HitBall()
