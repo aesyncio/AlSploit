@@ -35,8 +35,6 @@ end
 
 function GetScythe()
 	for i, v in next, GetInventory(LocalPlayer).items do 
-		local Validate = table.find(BedwarsSwords, v.itemType)
-
 		if v.itemType:find("scythe") then
 			return v
 		end
