@@ -3,8 +3,6 @@ local LocalPlayer = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 
-local Scythe = GetScythe()
-
 local function GetInventory(Player)
 	if not Player then 
 		return {Items = {}, Armor = {}}
@@ -44,5 +42,7 @@ function GetScythe()
 		end
 	end
 end
+
+local Scythe = GetScythe()
 
 SwitchItem(Scythe.tool)
