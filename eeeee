@@ -1,0 +1,48 @@
+local LocalPlayer = game.Players.LocalPlayer
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
+
+local Scythe = GetScythe()
+
+local function GetInventory(Player)
+	if not Player then 
+		return {Items = {}, Armor = {}}
+	end
+
+	local Success, Return = pcall(function() 
+		return require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil.getInventory(Player)
+	end)
+
+	if not Success then 
+		return {Items = {}, Armor = {}}
+	end
+
+	if Player.Character and Player.Character:FindFirstChild("InventoryFolder") then 
+		local InvFolder = Player.Character:FindFirstChild("InventoryFolder").Value
+		if not InvFolder then return Return end
+		for i, v in next, Return do 
+			for i2, v2 in next, v do 
+				if typeof(v2) == 'table' and v2.itemType then
+					v2.instance = InvFolder:FindFirstChild(v2.itemType)
+				end
+			end
+			if typeof(v) == 'table' and v.itemType then
+				v.instance = InvFolder:FindFirstChild(v.itemType)
+			end
+		end
+	end
+	return Return
+end
+
+function GetScythe()
+	for i, v in next, GetInventory(LocalPlayer).items do 
+		local Validate = table.find(BedwarsSwords, v.itemType)
+
+		if v.itemType:find("scythe") then
+			return v
+		end
+	end
+end
+
+SwitchItem(Scythe.tool)
