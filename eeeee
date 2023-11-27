@@ -105,8 +105,16 @@ function GetSword()
 
 		if not Power then continue end 
 	
-		local Scythe = v:find("scythe")
-		local Sword = not v:find("scythe")
+		local Scythe = nil
+		local Sword = nil
+		
+		if v:find("scythe") then
+			Scythe = v
+		end
+		
+		if not v:find("scythe") then
+			Sword = v
+		end
 		
 		if Validate == "scythe" then
 			Returning = Scythe
