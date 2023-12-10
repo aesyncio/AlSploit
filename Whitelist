@@ -1,1 +1,3 @@
+local WhitelistedMembers = {"BedwarsBlatant", "regertertert3242"}
 
+return WhitelistedMembers
