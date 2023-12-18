@@ -1746,6 +1746,24 @@ task.spawn(function()
 		local Nuker, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "Nuker", Settings.Nuker.Value, function(CallBack)
 			Settings.Nuker.Value = CallBack
 		end)
+		
+		local RangeValue = false
+
+		local Range
+
+		DropDownButton.Activated:Connect(function()			
+			if RangeValue == false then
+				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 1, function(Callback)
+					Settings.Nuker.Range = Callback
+				end)
+			end
+
+			if RangeValue == true then					
+				Range:Destroy()
+			end
+
+			RangeValue = not RangeValue
+		end)	
 	end			
 end)
 
