@@ -1506,8 +1506,6 @@ task.spawn(function()
 
 		if RangeValue == true then					
 			Range:Destroy()
-
-			RangeSlider = nil
 		end
 
 		CustomAnimationsValue = not CustomAnimationsValue
@@ -1605,6 +1603,24 @@ task.spawn(function()
 	local Speed, DropDownButton, LayoutOrder = CreateToggle(BlatantWindow, "Speed", Settings.Speed.Value, function(CallBack)
 		Settings.Speed.Value = CallBack
 	end)
+
+	local SpeedSlider
+	
+	local SpeedValue = false
+
+	DropDownButton.Activated:Connect(function()			
+		if SpeedValue == false then
+			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 23, 0, LayoutOrder + 1, function(Callback)
+				Settings.Speed.Speed = Callback
+			end)
+		end
+
+		if SpeedValue == true then					
+			SpeedSlider:Destroy()
+		end
+
+		SpeedValue = not SpeedValue
+	end)	
 end)
 
 task.spawn(function()
