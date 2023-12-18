@@ -397,7 +397,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	TextLabel.Size = UDim2.new(1.20000005, 0, 2.5, 0)
 	TextLabel.Font = Enum.Font.FredokaOne
 	TextLabel.Text = Name .. ": " .. DefaultValue
-	TextLabel.TextColor3 = Color3.fromRGB(228, 228, 228)
+	TextLabel.TextColor3 = Color3.new(0.635294, 0.313725, 1)
 	TextLabel.TextScaled = true
 	TextLabel.TextSize = 16.000
 	TextLabel.TextWrapped = true
