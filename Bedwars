@@ -624,7 +624,7 @@ local Animations = {
 }
 
 function GetRemote(Remote)
-	for i, v in pairs(Remote) do
+	for i, v in next, (Remote) do
 		if v == "Client" then
 			return Remote[i + 1]
 		end
@@ -666,11 +666,11 @@ function FindNearestPlayer(MaxDistance)
 end
 
 function FpsBoostTextures()
-	for i, v in pairs (CollectionServiceBlocks) do
+	for i, v in next, (CollectionServiceBlocks) do
 		if v:GetAttribute("PlacedByUserId") == 0 then
 			v.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
 
-			for i2, v2 in pairs(v:GetDescendants()) do
+			for i2, v2 in next, (v:GetDescendants()) do
 				if v2:IsA("BasePart") then
 					v2.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
 				end
@@ -890,7 +890,7 @@ function IsAlive(Player)
 end	
 
 function GetItem(Name)
-	for i, v in pairs(GetInventory(LocalPlayer).items) do
+	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find(Name) then
 			return true
 		end
