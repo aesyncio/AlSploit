@@ -326,8 +326,6 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, Callback)
 	return MiniToggle
 end
 
-local RangeSlider = nil
-
 function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrder, Callback)
 	local UIStroke_1  = Instance.new("UIStroke")
 	local UIStroke_2  = Instance.new("UIStroke")
@@ -434,14 +432,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	UIStroke_2.Parent = Bar
 	UIStroke_2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke_2.Thickness = 2
-	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)
-
-	local CurrentSlider = Slider
-
-	if Name == "Range" then
-		RangeSlider = Slider
-		CurrentSlider = Slider
-	end				
+	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)	
 
 	local Debounce = true
 
@@ -498,7 +489,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 
 				Callback(math.round(Percentage * MaxValue))
 			end
-		until CurrentSlider == nil
+		until not Slider
 	end)
 	
 	return Slider
