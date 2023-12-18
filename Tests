@@ -683,7 +683,7 @@ function ShootProjectile(Item, Projectile)
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {
-				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.9),
+				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.1),
 				["shotId"] = HttpService:GenerateGUID(false)
 			},
 			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
