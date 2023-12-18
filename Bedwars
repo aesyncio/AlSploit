@@ -863,13 +863,30 @@ end
 
 function IsAlive(Player)
 	Player = Player or LocalPlayer
-	
-	if not Player.Character then return false end
-	if not Player.Character:FindFirstChild("Head") then return false end
-	if not Player.Character:FindFirstChild("Humanoid") then return false end
-	if not Player.Character:FindFirstChild("HumanoidRootPart") then return false end
 
-	return true
+	local AliveValue = false
+	
+	if not Player.Character then
+		AliveValue = false 
+	end
+	
+	if not Player.Character:FindFirstChild("Head") then
+		AliveValue = false 
+	end
+	
+	if not Player.Character:FindFirstChild("Humanoid") then 
+		AliveValue = false 
+	end
+	
+	if Player.Character:FindFirstChild("Humanoid").Health <= 0.2 then 
+		AliveValue = false 
+	end
+	
+	if not Player.Character:FindFirstChild("HumanoidRootPart") then 
+		AliveValue = false 
+	end	
+
+	return AliveValue
 end	
 
 function GetItem(Name)
