@@ -1506,8 +1506,6 @@ task.spawn(function()
 		if RangeValue == false then
 			Range = CreateSlider(CombatWindow, "Range", Settings.KillAura.Range, 20, 0, LayoutOrder + 2, function(Callback)
 				Settings.KillAura.Range = Callback
-				
-				print(Range.Name)
 			end)
 		end
 
@@ -1516,7 +1514,7 @@ task.spawn(function()
 		end
 
 		if RangeValue == true then					
-			RangeSlider:Destroy()
+			Range:Destroy()
 
 			RangeSlider = nil
 		end
