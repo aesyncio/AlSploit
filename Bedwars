@@ -864,7 +864,7 @@ end
 function IsAlive(Player)
 	Player = Player or LocalPlayer
 
-	local AliveValue = false
+	local AliveValue = true
 	
 	if not Player.Character then
 		AliveValue = false 
@@ -878,7 +878,7 @@ function IsAlive(Player)
 		AliveValue = false 
 	end
 	
-	if Player.Character:FindFirstChild("Humanoid").Health <= 0.2 then 
+	if Player.Character:GetAttribute("Health") <= 0 then 
 		AliveValue = false 
 	end
 	
