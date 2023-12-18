@@ -680,7 +680,7 @@ function ShootProjectile(Item, Projectile)
 			[3] = Projectile,
 			[4] = NearestPlayer.Character.HumanoidRootPart.Position,
 			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
-			[6] = Vector3.new(0, -25, 0),
+			[6] = Vector3.new(0, -1, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {
 				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.1),
