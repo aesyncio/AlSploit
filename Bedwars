@@ -326,8 +326,6 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, Callback)
 	return MiniToggle
 end
 
-local RangeSlider = nil
-
 function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrder, Callback)
 	local UIStroke_1  = Instance.new("UIStroke")
 	local UIStroke_2  = Instance.new("UIStroke")
@@ -399,7 +397,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	TextLabel.Size = UDim2.new(1.20000005, 0, 2.5, 0)
 	TextLabel.Font = Enum.Font.FredokaOne
 	TextLabel.Text = Name .. ": " .. DefaultValue
-	TextLabel.TextColor3 = Color3.fromRGB(228, 228, 228)
+	TextLabel.TextColor3 = Color3.new(0.635294, 0.313725, 1)
 	TextLabel.TextScaled = true
 	TextLabel.TextSize = 16.000
 	TextLabel.TextWrapped = true
@@ -434,14 +432,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	UIStroke_2.Parent = Bar
 	UIStroke_2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke_2.Thickness = 2
-	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)
-
-	local CurrentSlider = Slider
-
-	if Name == "Range" then
-		RangeSlider = Slider
-		CurrentSlider = Slider
-	end				
+	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)	
 
 	local Debounce = true
 
@@ -498,7 +489,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 
 				Callback(math.round(Percentage * MaxValue))
 			end
-		until CurrentSlider == nil
+		until not Slider
 	end)
 	
 	return Slider
@@ -1514,9 +1505,7 @@ task.spawn(function()
 		end
 
 		if RangeValue == true then					
-			RangeSlider:Destroy()
-
-			RangeSlider = nil
+			Range:Destroy()
 		end
 
 		CustomAnimationsValue = not CustomAnimationsValue
@@ -1614,6 +1603,24 @@ task.spawn(function()
 	local Speed, DropDownButton, LayoutOrder = CreateToggle(BlatantWindow, "Speed", Settings.Speed.Value, function(CallBack)
 		Settings.Speed.Value = CallBack
 	end)
+
+	local SpeedSlider
+	
+	local SpeedValue = false
+
+	DropDownButton.Activated:Connect(function()			
+		if SpeedValue == false then
+			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 23, 0, LayoutOrder + 1, function(Callback)
+				Settings.Speed.Speed = Callback
+			end)
+		end
+
+		if SpeedValue == true then					
+			SpeedSlider:Destroy()
+		end
+
+		SpeedValue = not SpeedValue
+	end)	
 end)
 
 task.spawn(function()
@@ -1739,6 +1746,24 @@ task.spawn(function()
 		local Nuker, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "Nuker", Settings.Nuker.Value, function(CallBack)
 			Settings.Nuker.Value = CallBack
 		end)
+		
+		local RangeValue = false
+
+		local Range
+
+		DropDownButton.Activated:Connect(function()			
+			if RangeValue == false then
+				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 1, function(Callback)
+					Settings.Nuker.Range = Callback
+				end)
+			end
+
+			if RangeValue == true then					
+				Range:Destroy()
+			end
+
+			RangeValue = not RangeValue
+		end)	
 	end			
 end)
 
