@@ -679,6 +679,29 @@ function FpsBoostTextures()
 	end
 end
 
+function ShootProjectile(Item, Projectile)
+	local NearestPlayer = FindNearestPlayer()
+
+	if NearestPlayer then
+		local Args = {
+			[1] = ReplicatedStorage.Inventories[game.Players.LocalPlayer.Name]:FindFirstChild(Item),
+			[2] = Projectile,
+			[3] = Projectile,
+			[4] = NearestPlayer.Character.HumanoidRootPart.Position,
+			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
+			[6] = Vector3.new(0, -25, 0),
+			[7] = HttpService:GenerateGUID(true),
+			[8] = {
+				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.9),
+				["shotId"] = HttpService:GenerateGUID(false)
+			},
+			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
+		}
+
+		ProjectileRemote:InvokeServer(unpack(Args))
+	end		
+end
+
 function TouchingGround()
 	local Parameters = RaycastParams.new()
 	Parameters.FilterType = Enum.RaycastFilterType.Include
@@ -897,29 +920,6 @@ function GetItem(Name)
 	end	
 
 	return false
-end
-
-function Shoot(Item, Arrow)
-	local NearestPlayer = FindNearestPlayer()
-
-	if NearestPlayer then
-		local Args = {
-			[1] = ReplicatedStorage.Inventories[game.Players.LocalPlayer.Name]:FindFirstChild(Item),
-			[2] = Arrow,
-			[3] = Arrow,
-			[4] = NearestPlayer.Character.HumanoidRootPart.Position,
-			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
-			[6] = Vector3.new(0, -25, 0),
-			[7] = HttpService:GenerateGUID(true),
-			[8] = {
-				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.9),
-				["shotId"] = HttpService:GenerateGUID(false)
-			},
-			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
-		}
-
-		ProjectileRemote:InvokeServer(unpack(Args))
-	end		
 end
 
 task.spawn(function()
@@ -1442,23 +1442,23 @@ task.spawn(function()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			if GetItem("wood_bow") then
-				Shoot("wood_bow", "arrow")
+				ShootProjectile("wood_bow", "arrow")
 			end
 			
 			if GetItem("wood_crossbow") then
-				Shoot("wood_crossbow", "arrow")
+				ShootProjectile("wood_crossbow", "arrow")
 			end
 			
 			if GetItem("tactical_crossbow") then
-				Shoot("tactical_crossbow", "arrow")
+				ShootProjectile("tactical_crossbow", "arrow")
 			end
 			
 			if GetItem("fireball") then
-				Shoot("fireball", "fireball")
+				ShootProjectile("fireball", "fireball")
 			end
 
 			if GetItem("snowball") then
-				Shoot("snowball", "snowball")
+				ShootProjectile("snowball", "snowball")
 			end
 		end
 	until not game
