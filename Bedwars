@@ -326,8 +326,6 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, Callback)
 	return MiniToggle
 end
 
-local AimAssistSlider = nil
-local SpeedSlider = nil
 local RangeSlider = nil
 
 function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrder, Callback)
@@ -502,6 +500,8 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 			end
 		until CurrentSlider == nil
 	end)
+	
+	return Slider
 end
 
 function CreateFlyHud()
@@ -738,7 +738,7 @@ function FindNearestBed()
 end
 
 function GetMatchState()
-	return Bedwars["ClientHandlerStore"]:getState().Game.matchState
+	return Bedwars.ClientHandlerStore:getState().Game.matchState
 end
 
 local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(part)
@@ -886,30 +886,28 @@ end
 
 function IsAlive(Player)
 	Player = Player or LocalPlayer
-
-	local AliveValue = true
 	
 	if not Player.Character then
-		AliveValue = false 
+		return false
 	end
 	
-	if not Player.Character:FindFirstChild("Head") then
-		AliveValue = false 
+	if not Player.Character:FindFirstChild("Head") then		
+		return false
 	end
 	
 	if not Player.Character:FindFirstChild("Humanoid") then 
-		AliveValue = false 
+		return  false 
 	end
 	
 	if Player.Character:GetAttribute("Health") <= 0 then 
-		AliveValue = false 
+		return  false 
 	end
 	
-	if not Player.Character:FindFirstChild("HumanoidRootPart") then 
-		AliveValue = false 
+	if not Player.Character:FindFirstChild("HumanoidRootPart") then 	
+		return  false 
 	end	
 
-	return AliveValue
+	return true
 end	
 
 function GetItem(Name)
@@ -1388,7 +1386,7 @@ task.spawn(function()
 					for i2, v2 in next, (Chestitems) do
 						if v2:IsA("Accessory") then
 							task.spawn(function()
-								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v3)
+								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
 							end)
 						end
 					end
