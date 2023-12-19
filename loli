@@ -944,7 +944,7 @@ function GetSpeed()
 		end
 		
 		if SpeedDamageBoost == true then
-			Speed = Speed + 10
+			Speed = Speed + 100
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -2096,6 +2096,8 @@ task.spawn(function()
 		if LocalPlayer.Character:GetAttribute("Health") < LastHealth then
 			task.spawn(function()
 				DamageBoost = true
+				
+				print("true")
 				
 				task.wait(0.89)
 				
