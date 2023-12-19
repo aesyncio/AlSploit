@@ -329,6 +329,7 @@ end
 function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrder, Callback)
 	local UIStroke_1  = Instance.new("UIStroke")
 	local UIStroke_2  = Instance.new("UIStroke")
+	local UIStroke_3  = Instance.new("UIStroke")
 	local Slider = Instance.new("Frame")
 	local Slider_2 = Instance.new("Frame")
 	local UICorner_2 = Instance.new("UICorner")
@@ -361,7 +362,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	Slider_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Slider_2.BorderSizePixel = 0
 	Slider_2.Position = UDim2.new(0.229946524, 0, 0.267857134, 0)
-	Slider_2.Size = UDim2.new(0.534759343, 0, 0.0857142881, 0)
+	Slider_2.Size = UDim2.new(0.534759343, 0, 0.0857142881, 0)	
 
 	UICorner_2.Parent = Slider_2
 
@@ -397,7 +398,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	TextLabel.Size = UDim2.new(1.20000005, 0, 2.5, 0)
 	TextLabel.Font = Enum.Font.FredokaOne
 	TextLabel.Text = Name .. ": " .. DefaultValue
-	TextLabel.TextColor3 = Color3.new(0.635294, 0.313725, 1)
+	TextLabel.TextColor3 = Color3.new(0.894118, 0.894118, 0.894118)
 	TextLabel.TextScaled = true
 	TextLabel.TextSize = 16.000
 	TextLabel.TextWrapped = true
@@ -433,6 +434,11 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	UIStroke_2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke_2.Thickness = 2
 	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)	
+	
+	UIStroke_3.Parent = TextLabel
+	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke_3.Thickness = 2
+	UIStroke_3.Color = Color3.new(0.635294, 0.313725, 1)	
 
 	local Debounce = true
 
@@ -1800,7 +1806,7 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if AntiVoidValue == false then
-			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency, 100, 0, LayoutOrder + 1, function(Callback)
+			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
 				Settings.Speed.Speed = Callback / 100
 			end)
 		end
