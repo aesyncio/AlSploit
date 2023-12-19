@@ -437,7 +437,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	
 	UIStroke_3.Parent = TextLabel
 	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-	UIStroke_3.Thickness = 1
+	UIStroke_3.Thickness = 2
 	UIStroke_3.Color = Color3.new(0.635294, 0.313725, 1)
 
 	local Debounce = true
@@ -742,7 +742,7 @@ function ShootProjectile(Item, Projectile)
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {
-				["drawDurationSeconds"] = 0.9,
+				["drawDurationSeconds"] = 0.97,
 				["shotId"] = HttpService:GenerateGUID(false)
 			},
 			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
