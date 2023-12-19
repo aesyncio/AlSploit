@@ -27,4 +27,9 @@ AlSploit.Bedwars = {
 	PickupRemote = GetRemote(debug.getconstants(KnitClient.Controllers.ItemDropController.checkForPickup)),
 }
 
+AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
+AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ProjectileFire")
+AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
+AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
+
 return AlSploit
