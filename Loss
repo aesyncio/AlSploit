@@ -719,14 +719,18 @@ end
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
 		local NearestBed = FindNearestBed()
+		
+		print("1")
 
-		if NearestBed then
+		if NearestBed then			
+			print("2")
+			
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
 
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
+			local BedTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
 
-			PlayerTpTween:Play()
+			BedTpTween:Play()
 		end
 	end
 end
@@ -811,6 +815,7 @@ function FindNearestBed()
 	for i, v in next, game.Workspace:GetDescendants() do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			
 			if Distance < MinDistance then
 				NearestBed = v
 				MinDistance = Distance
