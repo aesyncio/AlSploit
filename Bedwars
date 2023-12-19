@@ -1,4 +1,6 @@
-local LocalPlayer = game.Players.LocalPlayer
+local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
+
+local LocalPlayer = AlSploitApi.LocalPlayer
 
 local Camera = game:GetService("Workspace").CurrentCamera
 
@@ -10,8 +12,6 @@ local LightingService = game:GetService("Lighting")
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
-
-local LocalPlayer = game.Players.LocalPlayer
 local Players = game.Players:GetPlayers()
 
 local AlSploit = Instance.new("ScreenGui")
@@ -361,7 +361,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	Slider_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Slider_2.BorderSizePixel = 0
 	Slider_2.Position = UDim2.new(0.229946524, 0, 0.267857134, 0)
-	Slider_2.Size = UDim2.new(0.534759343, 0, 0.0857142881, 0)
+	Slider_2.Size = UDim2.new(0.534759343, 0, 0.0857142881, 0)	
 
 	UICorner_2.Parent = Slider_2
 
@@ -397,7 +397,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	TextLabel.Size = UDim2.new(1.20000005, 0, 2.5, 0)
 	TextLabel.Font = Enum.Font.FredokaOne
 	TextLabel.Text = Name .. ": " .. DefaultValue
-	TextLabel.TextColor3 = Color3.new(0.635294, 0.313725, 1)
+	TextLabel.TextColor3 = Color3.new(0.894118, 0.894118, 0.894118)
 	TextLabel.TextScaled = true
 	TextLabel.TextSize = 16.000
 	TextLabel.TextWrapped = true
@@ -575,26 +575,87 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
-local Settings = {
-	ChestStealer = {Value = true},
-	InfiniteJump = {Value = true},
-	FpsBooster = {Value = false},
-	Indicators = {Value = true},
-	GalaxySky = {Value = true},
-	PlayAgain = {Value = true},
-	AimAssist = {Value = true},
-	KillAura = {Value = true, Range = 20, CustomAnimation = true,},
-	Velocity = {Value = true},	
-	AntiVoid = {Value = true, Transparency = 0.65},
-	Sprint = {Value = true},
-	NoFall = {Value = true},
-	Aimbot = {Value = true},
-	Speed = {Value = true, Speed = 23},
-	Reach = {Value = true},
-	Nuker = {Value = true, Range = 30},
-	Cape = {Value = true},
-	Esp = {Value = true}
-}
+local SaveFileName = "AlSploitPublicUpdate"
+
+function CheckFirstTime()
+	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
+		return false
+	end
+	if readfile and isfile and not isfile("AlSploitBedwars/" .. SaveFileName) then
+		return true
+	end
+end
+
+local FirstTime = CheckFirstTime()
+local IsLoaded = false
+local Settings
+
+function CreateSettingsFile()
+	local Settings = {
+		ChestStealer = {Value = true},
+		InfiniteJump = {Value = true},
+		FpsBooster = {Value = false},
+		Indicators = {Value = true},
+		GalaxySky = {Value = true},
+		PlayAgain = {Value = true},
+		AimAssist = {Value = true},
+		KillAura = {Value = true, Range = 20, CustomAnimation = true,},
+		Velocity = {Value = true},	
+		AntiVoid = {Value = true, Transparency = 0.65},
+		Sprint = {Value = true},
+		NoFall = {Value = true},
+		Aimbot = {Value = true},
+		Speed = {Value = true, Speed = 23},
+		Reach = {Value = true},
+		Nuker = {Value = true, Range = 30},
+		Cape = {Value = true},
+		Esp = {Value = true}
+	}
+	
+	FirstTime = false
+
+	local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+	if writefile and makefolder then
+		makefolder("AlSploitBedwars")
+		writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
+	end
+end
+
+function SaveSettings()	
+	if not FirstTime then
+		local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+		
+		if writefile then
+			writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
+		end
+	end
+end
+
+function LoadSettings()
+	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
+		Settings = HttpService:JSONDecode(readfile("AlSploitBedwars/" .. SaveFileName))
+	end
+end
+
+task.spawn(function()
+	if CheckFirstTime() == true then
+		CreateSettingsFile()
+	end
+end)
+
+task.spawn(function()
+	LoadSettings()
+end)
+
+task.spawn(function()
+	repeat
+		task.wait(1)
+		
+		SaveSettings()
+	until not game
+end)
+
+task.wait(1)
 
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
@@ -605,7 +666,6 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
-local FirstHit = true
 
 local Animations = {
 	["Slow"] = {
@@ -624,19 +684,12 @@ function GetRemote(Remote)
 	return ""
 end
 
-local Bedwars = {
-	ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore,
-	SprintController = KnitClient.Controllers.SprintController,
-	DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
-	KnockbackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
-	CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,	
-	PickupRemote = GetRemote(debug.getconstants(KnitClient.Controllers.ItemDropController.checkForPickup)),
-}
+local Bedwars = AlSploitApi.Bedwars
 
-local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
-local ProjectileRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire
-local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit
-local BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
+local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
+local ProjectileRemote = AlSploitApi.ProjectileRemote
+local KillauraRemote = AlSploitApi.KillauraRemote
+local BedwarsSwords = AlSploitApi.BedwarsSwords
 
 function FindNearestPlayer(MaxDistance)
 	local NearestDistance = MaxDistance or math.huge
@@ -683,14 +736,14 @@ function ShootProjectile(Item, Projectile)
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {
-				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.5),
+				["drawDurationSeconds"] = 0.96,
 				["shotId"] = HttpService:GenerateGUID(false)
 			},
 			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
 		}
 
 		ProjectileRemote:InvokeServer(unpack(Args))
-	end		
+	end
 end
 
 function TouchingGround()
@@ -1739,6 +1792,24 @@ task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
 	end)
+	
+	local AntiVoidValue = false
+	
+	local Transparency
+
+	DropDownButton.Activated:Connect(function()			
+		if AntiVoidValue == false then
+			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
+				Settings.Speed.Speed = Callback / 100
+			end)
+		end
+
+		if AntiVoidValue == true then					
+			Transparency:Destroy()
+		end
+
+		AntiVoidValue = not AntiVoidValue
+	end)	
 end)
 
 task.spawn(function()
