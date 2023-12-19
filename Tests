@@ -1,6 +1,6 @@
 local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
 
-local LocalPlayer = AlSploitApi.LocalPlayer
+local LocalPlayer = game.Players.LocalPlayer
 
 local Camera = game:GetService("Workspace").CurrentCamera
 
@@ -700,6 +700,36 @@ local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
+
+function TweenToNearestPlayer()
+	if IsAlive(LocalPlayer) then
+		local NearestPlayer = FindNearestPlayer()
+		
+		if NearestPlayer then
+			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
+
+			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+
+			PlayerTpTween:Play()
+		end
+	end
+end
+
+function TweenToNearestBed()
+	if IsAlive(LocalPlayer) then
+		local NearestBed = FindNearestBed()
+
+		if NearestBed then
+			local TweenTime = AlSploitApi.TweenNumbers.BedTp
+
+			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
+
+			PlayerTpTween:Play()
+		end
+	end
+end
 
 function FindNearestPlayer(MaxDistance)
 	local NearestDistance = MaxDistance or math.huge
@@ -1827,14 +1857,77 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local PlayerTp = CreateToggle(WorldWindow, "PlayerTp", Settings.PlayerTp.Value, function(CallBack)
+	local PlayerTp = CreateToggle(WorldWindow, "PlayerTp", false, function(CallBack)
 		Settings.PlayerTp.Value = CallBack
+		
+		task.spawn(function()
+			repeat task.wait() until IsAlive(LocalPlayer)
+			
+			if CallBack == true then
+				task.spawn(function()
+					if IsAlive(LocalPlayer) then
+						KillHumanoid()
+
+						LocalPlayer.CharacterAded:Connect(function()
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestPlayer()
+							end
+						end)
+					end			
+
+					if not IsAlive(LocalPlayer) then
+						LocalPlayer.CharacterAded:Connect(function()
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestPlayer()
+							end
+						end)
+					end
+				end)
+		end)
 	end)
 end)
 
 task.spawn(function()
-	local BedTp = CreateToggle(WorldWindow, "BedTp", Settings.BedTp.Value, function(CallBack)
+	local BedTp = CreateToggle(WorldWindow, "BedTp", false, function(CallBack)
 		Settings.BedTp.Value = CallBack
+		
+		if CallBack == true then
+			task.spawn(function()
+				if IsAlive(LocalPlayer) then
+					KillHumanoid()
+
+					LocalPlayer.CharacterAded:Connect(function()
+						if IsAlive(LocalPlayer) then
+							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+							task.wait(0.15)
+
+							TweenToNearestBed()
+						end
+					end)
+				end			
+
+				if not IsAlive(LocalPlayer) then
+					LocalPlayer.CharacterAded:Connect(function()
+						if IsAlive(LocalPlayer) then
+							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+							task.wait(0.15)
+
+							TweenToNearestBed()
+						end
+					end)
+				end
+			end)
+		end
 	end)
 end)
 
