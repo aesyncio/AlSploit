@@ -1,3 +1,7 @@
+local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
+
+AlSploitApi:Print("Test")
+
 local LocalPlayer = game.Players.LocalPlayer
 
 local Camera = game:GetService("Workspace").CurrentCamera
