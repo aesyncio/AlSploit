@@ -1440,7 +1440,7 @@ task.spawn(function()
 
 			local RaycastParameters = RaycastParams.new()
 
-			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta * (DamageBoost and 2.5 or 1)
+			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta * (DamageBoost and 5 or 1)
 			RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 
 			local Raycast = workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
@@ -2099,7 +2099,7 @@ task.spawn(function()
 				task.spawn(function()
 					DamageBoost = true
 
-					task.wait(0.89)
+					task.wait(0.9)
 
 					DamageBoost = false	
 				end)
@@ -2119,7 +2119,7 @@ task.spawn(function()
 				task.spawn(function()
 					DamageBoost = true
 
-					task.wait(0.89)
+					task.wait(0.9)
 
 					DamageBoost = false					
 				end)
