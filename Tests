@@ -672,7 +672,6 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
-local FirstHit = true
 
 local Animations = {
 	["Slow"] = {
@@ -743,7 +742,7 @@ function ShootProjectile(Item, Projectile)
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {
-				["drawDurationSeconds"] = (FirstHit and 0.96 or 0.5),
+				["drawDurationSeconds"] = 0.9,
 				["shotId"] = HttpService:GenerateGUID(false)
 			},
 			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
