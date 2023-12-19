@@ -676,6 +676,7 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
+local DamageBoost = false
 local Beds = nil
 
 local Animations = {
@@ -940,6 +941,10 @@ function GetSpeed()
 
 		if Armor.itemType == "Speed_boots" then 
 			Speed = Speed + 25
+		end
+		
+		if SpeedDamageBoost == true then
+			Speed = Speed + 10
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -1492,7 +1497,7 @@ task.spawn(function()
 
 	debug.setupvalue(Bedwars.DamageIndicator, 10, {
 		Create = function(self, obj, ...)
-			task.spawn(function()
+			task.spawn(function()				
 				if Settings.Indicators.Value == true then
 					local Message = Messages[math.random(#Messages)]
 
@@ -2085,13 +2090,25 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Health = LocalPlayer.Character:GetAttribute("Health")
+	local LastHealth = LocalPlayer.Character:GetAttribute("Health")
 	
 	LocalPlayer.Character:GetAttributeChangedSignal("Health"):Connect(function()
-		local NewHealth = LocalPlayer.Character:GetAttribute("Health")
-		if NewHealth < Health then 
-			Health = NewHealth 
-			print("e")
+		if LocalPlayer.Character:GetAttribute("Health") < LastHealth then
+			task.spawn(function()
+				DamageBoost = true
+				
+				task.wait(0.89)
+				
+				DamageBoost = false
+			end)
+			
+			LastHealth = LocalPlayer.Character:GetAttribute("Health")
+
+			task.spawn(function()
+				task.wait(0.5)
+				
+				LastHealth = 150
+			end)
 		end
 	end)
 end)
