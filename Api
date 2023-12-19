@@ -16,8 +16,6 @@ function GetRemote(Remote)
 	return ""
 end
 
-AlSploit.LocalPlayer = LocalPlayer
-
 AlSploit.Bedwars = {
 	ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore,
 	SprintController = KnitClient.Controllers.SprintController,
