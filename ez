@@ -2088,21 +2088,21 @@ task.spawn(function()
 	until not game
 end)
 
-task.spawn(function()
-	local LastHealth = LocalPlayer.Character:GetAttribute("Health")
-	
+task.spawn(function()	
 	if IsAlive() then
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
-			if Health < LastHealth then
+		local PreviousHealth = LocalPlayer.Character:GetAttribute("Health")
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			local HealthChange = CurrentHealth - PreviousHealth
+
+			if HealthChange < 0 then
 				task.spawn(function()
 					DamageBoost = true
 
 					task.wait(0.89)
 
-					DamageBoost = false					
+					DamageBoost = false	
 				end)
-				
-				LastHealth = Health
 			end
 		end)
 	end
@@ -2110,8 +2110,12 @@ task.spawn(function()
 	LocalPlayer.CharacterAdded:Connect(function()
 		repeat task.wait() until IsAlive(LocalPlayer)
 		
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
-			if Health < LastHealth then
+		local PreviousHealth = LocalPlayer.Character:GetAttribute("Health")
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			local HealthChange = CurrentHealth - PreviousHealth
+			
+			if HealthChange < 0 then
 				task.spawn(function()
 					DamageBoost = true
 
@@ -2119,8 +2123,6 @@ task.spawn(function()
 
 					DamageBoost = false					
 				end)
-
-				LastHealth = Health
 			end
 		end)
 	end)
