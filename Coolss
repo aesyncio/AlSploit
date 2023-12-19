@@ -752,11 +752,11 @@ end
 function FpsBoostTextures()
 	for i, v in next, (CollectionServiceBlocks) do
 		if v:GetAttribute("PlacedByUserId") == 0 then
-			v.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
+			v.Material = Enum.Material.SmoothPlastic
 
 			for i2, v2 in next, (v:GetDescendants()) do
 				if v2:IsA("BasePart") then
-					v2.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
+					v2.Material = Enum.Material.SmoothPlastic
 				end
 			end
 		end
@@ -1844,7 +1844,7 @@ task.spawn(function()
 	DropDownButton.Activated:Connect(function()			
 		if AntiVoidValue == false then
 			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
-				Settings.Speed.Speed = Callback / 100
+				Settings.AntiVoid.Transparency = Callback / 100
 			end)
 		end
 
@@ -1868,7 +1868,7 @@ task.spawn(function()
 					if IsAlive(LocalPlayer) then
 						KillHumanoid()
 
-						LocalPlayer.CharacterAded:Connect(function()
+						LocalPlayer.CharacterAdded:Connect(function()
 							if IsAlive(LocalPlayer) then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1880,7 +1880,7 @@ task.spawn(function()
 					end			
 
 					if not IsAlive(LocalPlayer) then
-						LocalPlayer.CharacterAded:Connect(function()
+						LocalPlayer.CharacterAdded:Connect(function()
 							if IsAlive(LocalPlayer) then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1905,7 +1905,7 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					KillHumanoid()
 
-					LocalPlayer.CharacterAded:Connect(function()
+					LocalPlayer.CharacterAdded:Connect(function()
 						if IsAlive(LocalPlayer) then
 							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1917,7 +1917,7 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					LocalPlayer.CharacterAded:Connect(function()
+					LocalPlayer.CharacterAdded:Connect(function()
 						if IsAlive(LocalPlayer) then
 							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
