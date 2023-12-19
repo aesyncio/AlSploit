@@ -984,8 +984,6 @@ function GetBeds()
 	for i, v in next, game.Workspace:GetDescendants() do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			table.insert(Beds, v)
-			
-			return v
 		end
 	end
 
