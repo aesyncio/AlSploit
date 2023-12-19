@@ -1956,3 +1956,11 @@ task.spawn(function()
 		Players = game.Players:GetPlayers()
 	until not game
 end)
+
+task.spawn(function()
+	local QueueOnTeleport = queue_on_teleport
+
+	local TeleportString = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Tests"))()]]
+
+	QueueOnTeleport(TeleportString)
+end)
