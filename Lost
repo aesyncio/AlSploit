@@ -1919,6 +1919,8 @@ task.spawn(function()
 					KillHumanoid()
 
 					LocalPlayer.CharacterAdded:Connect(function()
+						repeat task.wait() until IsAlive(LocalPlayer)
+						
 						if IsAlive(LocalPlayer) then
 							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1931,6 +1933,8 @@ task.spawn(function()
 
 				if not IsAlive(LocalPlayer) then
 					LocalPlayer.CharacterAdded:Connect(function()
+						repeat task.wait() until IsAlive(LocalPlayer)
+						
 						if IsAlive(LocalPlayer) then
 							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
