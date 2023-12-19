@@ -676,7 +676,7 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
-local Beds = GetBeds()
+local Beds = nil
 
 local Animations = {
 	["Slow"] = {
@@ -2079,6 +2079,7 @@ task.spawn(function()
 	repeat 
 		task.wait(1)
 
-		Players = game.Players:GetPlayers()
+		Players = game.Players:GetPlayers()		
+		Beds = GetBeds()
 	until not game
 end)
