@@ -789,21 +789,24 @@ function ShootProjectile(Item, Projectile)
 end
 
 function TouchingGround()
-	local Parameters = RaycastParams.new()
-	Parameters.FilterType = Enum.RaycastFilterType.Include
-	Parameters.FilterDescendantsInstances = {CollectionServiceBlocks}
+	if IsAlive(LocalPlayer) then
+		local Parameters = RaycastParams.new()
+		Parameters.FilterType = Enum.RaycastFilterType.Include
+		Parameters.FilterDescendantsInstances = {CollectionServiceBlocks}
 
-	local IsTouchingFloor = false
+		local IsTouchingFloor = false
 
-	for x = 1, 1 do
-		local Origin = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(x, 0, 0)
-		local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
-		if Raycast and Raycast.Instance then
-			IsTouchingFloor = true			
-		end
-	end	
+		for x = 1, 1 do
+			local Origin = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(x, 0, 0)
 
-	return IsTouchingFloor
+			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
+			if Raycast and Raycast.Instance then
+				IsTouchingFloor = true			
+			end
+		end	
+		
+		return IsTouchingFloor
+	end
 end
 
 function GetMatchState()
@@ -941,10 +944,6 @@ function GetSpeed()
 
 		if Armor.itemType == "Speed_boots" then 
 			Speed = Speed + 25
-		end
-		
-		if SpeedDamageBoost == true then
-			Speed = Speed + 100
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -1441,7 +1440,7 @@ task.spawn(function()
 
 			local RaycastParameters = RaycastParams.new()
 
-			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
+			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * (DamageBoost and 1.4 or 1) * Delta 
 			RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 
 			local Raycast = workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
@@ -2093,24 +2092,12 @@ task.spawn(function()
 	local LastHealth = LocalPlayer.Character:GetAttribute("Health")
 	
 	LocalPlayer.Character:GetAttributeChangedSignal("Health"):Connect(function()
-		if LocalPlayer.Character:GetAttribute("Health") < LastHealth then
-			task.spawn(function()
-				DamageBoost = true
-				
-				print("true")
-				
-				task.wait(0.89)
-				
-				DamageBoost = false
-			end)
-			
-			LastHealth = LocalPlayer.Character:GetAttribute("Health")
+		task.spawn(function()
+			DamageBoost = true
 
-			task.spawn(function()
-				task.wait(0.5)
-				
-				LastHealth = 150
-			end)
-		end
+			task.wait(0.89)
+
+			DamageBoost = false
+		end)
 	end)
 end)
