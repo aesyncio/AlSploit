@@ -2083,3 +2083,15 @@ task.spawn(function()
 		Beds = GetBeds()
 	until not game
 end)
+
+task.spawn(function()
+	local Health = LocalPlayer.Character:GetAttribute("Health")
+	
+	LocalPlayer.Character:GetAttributeChangedSignal("Health"):Connect(function()
+		local NewHealth = LocalPlayer.Character:GetAttribute("Health")
+		if NewHealth < Health then 
+			Health = Newhealth 
+			print("e")
+		end
+	end)
+end)
