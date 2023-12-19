@@ -1440,7 +1440,7 @@ task.spawn(function()
 
 			local RaycastParameters = RaycastParams.new()
 
-			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * (DamageBoost and 1.4 or 1) * Delta 
+			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta * (DamageBoost and 1.4 or 1)
 			RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 
 			local Raycast = workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
@@ -2091,13 +2091,17 @@ end)
 task.spawn(function()
 	local LastHealth = LocalPlayer.Character:GetAttribute("Health")
 	
-	LocalPlayer.Character:GetAttributeChangedSignal("Health"):Connect(function()
-		task.spawn(function()
-			DamageBoost = true
+	LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
+		if Health < LastHealth then
+			task.spawn(function()
+				DamageBoost = true
 
-			task.wait(0.89)
+				task.wait(0.89)
 
-			DamageBoost = false
-		end)
+				DamageBoost = false
+				
+				LastHealth = Health
+			end)
+		end
 	end)
 end)
