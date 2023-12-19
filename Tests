@@ -436,7 +436,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 	UIStroke_2.Color = Color3.new(0.635294, 0.313725, 1)	
 	
 	UIStroke_3.Parent = TextLabel
-	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 	UIStroke_3.Thickness = 2
 	UIStroke_3.Color = Color3.new(0.635294, 0.313725, 1)	
 
