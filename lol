@@ -1380,7 +1380,7 @@ task.spawn(function()
 		repeat	
 			task.wait(0.1)
 
-			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
+			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true and Beds ~= nil then
 				local Bed = Beds[1]
 
 				if Bed then
@@ -2090,7 +2090,7 @@ task.spawn(function()
 	LocalPlayer.Character:GetAttributeChangedSignal("Health"):Connect(function()
 		local NewHealth = LocalPlayer.Character:GetAttribute("Health")
 		if NewHealth < Health then 
-			Health = Newhealth 
+			Health = NewHealth 
 			print("e")
 		end
 	end)
