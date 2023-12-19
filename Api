@@ -1,0 +1,7 @@
+local AlSploit = {}
+
+function AlSploit:Print(Message)
+	print(Message)
+end
+
+return AlSploit
