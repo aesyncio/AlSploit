@@ -1850,6 +1850,10 @@ task.spawn(function()
 		if AntiVoidValue == false then
 			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
 				Settings.AntiVoid.Transparency = Callback / 100
+				
+				if AntiVoidPart then
+					AntiVoidPart.Transparency = Callback / 100
+				end
 			end)
 		end
 
