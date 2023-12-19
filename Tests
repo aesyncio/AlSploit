@@ -626,10 +626,10 @@ end
 
 local Bedwars = AlSploitApi.Bedwars
 
-local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
-local ProjectileRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.ProjectileFire
-local KillauraRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SwordHit
-local BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
+local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
+local ProjectileRemote = AlSploitApi.ProjectileRemote
+local KillauraRemote = AlSploitApi.KillauraRemote
+local BedwarsSwords = AlSploitApi.BedwarsSwords
 
 function FindNearestPlayer(MaxDistance)
 	local NearestDistance = MaxDistance or math.huge
