@@ -676,6 +676,7 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
+local Beds = GetBeds()
 
 local Animations = {
 	["Slow"] = {
@@ -718,13 +719,9 @@ end
 
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
-		local NearestBed = FindNearestBed()
-		
-		print("1")
+		local NearestBed = Beds[1]
 
-		if NearestBed then			
-			print("2")
-			
+		if NearestBed then						
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
 
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
@@ -806,24 +803,6 @@ function TouchingGround()
 	end	
 
 	return IsTouchingFloor
-end
-
-function FindNearestBed()
-	local NearestBed = nil
-	local MinDistance = math.huge
-	
-	for i, v in next, game.Workspace:GetDescendants() do
-		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
-			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-			
-			if Distance < MinDistance then
-				NearestBed = v
-				MinDistance = Distance
-			end
-		end
-	end
-
-	return NearestBed
 end
 
 function GetMatchState()
@@ -998,6 +977,20 @@ function IsAlive(Player)
 
 	return true
 end	
+
+function GetBeds()
+	local Beds = {}
+
+	for i, v in next, game.Workspace:GetDescendants() do
+		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
+			table.insert(Beds, v)
+			
+			return v
+		end
+	end
+
+	return Beds
+end
 
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
@@ -1390,7 +1383,7 @@ task.spawn(function()
 			task.wait(0.1)
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
-				local Bed = FindNearestBed()
+				local Bed = Beds[1]
 
 				if Bed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
