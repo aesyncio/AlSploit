@@ -1,7 +1,30 @@
 local AlSploit = {}
 
-function AlSploit:Print(Message)
-	print(Message)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = game.Players.LocalPlayer
+
+local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
+
+function GetRemote(Remote)
+	for i, v in next, (Remote) do
+		if v == "Client" then
+			return Remote[i + 1]
+		end
+	end
+
+	return ""
 end
+
+AlSploit.LocalPlayer = LocalPlayer
+
+AlSploit.Bedwars = {
+	ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore,
+	SprintController = KnitClient.Controllers.SprintController,
+	DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
+	KnockbackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
+	CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,	
+	PickupRemote = GetRemote(debug.getconstants(KnitClient.Controllers.ItemDropController.checkForPickup)),
+}
 
 return AlSploit
