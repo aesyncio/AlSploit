@@ -1958,9 +1958,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local QueueOnTeleport = queue_on_teleport
-
 	local TeleportString = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Tests"))()]]
 
-	QueueOnTeleport(TeleportString)
+	queue_on_teleport(TeleportString)
 end)
