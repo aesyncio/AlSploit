@@ -32,4 +32,6 @@ AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):Wait
 AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 
+AlSploit.TweenNumbers = {BedTp = 0.65, PlayerTp = 0.7}
+
 return AlSploit
