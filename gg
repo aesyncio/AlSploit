@@ -1369,7 +1369,7 @@ task.spawn(function()
 	repeat task.wait(1) until GetMatchState() == 2
 
 	if Settings.PlayAgain.Value == true then
-		PlayAgainRemote:FireServer({["queueType"] = GetQueueType()})
+		PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
 	end
 end)
 
