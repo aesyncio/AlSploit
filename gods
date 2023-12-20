@@ -1827,9 +1827,8 @@ task.spawn(function()
 		Settings.AntiVoid.Value = CallBack
 		
 		task.spawn(function()
-			repeat task.wait(1) GetLowestPosition() until GetMatchState() ~= 0
-			
-			task.wait(1)
+			repeat task.wait() until GetMatchState() ~= 0
+			GetLowestPosition()
 			
 			if CallBack == true then
 				AntiVoidPart = Instance.new("Part")
@@ -1837,7 +1836,7 @@ task.spawn(function()
 				AntiVoidPart.Material = Enum.Material.Neon
 				AntiVoidPart.Name = "AntiVoidPart"
 				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
-				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPositionPosition, 0)
+				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPosition, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
 				AntiVoidPart.CanCollide = false
