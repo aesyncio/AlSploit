@@ -1823,7 +1823,7 @@ task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
 		
-		GetLowestPosition()
+		repeat task.wait(1) LowestPosition = GetLowestPosition() until GetMatchState() ~= 0		
 		
 		task.spawn(function()
 			if CallBack == true then
