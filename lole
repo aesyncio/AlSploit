@@ -947,7 +947,7 @@ function GetSpeed()
 		end
 		
 		if DamageBoost == true then
-			Speed = Speed + 25
+			Speed = Speed + 22.5
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
