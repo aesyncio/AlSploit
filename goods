@@ -1827,8 +1827,7 @@ task.spawn(function()
 		Settings.AntiVoid.Value = CallBack
 		
 		task.spawn(function()
-			repeat task.wait() until GetMatchState() ~= 0
-			GetLowestPosition()
+			repeat task.wait(1) GetLowestPosition() until GetMatchState() ~= 0
 			
 			if CallBack == true then
 				AntiVoidPart = Instance.new("Part")
