@@ -575,7 +575,7 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
-local SaveFileName = "AlSploitPublicUpdate2"
+local SaveFileName = "AlSploitPublicUpdate3"
 
 local IsLoaded = false
 local Settings
@@ -584,6 +584,8 @@ function DeleteUnwantedFiles()
 	for i = 1, 1000 do
 		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua") and not SaveFileName:find(i) then
 			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua")
+			
+			print("yes")
 		end
 	end	
 end
@@ -592,6 +594,7 @@ function CreateSettingsFile()
 	local Settings = {
 		ChestStealer = {Value = true},
 		InfiniteJump = {Value = true},
+		DamageBoost = {Value = true},
 		FpsBooster = {Value = false},
 		Indicators = {Value = true},
 		GalaxySky = {Value = true},
@@ -1680,6 +1683,60 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local DamageBoost = CreateToggle(BlatantWindow, "DamageBoost", Settings.DamageBoost.Value, function(Callback)
+		Settings.DamageBoost.Value = Callback
+		
+		if Callback == true then
+			task.spawn(function()	
+				if IsAlive() then
+					local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+					LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+						local HealthChange = CurrentHealth - PreviousHealth
+
+						if HealthChange < 0 then
+							task.spawn(function()
+								DamageBoost = true
+
+								task.wait(0.9)
+
+								DamageBoost = false					
+							end)
+						end
+
+						PreviousHealth = CurrentHealth
+					end)
+				end
+
+				LocalPlayer.CharacterAdded:Connect(function()
+					if Callback == true then
+						repeat task.wait() until IsAlive(LocalPlayer)
+
+						local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+						LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+							local HealthChange = CurrentHealth - PreviousHealth
+
+							if HealthChange < 0 then
+								task.spawn(function()
+									DamageBoost = true
+
+									task.wait(0.9)
+
+									DamageBoost = false					
+								end)
+							end
+
+							PreviousHealth = CurrentHealth
+						end)
+					end
+				end)
+			end)
+		end
+	end)
+end)
+
+task.spawn(function()
 	local ChestStealer = CreateToggle(BlatantWindow, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
 		Settings.ChestStealer.Value = CallBack
 	end)
@@ -1916,33 +1973,37 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 					
-					KillHumanoid()
+					if GetBeds() ~= nil then
+						KillHumanoid()
 
-					LocalPlayer.CharacterAdded:Connect(function()
-						repeat task.wait() until IsAlive(LocalPlayer)
-						
-						if IsAlive(LocalPlayer) then
-							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
 
-							task.wait(0.15)
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-							TweenToNearestBed()
-						end
-					end)
+								task.wait(0.15)
+
+								TweenToNearestBed()
+							end
+						end)
+					end										
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					LocalPlayer.CharacterAdded:Connect(function()
-						repeat task.wait() until IsAlive(LocalPlayer)
-						
-						if IsAlive(LocalPlayer) then
-							repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+					if GetBeds() ~= nil then
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
 
-							task.wait(0.15)
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-							TweenToNearestBed()
-						end
-					end)
+								task.wait(0.15)
+
+								TweenToNearestBed()
+							end
+						end)
+					end					
 				end
 			end)
 		end
@@ -2087,48 +2148,4 @@ task.spawn(function()
 		Players = game.Players:GetPlayers()		
 		Beds = GetBeds()
 	until not game
-end)
-
-task.spawn(function()	
-	if IsAlive() then
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			local healthChange = CurrentHealth - PreviousHealth
-			
-			if healthChange < 0 then
-				task.spawn(function()
-					DamageBoost = true
-
-					task.wait(0.9)
-
-					DamageBoost = false					
-				end)
-			end
-			
-			PreviousHealth = CurrentHealth
-		end)
-	end
-	
-	LocalPlayer.CharacterAdded:Connect(function()
-		repeat task.wait() until IsAlive(LocalPlayer)
-		
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			local healthChange = CurrentHealth - PreviousHealth
-
-			if healthChange < 0 then
-				task.spawn(function()
-					DamageBoost = true
-
-					task.wait(0.9)
-
-					DamageBoost = false					
-				end)
-			end
-
-			PreviousHealth = CurrentHealth
-		end)
-	end)
 end)
