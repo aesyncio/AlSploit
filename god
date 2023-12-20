@@ -675,7 +675,7 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 
 local KillAuraAnimationCooldown = true
-local LowestPosition = 99999
+local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
@@ -756,6 +756,7 @@ end
 
 local function GetLowestPosition()
 	local OldLowestPosition = math.huge
+	local LowestPosition = 99999
 	
 	local Blockraycast = RaycastParams.new()
 
@@ -763,7 +764,7 @@ local function GetLowestPosition()
 	Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
 		
 	for i, v in next, (CollectionServiceBlocks) do
-		local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
+		local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 1000, 0), Vector3.new(0, -1000, 0), Blockraycast)
 
 		if NewRay then
 			LowestPosition = NewRay.Position.Y
@@ -773,6 +774,8 @@ local function GetLowestPosition()
 			end		
 		end
 	end	
+	
+	LowestAntiVoidPosition = LowestPosition - 8
 end
 
 function FpsBoostTextures()
@@ -1834,7 +1837,7 @@ task.spawn(function()
 				AntiVoidPart.Material = Enum.Material.Neon
 				AntiVoidPart.Name = "AntiVoidPart"
 				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
-				AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
+				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPositionPosition, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
 				AntiVoidPart.CanCollide = false
@@ -1846,7 +1849,7 @@ task.spawn(function()
 							if IsAlive(LocalPlayer) then
 								LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Velocity.X, 100, LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
 							end
-						end				
+						end
 					end
 				end)
 			end
