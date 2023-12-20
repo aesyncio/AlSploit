@@ -947,7 +947,7 @@ function GetSpeed()
 		end
 		
 		if DamageBoost == true then
-			Speed = Speed + 30
+			Speed = Speed + 25
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -1544,10 +1544,6 @@ task.spawn(function()
 			end
 
 			if GetItem("snowball") then
-				ShootProjectile("snowball", "snowball")
-			end
-			
-			if GetItem("frosted_snowball") then
 				ShootProjectile("snowball", "snowball")
 			end
 		end
