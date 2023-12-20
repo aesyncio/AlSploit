@@ -1858,13 +1858,13 @@ task.spawn(function()
 					end
 				end)
 			end
-
-			if CallBack == false then
-				if game.Workspace:FindFirstChild("AntiVoidPart") then		
-					AntiVoidPart:Destroy()
-				end
-			end
 		end)		
+		
+		if CallBack == false then
+			if game.Workspace:FindFirstChild("AntiVoidPart") then		
+				AntiVoidPart:Destroy()
+			end
+		end
 	end)
 	
 	task.spawn(function()
