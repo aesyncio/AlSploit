@@ -1729,14 +1729,14 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local DamageBoost = CreateToggle(BlatantWindow, "DamageBoost", Settings.DamageBoost.Value, function(Callback)
-		Settings.DamageBoost.Value = Callback
+	local ChestStealer = CreateToggle(BlatantWindow, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
+		Settings.ChestStealer.Value = CallBack
 	end)
 end)
 
 task.spawn(function()
-	local ChestStealer = CreateToggle(BlatantWindow, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
-		Settings.ChestStealer.Value = CallBack
+	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
+		Settings.DamageBoost.Value = Callback
 	end)
 end)
 
