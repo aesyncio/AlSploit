@@ -1570,6 +1570,54 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+task.spawn(function()	
+	if IsAlive() then
+		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			if Settings.DamageBoost.Value == true then
+				local HealthChange = CurrentHealth - PreviousHealth
+
+				if HealthChange < 0 then
+					task.spawn(function()
+						DamageBoost = true
+
+						task.wait(0.9)
+
+						DamageBoost = false					
+					end)
+				end
+
+				PreviousHealth = CurrentHealth
+			end
+		end)
+	end
+
+	LocalPlayer.CharacterAdded:Connect(function()
+		repeat task.wait() until IsAlive(LocalPlayer)
+
+		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			if Settings.DamageBoost.Value == true then
+				local HealthChange = CurrentHealth - PreviousHealth
+
+				if HealthChange < 0 then
+					task.spawn(function()
+						DamageBoost = true
+
+						task.wait(0.9)
+
+						DamageBoost = false					
+					end)
+				end
+
+				PreviousHealth = CurrentHealth
+			end
+		end)
+	end)
+end)
+
 local CombatWindow = CreateWindow("Combat")
 local BlatantWindow = CreateWindow("Blatant")
 local UtilityWindow = CreateWindow("Utility")
@@ -1683,54 +1731,6 @@ end)
 task.spawn(function()
 	local DamageBoost = CreateToggle(BlatantWindow, "DamageBoost", Settings.DamageBoost.Value, function(Callback)
 		Settings.DamageBoost.Value = Callback
-		
-		if Callback == true then
-			task.spawn(function()	
-				if IsAlive() then
-					local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-					LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-						local HealthChange = CurrentHealth - PreviousHealth
-
-						if HealthChange < 0 then
-							task.spawn(function()
-								DamageBoost = true
-
-								task.wait(0.9)
-
-								DamageBoost = false					
-							end)
-						end
-
-						PreviousHealth = CurrentHealth
-					end)
-				end
-
-				LocalPlayer.CharacterAdded:Connect(function()
-					if Callback == true then
-						repeat task.wait() until IsAlive(LocalPlayer)
-
-						local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-						LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-							local HealthChange = CurrentHealth - PreviousHealth
-
-							if HealthChange < 0 then
-								task.spawn(function()
-									DamageBoost = true
-
-									task.wait(0.9)
-
-									DamageBoost = false					
-								end)
-							end
-
-							PreviousHealth = CurrentHealth
-						end)
-					end
-				end)
-			end)
-		end
 	end)
 end)
 
