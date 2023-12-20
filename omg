@@ -1827,9 +1827,11 @@ task.spawn(function()
 		Settings.AntiVoid.Value = CallBack
 		
 		task.spawn(function()
-			repeat task.wait(1) GetLowestPosition() until GetMatchState() ~= 0
-			
+			repeat task.wait() until GetMatchState() ~= 0
+	
 			if CallBack == true then
+				GetLowestPosition()
+				
 				AntiVoidPart = Instance.new("Part")
 				AntiVoidPart.Parent = game.Workspace
 				AntiVoidPart.Material = Enum.Material.Neon
