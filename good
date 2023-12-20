@@ -1823,9 +1823,11 @@ task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
 		
-		GetLowestPosition()
-		
 		task.spawn(function()
+			repeat task.wait(1) GetLowestPosition() until GetMatchState() ~= 0
+			
+			task.wait(1)
+			
 			if CallBack == true then
 				AntiVoidPart = Instance.new("Part")
 				AntiVoidPart.Parent = game.Workspace
