@@ -754,6 +754,27 @@ function FindNearestPlayer(MaxDistance)
 	return NearestPlayer, NearestDistance
 end
 
+local function GetLowestPosition()
+	local OldLowestPosition = math.huge
+	
+	local Blockraycast = RaycastParams.new()
+
+	Blockraycast.FilterType = Enum.RaycastFilterType.Include
+	Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
+		
+	for i, v in next, (CollectionServiceBlocks) do
+		local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
+
+		if NewRay then
+			LowestPosition = NewRay.Position.Y
+
+			if LowestPosition < OldLowestPosition then
+				OldLowestPosition = LowestPosition
+			end		
+		end
+	end	
+end
+
 function FpsBoostTextures()
 	for i, v in next, (CollectionServiceBlocks) do
 		if v:GetAttribute("PlacedByUserId") == 0 then
@@ -1801,6 +1822,8 @@ end)
 task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
+		
+		GetLowestPosition()
 		
 		task.spawn(function()
 			if CallBack == true then
