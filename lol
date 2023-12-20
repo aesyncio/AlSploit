@@ -1827,34 +1827,35 @@ task.spawn(function()
 			end
 
 			if CallBack == false then
-				if game.Workspace:FindFirstChild("AntiVoidPart") then
-					Cooldown = false				
+				if game.Workspace:FindFirstChild("AntiVoidPart") then		
 					AntiVoidPart:Destroy()
 				end
 			end
 		end)		
 	end)
 	
-	local AntiVoidValue = false
-	
-	local Transparency
+	task.spawn(function()
+		local AntiVoidValue = false
 
-	DropDownButton.Activated:Connect(function()			
-		if AntiVoidValue == false then
-			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
-				Settings.AntiVoid.Transparency = Callback / 100
-				
-				if AntiVoidPart then
-					AntiVoidPart.Transparency = Callback / 100
-				end
-			end)
-		end
+		local Transparency
 
-		if AntiVoidValue == true then					
-			Transparency:Destroy()
-		end
+		DropDownButton.Activated:Connect(function()			
+			if AntiVoidValue == false then
+				Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
+					Settings.AntiVoid.Transparency = Callback / 100
 
-		AntiVoidValue = not AntiVoidValue
+					if AntiVoidPart then
+						AntiVoidPart.Transparency = Callback / 100
+					end
+				end)
+			end
+
+			if AntiVoidValue == true then					
+				Transparency:Destroy()
+			end
+
+			AntiVoidValue = not AntiVoidValue
+		end)	
 	end)	
 end)
 
