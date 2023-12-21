@@ -675,7 +675,6 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 
 local KillAuraAnimationCooldown = true
-local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
@@ -742,23 +741,6 @@ function FindNearestPlayer(MaxDistance)
 	end
 
 	return NearestPlayer, NearestDistance
-end
-
-local function GetLowestPosition()
-	local OldLowestPosition = math.huge
-	local LowestPosition = 99999
-
-	for i, v in next, (CollectionServiceBlocks) do
-		local PositionY = v.Position.Y
-
-		LowestPosition = PositionY
-
-		if LowestPosition < OldLowestPosition then
-			OldLowestPosition = LowestPosition
-		end		
-	end	
-
-	LowestAntiVoidPosition = LowestPosition - 8
 end
 
 function FpsBoostTextures()
@@ -1272,7 +1254,7 @@ function InfFly()
 		until InfFlying == false
 
 		if not InfFlying or not IsAlive(LocalPlayer) then
-			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 10, 0)		
+			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
 			game.Workspace.Gravity = 0	
 			
 			SetCamera(LocalPlayer.Character)
@@ -1283,7 +1265,7 @@ function InfFly()
 				for i = 1, 196 do
 					game.Workspace.Gravity = i
 					
-					task.wait(0.005)
+					task.wait(0.001)
 				end
 				
 				game.Workspace.Gravity = 196.2
@@ -1827,19 +1809,38 @@ task.spawn(function()
 		task.spawn(function()
 			repeat task.wait() until GetMatchState() ~= 0
 	
-			if CallBack == true then
-				GetLowestPosition()
+			if CallBack == true then	
+				local OldLowestPosition = math.huge
+				local LowestPosition = 99999
+				
+				local Blockraycast = RaycastParams.new()
+
+				Blockraycast.FilterType = Enum.RaycastFilterType.Include
+				Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
 				
 				AntiVoidPart = Instance.new("Part")
 				AntiVoidPart.Parent = game.Workspace
 				AntiVoidPart.Material = Enum.Material.Neon
 				AntiVoidPart.Name = "AntiVoidPart"
 				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
-				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPosition, 0)
+				AntiVoidPart.Position = Vector3.new(0, 99999, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
 				AntiVoidPart.CanCollide = false
 				AntiVoidPart.Anchored = true
+				
+				for i, v in pairs(CollectionServiceBlocks) do
+					local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
+
+					if NewRay then
+						LowestPosition = NewRay.Position.Y
+						if LowestPosition < OldLowestPosition then
+							OldLowestPosition = LowestPosition
+
+							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
+						end
+					end					
+				end
 
 				AntiVoidPart.Touched:Connect(function()
 					if IsAlive(LocalPlayer) and game.Workspace:FindFirstChild("AntiVoidPart") and LocalPlayer.Character.HumanoidRootPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
@@ -1903,7 +1904,7 @@ task.spawn(function()
 							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-								task.wait(0.15)
+								task.wait(0.1)
 
 								TweenToNearestPlayer()
 							end
@@ -1919,7 +1920,7 @@ task.spawn(function()
 							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-								task.wait(0.15)
+								task.wait(0.1)
 
 								TweenToNearestPlayer()
 							end
