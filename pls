@@ -1314,8 +1314,10 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(1)
-
-				NearestBed = FindNearestBed()
+				
+				if IsAlive(LocalPlayer) then
+					NearestBed = FindNearestBed()
+				end			
 			until not game
 		end)
 		
