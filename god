@@ -679,7 +679,6 @@ local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
-local Bed = nil
 
 local Animations = {
 	["Slow"] = {
@@ -714,7 +713,7 @@ end
 
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
-		local NearestBed = Bed
+		local NearestBed = FindNearestBed()
 
 		if NearestBed then						
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
@@ -806,6 +805,7 @@ function FindNearestBed()
 	for _,v in pairs(game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			
 			if Distance < MinDistance then
 				NearestBed = v
 				MinDistance = Distance
@@ -1302,6 +1302,8 @@ task.spawn(function()
 end)
 
 task.spawn(function()	
+	local NearestBed = nil
+	
 	local function GetServerPosition(Position)
 		local X = math.round(Position.X / 3)
 		local Y = math.round(Position.Y / 3)
@@ -1314,7 +1316,7 @@ task.spawn(function()
 			task.wait(0.1)
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
-				if Bed then
+				if NearestBed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
 
 					if Bed and Magnitude < Settings.Nuker.Range then
@@ -1349,6 +1351,14 @@ task.spawn(function()
 				end
 			end
 		until not game
+		
+		task.spawn(function()
+			repeat
+				task.wait(1)
+				
+				NearestBed = FindNearestBed()
+			until not game
+		end)
 	end	
 end)
 
@@ -1883,13 +1893,13 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 
-					if Bed ~= nil then
+					if FindNearestPlayer() ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -1901,11 +1911,11 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if Bed ~= nil then
+					if FindNearestPlayer() ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -1935,7 +1945,7 @@ task.spawn(function()
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -1951,7 +1961,7 @@ task.spawn(function()
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -2102,6 +2112,5 @@ task.spawn(function()
 		task.wait(1)
 
 		Players = game.Players:GetPlayers()		
-		Bed = FindNearestBed()
 	until not game
 end)
