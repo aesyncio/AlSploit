@@ -675,11 +675,9 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 
 local KillAuraAnimationCooldown = true
-local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
-local Bed = nil
 
 local Animations = {
 	["Slow"] = {
@@ -714,7 +712,7 @@ end
 
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
-		local NearestBed = Bed
+		local NearestBed = FindNearestBed()
 
 		if NearestBed then						
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
@@ -743,23 +741,6 @@ function FindNearestPlayer(MaxDistance)
 	end
 
 	return NearestPlayer, NearestDistance
-end
-
-local function GetLowestPosition()
-	local OldLowestPosition = math.huge
-	local LowestPosition = 99999
-
-	for i, v in next, (CollectionServiceBlocks) do
-		local PositionY = v.Position.Y
-
-		LowestPosition = PositionY
-
-		if LowestPosition < OldLowestPosition then
-			OldLowestPosition = LowestPosition
-		end		
-	end	
-
-	LowestAntiVoidPosition = LowestPosition - 8
 end
 
 function FpsBoostTextures()
@@ -806,6 +787,7 @@ function FindNearestBed()
 	for _,v in pairs(game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			
 			if Distance < MinDistance then
 				NearestBed = v
 				MinDistance = Distance
@@ -1229,13 +1211,6 @@ local StartLevel = nil
 local InfFlyUp = false
 local InfFlyDown = false
 
-local InfFlying = false
-local SpoofedCamera = nil
-local StartLevel = nil
-
-local InfFlyUp = false
-local InfFlyDown = false
-
 function InfFly()
 	InfFlying = not InfFlying
 
@@ -1263,14 +1238,13 @@ function InfFly()
 		end)
 
 		StartLevel = LocalPlayer.Character.Head.Position.Y
-
-		SpoofedCamera = Instance.new("Part")
-		SpoofedCamera.Parent = game.Workspace
+		SpoofedCamera = Instance.new("Part", game.Workspace)
 		SpoofedCamera.Anchored = true
 		SpoofedCamera.Transparency = 1
 		SpoofedCamera.Position = LocalPlayer.Character.Head.Position
-
+		
 		SetCamera(SpoofedCamera)
+		
 		LocalPlayer.Character.PrimaryPart.CFrame += Vector3.new(0, 1000000, 0)
 		SpoofedCamera.Position = Vector3.new(SpoofedCamera.Position.X, StartLevel, SpoofedCamera.Position.Z)
 
@@ -1280,15 +1254,22 @@ function InfFly()
 		until InfFlying == false
 
 		if not InfFlying or not IsAlive(LocalPlayer) then
-			game.Workspace.Gravity = 0
-			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 10, 0)		
-
+			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
+			game.Workspace.Gravity = 0	
+			
 			SetCamera(LocalPlayer.Character)
-
+			
 			SpoofedCamera:Remove()
-			task.wait(0.25)
-
-			game.Workspace.Gravity = 196.2
+			
+			task.spawn(function()
+				for i = 1, 196 do
+					game.Workspace.Gravity = i
+					
+					task.wait(0.001)
+				end
+				
+				game.Workspace.Gravity = 196.2
+			end)
 		end
 	end
 end
@@ -1302,6 +1283,8 @@ task.spawn(function()
 end)
 
 task.spawn(function()	
+	local NearestBed = nil
+	
 	local function GetServerPosition(Position)
 		local X = math.round(Position.X / 3)
 		local Y = math.round(Position.Y / 3)
@@ -1310,21 +1293,31 @@ task.spawn(function()
 	end
 
 	if not GetQueueType():find("skywars") then
+		task.spawn(function()
+			repeat
+				task.wait(1)
+				
+				if IsAlive(LocalPlayer) then
+					NearestBed = FindNearestBed()
+				end			
+			until not game
+		end)
+		
 		repeat	
 			task.wait(0.1)
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
-				if Bed then
-					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
+				if NearestBed then
+					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 
-					if Bed and Magnitude < Settings.Nuker.Range then
+					if NearestBed and Magnitude < Settings.Nuker.Range then
 						local RaycastParameters = RaycastParams.new()
 						
 						RaycastParameters.FilterType = Enum.RaycastFilterType.Exclude
 						RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 						RaycastParameters.IgnoreWater = true
 
-						local RaycastResult = workspace:Raycast(Bed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), RaycastParameters)
+						local RaycastResult = game.Workspace:Raycast(NearestBed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), RaycastParameters)
 
 						if RaycastResult then
 							local TargetBlock = nil
@@ -1334,7 +1327,7 @@ task.spawn(function()
 							end
 
 							if not RaycastResult.Instance then
-								TargetBlock = Bed
+								TargetBlock = NearestBed
 							end
 
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
@@ -1816,19 +1809,38 @@ task.spawn(function()
 		task.spawn(function()
 			repeat task.wait() until GetMatchState() ~= 0
 	
-			if CallBack == true then
-				GetLowestPosition()
+			if CallBack == true then	
+				local OldLowestPosition = math.huge
+				local LowestPosition = 99999
+				
+				local Blockraycast = RaycastParams.new()
+
+				Blockraycast.FilterType = Enum.RaycastFilterType.Include
+				Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
 				
 				AntiVoidPart = Instance.new("Part")
 				AntiVoidPart.Parent = game.Workspace
 				AntiVoidPart.Material = Enum.Material.Neon
 				AntiVoidPart.Name = "AntiVoidPart"
 				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
-				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPosition, 0)
+				AntiVoidPart.Position = Vector3.new(0, 99999, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
 				AntiVoidPart.CanCollide = false
 				AntiVoidPart.Anchored = true
+				
+				for i, v in pairs(CollectionServiceBlocks) do
+					local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
+
+					if NewRay then
+						LowestPosition = NewRay.Position.Y
+						if LowestPosition < OldLowestPosition then
+							OldLowestPosition = LowestPosition
+
+							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
+						end
+					end					
+				end
 
 				AntiVoidPart.Touched:Connect(function()
 					if IsAlive(LocalPlayer) and game.Workspace:FindFirstChild("AntiVoidPart") and LocalPlayer.Character.HumanoidRootPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
@@ -1883,16 +1895,16 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 
-					if Bed ~= nil then
+					if FindNearestPlayer() ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-								task.wait(0.15)
+								task.wait(0.1)
 
 								TweenToNearestPlayer()
 							end
@@ -1901,14 +1913,14 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if Bed ~= nil then
+					if FindNearestPlayer() ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
-								task.wait(0.15)
+								task.wait(0.1)
 
 								TweenToNearestPlayer()
 							end
@@ -1929,13 +1941,13 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 					
-					if Bed ~= nil then
+					if FindNearestBed() ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -1947,11 +1959,11 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if Bed ~= nil then
+					if FindNearestBed() ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) then
+							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
 								task.wait(0.15)
@@ -1959,7 +1971,7 @@ task.spawn(function()
 								TweenToNearestBed()
 							end
 						end)
-					end					
+					end
 				end
 			end)
 		end
@@ -2102,6 +2114,5 @@ task.spawn(function()
 		task.wait(1)
 
 		Players = game.Players:GetPlayers()		
-		Bed = FindNearestBed()
 	until not game
 end)
