@@ -679,7 +679,7 @@ local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
-local Beds = nil
+local Bed = nil
 
 local Animations = {
 	["Slow"] = {
@@ -714,7 +714,7 @@ end
 
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
-		local NearestBed = Beds[1]
+		local NearestBed = Bed
 
 		if NearestBed then						
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
@@ -799,6 +799,23 @@ function ShootProjectile(Item, Projectile)
 	end
 end
 
+function FindNearestBed()
+	local NearestBed = nil
+	local MinDistance = math.huge
+	
+	for _,v in pairs(game.Workspace:GetDescendants()) do
+		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
+			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			if Distance < MinDistance then
+				NearestBed = v
+				MinDistance = Distance
+			end
+		end
+	end
+	
+	return NearestBed
+end
+
 function TouchingGround()
 	if IsAlive(LocalPlayer) then
 		local Parameters = RaycastParams.new()
@@ -824,8 +841,8 @@ function GetMatchState()
 	return Bedwars.ClientHandlerStore:getState().Game.matchState
 end
 
-local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(part)
-	if gethiddenproperty(part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
+local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(Part)
+	if gethiddenproperty(Part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
 		return false
 	end
 	return true
@@ -996,18 +1013,6 @@ function IsAlive(Player)
 
 	return true
 end	
-
-function GetBeds()
-	local Beds = {}
-
-	for i, v in next, game.Workspace:GetDescendants() do
-		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
-			table.insert(Beds, v)
-		end
-	end
-
-	return Beds
-end
 
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
@@ -1308,9 +1313,7 @@ task.spawn(function()
 		repeat	
 			task.wait(0.1)
 
-			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true and Beds ~= nil then
-				local Bed = Beds[1]
-
+			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
 				if Bed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
 
@@ -1880,7 +1883,7 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 
-					if GetBeds() ~= nil then
+					if Bed ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
@@ -1898,7 +1901,7 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if GetBeds() ~= nil then
+					if Bed ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
@@ -1926,7 +1929,7 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 					
-					if GetBeds() ~= nil then
+					if Bed ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
@@ -1944,7 +1947,7 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if GetBeds() ~= nil then
+					if Bed ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
@@ -2099,6 +2102,6 @@ task.spawn(function()
 		task.wait(1)
 
 		Players = game.Players:GetPlayers()		
-		Beds = GetBeds()
+		Bed = FindNearestBed()
 	until not game
 end)
