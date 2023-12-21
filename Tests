@@ -1929,7 +1929,7 @@ task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
 					
-					if Bed ~= nil then
+					if FindNearestBed() ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
@@ -1947,7 +1947,7 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if Bed ~= nil then
+					if FindNearestBed() ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
