@@ -1269,9 +1269,9 @@ function InfFly()
 		repeat task.wait()
 			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (InfFlyUp and 1 or 0) + (InfFlyDown and -1 or 0), LocalPlayer.Character.PrimaryPart.Position.Z)
 			StartLevel = SpoofedCamera.Position.Y	
-		until Settings.InfFly.Value == false or InfFlying == false
+		until InfFlying == false
 
-		if Settings.InfFly.Value == false or not InfFlying or not IsAlive(LocalPlayer) then
+		if not InfFlying or not IsAlive(LocalPlayer) then
 			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 10, 0)		
 			game.Workspace.Gravity = 0	
 			
@@ -1311,6 +1311,14 @@ task.spawn(function()
 	end
 
 	if not GetQueueType():find("skywars") then
+		task.spawn(function()
+			repeat
+				task.wait(1)
+
+				NearestBed = FindNearestBed()
+			until not game
+		end)
+		
 		repeat	
 			task.wait(0.1)
 
@@ -1350,14 +1358,6 @@ task.spawn(function()
 				end
 			end
 		until not game
-		
-		task.spawn(function()
-			repeat
-				task.wait(1)
-				
-				NearestBed = FindNearestBed()
-			until not game
-		end)
 	end	
 end)
 
@@ -1968,7 +1968,7 @@ task.spawn(function()
 								TweenToNearestBed()
 							end
 						end)
-					end					
+					end
 				end
 			end)
 		end
