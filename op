@@ -1229,13 +1229,6 @@ local StartLevel = nil
 local InfFlyUp = false
 local InfFlyDown = false
 
-local InfFlying = false
-local SpoofedCamera = nil
-local StartLevel = nil
-
-local InfFlyUp = false
-local InfFlyDown = false
-
 function InfFly()
 	InfFlying = not InfFlying
 
@@ -1263,32 +1256,38 @@ function InfFly()
 		end)
 
 		StartLevel = LocalPlayer.Character.Head.Position.Y
-
-		SpoofedCamera = Instance.new("Part")
-		SpoofedCamera.Parent = game.Workspace
+		SpoofedCamera = Instance.new("Part", game.Workspace)
 		SpoofedCamera.Anchored = true
 		SpoofedCamera.Transparency = 1
 		SpoofedCamera.Position = LocalPlayer.Character.Head.Position
-
+		
 		SetCamera(SpoofedCamera)
+		
 		LocalPlayer.Character.PrimaryPart.CFrame += Vector3.new(0, 1000000, 0)
 		SpoofedCamera.Position = Vector3.new(SpoofedCamera.Position.X, StartLevel, SpoofedCamera.Position.Z)
 
 		repeat task.wait()
 			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (InfFlyUp and 1 or 0) + (InfFlyDown and -1 or 0), LocalPlayer.Character.PrimaryPart.Position.Z)
 			StartLevel = SpoofedCamera.Position.Y	
-		until InfFlying == false
+		until Settings.InfFly.Value == false or InfFlying == false
 
-		if not InfFlying or not IsAlive(LocalPlayer) then
-			game.Workspace.Gravity = 0
+		if Settings.InfFly.Value == false or not InfFlying or not IsAlive(LocalPlayer) then
 			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 10, 0)		
-
+			game.Workspace.Gravity = 0	
+			
 			SetCamera(LocalPlayer.Character)
-
+			
 			SpoofedCamera:Remove()
-			task.wait(0.25)
-
-			game.Workspace.Gravity = 196.2
+			
+			task.spawn(function()
+				for i = 1, 196 do
+					game.Workspace.Gravity = i
+					
+					task.wait(0.005)
+				end
+				
+				game.Workspace.Gravity = 196.2
+			end)
 		end
 	end
 end
@@ -1317,16 +1316,16 @@ task.spawn(function()
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
 				if NearestBed then
-					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
+					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 
-					if Bed and Magnitude < Settings.Nuker.Range then
+					if NearestBed and Magnitude < Settings.Nuker.Range then
 						local RaycastParameters = RaycastParams.new()
 						
 						RaycastParameters.FilterType = Enum.RaycastFilterType.Exclude
 						RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 						RaycastParameters.IgnoreWater = true
 
-						local RaycastResult = workspace:Raycast(Bed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), RaycastParameters)
+						local RaycastResult = game.Workspace:Raycast(NearestBed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), RaycastParameters)
 
 						if RaycastResult then
 							local TargetBlock = nil
@@ -1336,7 +1335,7 @@ task.spawn(function()
 							end
 
 							if not RaycastResult.Instance then
-								TargetBlock = Bed
+								TargetBlock = NearestBed
 							end
 
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
