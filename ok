@@ -1875,19 +1875,17 @@ task.spawn(function()
 	local PlayerTp = CreateToggle(WorldWindow, "PlayerTp", false, function(CallBack)
 		Settings.PlayerTp.Value = CallBack
 		
-		task.spawn(function()
-			repeat task.wait() until IsAlive(LocalPlayer)
-			
-			if CallBack == true then
-				task.spawn(function()
-					if IsAlive(LocalPlayer) then
-						repeat task.wait() until GetMatchState() ~= 0
-						
+		if CallBack == true then
+			task.spawn(function()
+				if IsAlive(LocalPlayer) then
+					repeat task.wait() until GetMatchState() ~= 0
+
+					if GetBeds() ~= nil then
 						KillHumanoid()
 
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
-							
+
 							if IsAlive(LocalPlayer) then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1896,12 +1894,14 @@ task.spawn(function()
 								TweenToNearestPlayer()
 							end
 						end)
-					end			
+					end										
+				end			
 
-					if not IsAlive(LocalPlayer) then
+				if not IsAlive(LocalPlayer) then
+					if GetBeds() ~= nil then
 						LocalPlayer.CharacterAdded:Connect(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
-							
+
 							if IsAlive(LocalPlayer) then
 								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
 
@@ -1910,10 +1910,10 @@ task.spawn(function()
 								TweenToNearestPlayer()
 							end
 						end)
-					end
-				end)
-			end	
-		end)
+					end					
+				end
+			end)
+		end
 	end)
 end)
 
