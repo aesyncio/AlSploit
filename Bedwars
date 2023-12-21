@@ -575,25 +575,24 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
-local SaveFileName = "AlSploitPublicUpdate"
+local SaveFileName = "AlSploitPublicUpdate4"
 
-function CheckFirstTime()
-	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
-		return false
-	end
-	if readfile and isfile and not isfile("AlSploitBedwars/" .. SaveFileName) then
-		return true
-	end
-end
-
-local FirstTime = CheckFirstTime()
 local IsLoaded = false
 local Settings
+
+function DeleteUnwantedFiles()
+	for i = 1, 1000 do
+		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua") and not SaveFileName:find(i) then
+			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua")
+		end
+	end	
+end
 
 function CreateSettingsFile()
 	local Settings = {
 		ChestStealer = {Value = true},
 		InfiniteJump = {Value = true},
+		DamageBoost = {Value = true},
 		FpsBooster = {Value = false},
 		Indicators = {Value = true},
 		GalaxySky = {Value = true},
@@ -602,12 +601,14 @@ function CreateSettingsFile()
 		KillAura = {Value = true, Range = 20, CustomAnimation = true,},
 		Velocity = {Value = true},	
 		AntiVoid = {Value = true, Transparency = 0.65},
+		PlayerTp = {Value = true},
 		Sprint = {Value = true},
 		NoFall = {Value = true},
 		Aimbot = {Value = true},
 		Speed = {Value = true, Speed = 23},
 		Reach = {Value = true},
 		Nuker = {Value = true, Range = 30},
+		BedTp = {Value = true},
 		Cape = {Value = true},
 		Esp = {Value = true}
 	}
@@ -618,6 +619,15 @@ function CreateSettingsFile()
 	if writefile and makefolder then
 		makefolder("AlSploitBedwars")
 		writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
+	end
+end
+
+function CheckFirstTime()
+	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
+		return false
+	end
+	if readfile and isfile and not isfile("AlSploitBedwars/" .. SaveFileName) then
+		return true
 	end
 end
 
@@ -644,6 +654,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	DeleteUnwantedFiles()
 	LoadSettings()
 end)
 
@@ -664,8 +675,11 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 
 local KillAuraAnimationCooldown = true
+local LowestAntiVoidPosition = 99999
 local JumpCooldown = false
 local AntiVoidPart = nil
+local DamageBoost = false
+local Bed = nil
 
 local Animations = {
 	["Slow"] = {
@@ -674,22 +688,44 @@ local Animations = {
 	}
 }
 
-function GetRemote(Remote)
-	for i, v in next, (Remote) do
-		if v == "Client" then
-			return Remote[i + 1]
-		end
-	end
-	
-	return ""
-end
-
 local Bedwars = AlSploitApi.Bedwars
 
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
+local PlayAgainRemote = AlSploitApi.PlayAgainRemote
+local GroundHitRemote = AlSploitApi.GroundHitRemote
 local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
+
+function TweenToNearestPlayer()
+	if IsAlive(LocalPlayer) then
+		local NearestPlayer = FindNearestPlayer()
+		
+		if NearestPlayer then
+			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
+
+			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+
+			PlayerTpTween:Play()
+		end
+	end
+end
+
+function TweenToNearestBed()
+	if IsAlive(LocalPlayer) then
+		local NearestBed = Bed
+
+		if NearestBed then						
+			local TweenTime = AlSploitApi.TweenNumbers.BedTp
+
+			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
+			local BedTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
+
+			BedTpTween:Play()
+		end
+	end
+end
 
 function FindNearestPlayer(MaxDistance)
 	local NearestDistance = MaxDistance or math.huge
@@ -709,14 +745,31 @@ function FindNearestPlayer(MaxDistance)
 	return NearestPlayer, NearestDistance
 end
 
+local function GetLowestPosition()
+	local OldLowestPosition = math.huge
+	local LowestPosition = 99999
+
+	for i, v in next, (CollectionServiceBlocks) do
+		local PositionY = v.Position.Y
+
+		LowestPosition = PositionY
+
+		if LowestPosition < OldLowestPosition then
+			OldLowestPosition = LowestPosition
+		end		
+	end	
+
+	LowestAntiVoidPosition = LowestPosition - 6
+end
+
 function FpsBoostTextures()
 	for i, v in next, (CollectionServiceBlocks) do
 		if v:GetAttribute("PlacedByUserId") == 0 then
-			v.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
+			v.Material = Enum.Material.SmoothPlastic
 
 			for i2, v2 in next, (v:GetDescendants()) do
 				if v2:IsA("BasePart") then
-					v2.Material = Enum.Material.SmoothPlastic or (v.Name:find("glass") and Enum.Material.SmoothPlastic or Enum.Material.Fabric)
+					v2.Material = Enum.Material.SmoothPlastic
 				end
 			end
 		end
@@ -746,29 +799,11 @@ function ShootProjectile(Item, Projectile)
 	end
 end
 
-function TouchingGround()
-	local Parameters = RaycastParams.new()
-	Parameters.FilterType = Enum.RaycastFilterType.Include
-	Parameters.FilterDescendantsInstances = {CollectionServiceBlocks}
-
-	local IsTouchingFloor = false
-
-	for x = 1, 1 do
-		local Origin = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(x, 0, 0)
-		local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
-		if Raycast and Raycast.Instance then
-			IsTouchingFloor = true			
-		end
-	end	
-
-	return IsTouchingFloor
-end
-
 function FindNearestBed()
 	local NearestBed = nil
 	local MinDistance = math.huge
 	
-	for i, v in next, game.Workspace:GetDescendants() do
+	for _,v in pairs(game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 			if Distance < MinDistance then
@@ -777,16 +812,37 @@ function FindNearestBed()
 			end
 		end
 	end
-
+	
 	return NearestBed
+end
+
+function TouchingGround()
+	if IsAlive(LocalPlayer) then
+		local Parameters = RaycastParams.new()
+		Parameters.FilterType = Enum.RaycastFilterType.Include
+		Parameters.FilterDescendantsInstances = {CollectionServiceBlocks}
+
+		local IsTouchingFloor = false
+
+		for x = 1, 1 do
+			local Origin = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(x, 0, 0)
+
+			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
+			if Raycast and Raycast.Instance then
+				IsTouchingFloor = true			
+			end
+		end	
+		
+		return IsTouchingFloor
+	end
 end
 
 function GetMatchState()
 	return Bedwars.ClientHandlerStore:getState().Game.matchState
 end
 
-local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(part)
-	if gethiddenproperty(part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
+local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(Part)
+	if gethiddenproperty(Part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
 		return false
 	end
 	return true
@@ -917,6 +973,10 @@ function GetSpeed()
 		if Armor.itemType == "Speed_boots" then 
 			Speed = Speed + 25
 		end
+		
+		if DamageBoost == true then
+			Speed = Speed + 22.5
+		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
 	end
@@ -1032,7 +1092,7 @@ task.spawn(function()
 		task.wait(0.5)
 
 		if Settings.NoFall.Value == true then
-			Client:Get("GroundHit"):SendToServer()
+			GroundHitRemote:FireServer()
 		end
 	until not game
 end)	
@@ -1241,97 +1301,6 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()
-	repeat task.wait() until GetMatchState() ~= 0
-
-	local Cooldown = false
-
-	local LowestPosition = 99999
-	local OldLowestPosition = math.huge
-
-	local Blockraycast = RaycastParams.new()
-
-	Blockraycast.FilterType = Enum.RaycastFilterType.Include
-	Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
-
-	local function GetLowestPosition()
-		for i, v in next, (CollectionServiceBlocks) do
-			local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
-
-			if NewRay then
-				LowestPosition = NewRay.Position.Y
-
-				if LowestPosition < OldLowestPosition then
-					OldLowestPosition = LowestPosition
-				end		
-			end
-		end	
-	end
-
-	task.spawn(function()
-		local Cooldown = false
-
-		repeat
-			task.wait()
-
-			if game.Workspace:FindFirstChild("AntiVoidPart") and Cooldown == false then		
-				for i, v in next, (CollectionServiceBlocks) do
-					local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
-
-					if NewRay then
-						LowestPosition = NewRay.Position.Y
-						if LowestPosition < OldLowestPosition then
-							OldLowestPosition = LowestPosition
-
-							Cooldown = true
-
-							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
-						end
-					end					
-				end
-			end
-		until not game
-	end)
-
-	repeat
-		task.wait()
-
-		if Settings.AntiVoid.Value == true then
-			if not game.Workspace:FindFirstChild("AntiVoidPart") and Cooldown == false then
-				Cooldown = true
-
-				AntiVoidPart = Instance.new("Part")
-				AntiVoidPart.Parent = game.Workspace
-				AntiVoidPart.Material = Enum.Material.Neon
-				AntiVoidPart.Name = "AntiVoidPart"
-				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
-				AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
-				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
-				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
-				AntiVoidPart.CanCollide = false
-				AntiVoidPart.Anchored = true
-
-				AntiVoidPart.Touched:Connect(function()
-					if IsAlive(LocalPlayer) and game.Workspace:FindFirstChild("AntiVoidPart") and LocalPlayer.Character.HumanoidRootPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
-						for i = 1, 3 do
-							if IsAlive(LocalPlayer) then
-								LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Velocity.X, 100, LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
-							end
-						end				
-					end
-				end)
-			end
-		end
-
-		if Settings.AntiVoid.Value == false then
-			if game.Workspace:FindFirstChild("AntiVoidPart") then
-				Cooldown = false				
-				AntiVoidPart:Destroy()
-			end
-		end		
-	until not game
-end)
-
 task.spawn(function()	
 	local function GetServerPosition(Position)
 		local X = math.round(Position.X / 3)
@@ -1345,8 +1314,6 @@ task.spawn(function()
 			task.wait(0.1)
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
-				local Bed = FindNearestBed()
-
 				if Bed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - Bed.Position).Magnitude
 
@@ -1389,7 +1356,7 @@ task.spawn(function()
 	repeat task.wait(1) until GetMatchState() == 2
 
 	if Settings.PlayAgain.Value == true then
-		ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events").joinQueue:FireServer({["queueType"] = GetQueueType()})
+		PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
 	end
 end)
 
@@ -1456,7 +1423,7 @@ task.spawn(function()
 
 	debug.setupvalue(Bedwars.DamageIndicator, 10, {
 		Create = function(self, obj, ...)
-			task.spawn(function()
+			task.spawn(function()				
 				if Settings.Indicators.Value == true then
 					local Message = Messages[math.random(#Messages)]
 
@@ -1522,6 +1489,54 @@ RunService.RenderStepped:Connect(function()
 		
 		Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
 	end
+end)
+
+task.spawn(function()	
+	if IsAlive() then
+		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			if Settings.DamageBoost.Value == true then
+				local HealthChange = CurrentHealth - PreviousHealth
+
+				if HealthChange < 0 then
+					task.spawn(function()
+						DamageBoost = true
+
+						task.wait(0.9)
+
+						DamageBoost = false					
+					end)
+				end
+
+				PreviousHealth = CurrentHealth
+			end
+		end)
+	end
+
+	LocalPlayer.CharacterAdded:Connect(function()
+		repeat task.wait() until IsAlive(LocalPlayer)
+
+		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
+			if Settings.DamageBoost.Value == true then
+				local HealthChange = CurrentHealth - PreviousHealth
+
+				if HealthChange < 0 then
+					task.spawn(function()
+						DamageBoost = true
+
+						task.wait(0.9)
+
+						DamageBoost = false					
+					end)
+				end
+
+				PreviousHealth = CurrentHealth
+			end
+		end)
+	end)
 end)
 
 local CombatWindow = CreateWindow("Combat")
@@ -1637,6 +1652,12 @@ end)
 task.spawn(function()
 	local ChestStealer = CreateToggle(BlatantWindow, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
 		Settings.ChestStealer.Value = CallBack
+	end)
+end)
+
+task.spawn(function()
+	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
+		Settings.DamageBoost.Value = Callback
 	end)
 end)
 
@@ -1791,25 +1812,158 @@ end)
 task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
+		
+		task.spawn(function()
+			repeat task.wait() until GetMatchState() ~= 0
+	
+			if CallBack == true then
+				GetLowestPosition()
+				
+				AntiVoidPart = Instance.new("Part")
+				AntiVoidPart.Parent = game.Workspace
+				AntiVoidPart.Material = Enum.Material.Neon
+				AntiVoidPart.Name = "AntiVoidPart"
+				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
+				AntiVoidPart.Position = Vector3.new(0, LowestAntiVoidPosition, 0)
+				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
+				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
+				AntiVoidPart.CanCollide = false
+				AntiVoidPart.Anchored = true
+
+				AntiVoidPart.Touched:Connect(function()
+					if IsAlive(LocalPlayer) and game.Workspace:FindFirstChild("AntiVoidPart") and LocalPlayer.Character.HumanoidRootPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
+						for i = 1, 3 do
+							if IsAlive(LocalPlayer) then
+								LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Velocity.X, 100, LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
+							end
+						end
+					end
+				end)
+			end
+		end)		
+		
+		if CallBack == false then
+			if game.Workspace:FindFirstChild("AntiVoidPart") then		
+				AntiVoidPart:Destroy()
+			end
+		end
 	end)
 	
-	local AntiVoidValue = false
-	
-	local Transparency
+	task.spawn(function()
+		local AntiVoidValue = false
 
-	DropDownButton.Activated:Connect(function()			
-		if AntiVoidValue == false then
-			Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
-				Settings.Speed.Speed = Callback / 100
+		local Transparency
+
+		DropDownButton.Activated:Connect(function()			
+			if AntiVoidValue == false then
+				Transparency = CreateSlider(WorldWindow, "Transparency", Settings.AntiVoid.Transparency * 100, 100, 0, LayoutOrder + 1, function(Callback)
+					Settings.AntiVoid.Transparency = Callback / 100
+
+					if AntiVoidPart then
+						AntiVoidPart.Transparency = Callback / 100
+					end
+				end)
+			end
+
+			if AntiVoidValue == true then					
+				Transparency:Destroy()
+			end
+
+			AntiVoidValue = not AntiVoidValue
+		end)	
+	end)	
+end)
+
+task.spawn(function()
+	local PlayerTp = CreateToggle(WorldWindow, "PlayerTp", false, function(CallBack)
+		Settings.PlayerTp.Value = CallBack
+		
+		if CallBack == true then
+			task.spawn(function()
+				if IsAlive(LocalPlayer) then
+					repeat task.wait() until GetMatchState() ~= 0
+
+					if Bed ~= nil then
+						KillHumanoid()
+
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
+
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestPlayer()
+							end
+						end)
+					end										
+				end			
+
+				if not IsAlive(LocalPlayer) then
+					if Bed ~= nil then
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
+
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestPlayer()
+							end
+						end)
+					end					
+				end
 			end)
 		end
+	end)
+end)
 
-		if AntiVoidValue == true then					
-			Transparency:Destroy()
+task.spawn(function()
+	local BedTp = CreateToggle(WorldWindow, "BedTp", false, function(CallBack)
+		Settings.BedTp.Value = CallBack
+		
+		if CallBack == true then
+			task.spawn(function()
+				if IsAlive(LocalPlayer) then
+					repeat task.wait() until GetMatchState() ~= 0
+					
+					if Bed ~= nil then
+						KillHumanoid()
+
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
+
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestBed()
+							end
+						end)
+					end										
+				end			
+
+				if not IsAlive(LocalPlayer) then
+					if Bed ~= nil then
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
+
+							if IsAlive(LocalPlayer) then
+								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
+
+								task.wait(0.15)
+
+								TweenToNearestBed()
+							end
+						end)
+					end					
+				end
+			end)
 		end
-
-		AntiVoidValue = not AntiVoidValue
-	end)	
+	end)
 end)
 
 task.spawn(function()
@@ -1947,6 +2101,7 @@ task.spawn(function()
 	repeat 
 		task.wait(1)
 
-		Players = game.Players:GetPlayers()
+		Players = game.Players:GetPlayers()		
+		Bed = FindNearestBed()
 	until not game
 end)
