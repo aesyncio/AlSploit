@@ -759,7 +759,7 @@ local function GetLowestPosition()
 		end		
 	end	
 
-	LowestAntiVoidPosition = LowestPosition - 6
+	LowestAntiVoidPosition = LowestPosition - 8
 end
 
 function FpsBoostTextures()
