@@ -759,7 +759,7 @@ local function GetLowestPosition()
 		end		
 	end	
 
-	LowestAntiVoidPosition = LowestPosition
+	LowestAntiVoidPosition = LowestPosition - 8
 end
 
 function FpsBoostTextures()
@@ -1087,7 +1087,7 @@ task.spawn(function()
 		task.wait(0.5)
 
 		if Settings.NoFall.Value == true then
-			GroundHitRemote:SendToServer()
+			GroundHitRemote:FireServer()
 		end
 	until not game
 end)	
