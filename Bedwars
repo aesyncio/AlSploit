@@ -1677,7 +1677,7 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if SpeedValue == false then
-			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 23, 0, LayoutOrder + 1, function(Callback)
+			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 50, 0, LayoutOrder + 1, function(Callback)
 				Settings.Speed.Speed = Callback
 			end)
 		end
@@ -1852,7 +1852,7 @@ task.spawn(function()
 					end
 				end)
 			end
-		end)		
+		end)	
 		
 		if CallBack == false then
 			if game.Workspace:FindFirstChild("AntiVoidPart") then		
