@@ -940,6 +940,10 @@ task.spawn(function()
 			ZephyrOrb = ZephyrOrb + 1
 		end
 		
+		if not Orb then
+			ZephyrOrb = ZephyrOrb - 1
+		end
+		
 		return ZephyrUpdate(self, Orb, ...)
 	end
 end)
