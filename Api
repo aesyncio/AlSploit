@@ -32,6 +32,8 @@ AlSploit.GroundHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitF
 AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 
+AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
+
 AlSploit.TweenNumbers = {BedTp = 0.76, PlayerTp = 0.82}
 
 return AlSploit
