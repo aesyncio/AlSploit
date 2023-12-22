@@ -976,7 +976,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 12
+			Speed = Speed + 14
 		end
 		
 		if DamageBoost == true then
@@ -2138,4 +2138,4 @@ task.spawn(function()
 
 		Players = game.Players:GetPlayers()		
 	until not game
-end)z
+end)
