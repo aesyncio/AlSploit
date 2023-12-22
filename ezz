@@ -937,11 +937,11 @@ task.spawn(function()
 	
 	ZephyrController.updateJump = function(self, Orb, ...)
 		if IsAlive(LocalPlayer) and Orb then
-			ZephyrOrb = ZephyrOrb + 1
+			ZephyrOrb = 1
 		end
 		
 		if not Orb then
-			ZephyrOrb = ZephyrOrb - 1
+			ZephyrOrb = 0
 		end
 		
 		return ZephyrUpdate(self, Orb, ...)
@@ -2138,4 +2138,4 @@ task.spawn(function()
 
 		Players = game.Players:GetPlayers()		
 	until not game
-end)
+end)z
