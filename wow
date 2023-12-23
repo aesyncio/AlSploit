@@ -1814,6 +1814,10 @@ task.spawn(function()
 	local Fov, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "Fov", Settings.Fov.Value, function(CallBack)
 		Settings.Fov.Value = CallBack
 		
+		if CallBack == true then
+			FovController:setFOV(Settings.Fov.Fov)
+		end
+		
 		if CallBack == false then
 			FovController:setFOV(Bedwars.ClientHandlerStore:getState().Settings.fov)
 		end
@@ -1825,9 +1829,11 @@ task.spawn(function()
 	DropDownButton.Activated:Connect(function()			
 		if FovValue == false then
 			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 160, 0, LayoutOrder + 1, function(Callback)
+				Settings.Fov.Fov = Callback
+				
 				if Settings.Fov.Value == true then
 					FovController:setFOV(Callback)	
-				end				
+				end
 			end)
 		end
 
