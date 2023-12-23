@@ -575,6 +575,32 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
+local function CreateOutline(Player)
+	if IsAlive(Player) then
+		local BillBoard = Instance.new("BillboardGui")
+		
+		BillBoard.Size = UDim2.new(4, 0, 4, 0)
+		BillBoard.AlwaysOnTop = true
+		BillBoard.Name = "Esp"
+
+		local Frame = Instance.new("Frame")
+		
+		Frame.Size = UDim2.new(1, 0, 1.5, 0)
+		Frame.Position = UDim2.new(0, 0, -Player.Character.HumanoidRootPart.Size.Y / 2, 0)
+		Frame.BackgroundTransparency = 1
+
+		local Stroke = Instance.new("UIStroke")
+		
+		Stroke.Thickness = 1.5
+		Stroke.Color = Color3.new(0.635294, 0.313725, 1)
+		Stroke.Transparency = 0
+
+		Stroke.Parent = Frame
+		Frame.Parent = BillBoard
+		BillBoard.Parent = Player.Character.HumanoidRootPart
+	end
+end
+
 local SaveFileName = "AlSploitPublicUpdate4"
 
 local IsLoaded = false
@@ -1748,29 +1774,13 @@ task.spawn(function()
 		if CallBack == true then
 			task.spawn(function()
 				for i, v in next, Players do
-					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
-						local Esp = Instance.new("Highlight")
-
-						Esp.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-						Esp.Parent = v.Character
-						Esp.Name = "Esp"
-						Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-						Esp.FillTransparency = 0.5
-						Esp.OutlineColor = Color3.new(0.666667, 0, 1)
-						Esp.OutlineTransparency = 0
+					if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+						CreateOutline(v)
 					end
 
 					v.CharacterAdded:Connect(function(Character)
-						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
-							local Esp = Instance.new("Highlight")
-
-							Esp.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-							Esp.Parent = v.Character
-							Esp.Name = "Esp"
-							Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-							Esp.FillTransparency = 0.5
-							Esp.OutlineColor = Color3.new(1, 1, 1)
-							Esp.OutlineTransparency = 0
+						if Settings.Esp.Value == true and v ~= LocalPlayer and not Character:FindFirstChild("Esp") then
+							CreateOutline(v)
 						end
 					end)
 				end
