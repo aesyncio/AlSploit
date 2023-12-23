@@ -33,6 +33,7 @@ AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitFo
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 
 AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
+AlSploit.FovController = KnitClient.Controllers.FovController
 
 AlSploit.TweenNumbers = {BedTp = 0.76, PlayerTp = 0.82}
 
