@@ -575,7 +575,38 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
-local SaveFileName = "AlSploitPublicUpdate4"
+function CreateOutline(Player)
+	if IsAlive(Player) then
+		local BillBoard = Instance.new("BillboardGui")
+		
+		BillBoard.Size = UDim2.new(4, 0, 4, 0)
+		BillBoard.AlwaysOnTop = true
+		BillBoard.Name = "Esp"
+
+		local Frame = Instance.new("Frame")
+		
+		Frame.Size = UDim2.new(1, 0, 1.5, 0)
+		Frame.Position = UDim2.new(0, 0, -Player.Character.LowerTorso.Size.Y / 2 or -Player.PrimaryPart.Size.Y / 2, 0)
+		Frame.BackgroundTransparency = 1
+
+		local Stroke = Instance.new("UIStroke")
+		
+		Stroke.Thickness = 1.5
+		Stroke.Color = Color3.new(0.635294, 0.313725, 1)
+		Stroke.Transparency = 0
+		
+		local UICorner = Instance.new("UICorner")
+		
+		UICorner.Parent = Frame
+		UICorner.CornerRadius = UDim.new(0, 3)
+
+		Stroke.Parent = Frame
+		Frame.Parent = BillBoard
+		BillBoard.Parent = Player.Character.HumanoidRootPart
+	end
+end
+
+local SaveFileName = "AlSploitPublicUpdate5"
 
 local IsLoaded = false
 local Settings
@@ -678,6 +709,7 @@ local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
+local ZephyrOrb = 0
 
 local Animations = {
 	["Slow"] = {
@@ -694,6 +726,9 @@ local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
 local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
+
+local ZephyrController = AlSploitApi.ZephyrController
+local FovController = AlSploitApi.FovController
 
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
@@ -929,6 +964,24 @@ function IsMoving()
 	end
 end
 
+task.spawn(function()
+	repeat task.wait() until GetMatchState() ~= 0
+	
+	local ZephyrUpdate = ZephyrController.updateJump
+	
+	ZephyrController.updateJump = function(self, orb, ...)
+		if IsAlive(LocalPlayer) and orb then
+			ZephyrOrb = 1
+		end
+		
+		if not IsAlive(LocalPlayer) or not orb then
+			ZephyrOrb = 0
+		end
+		
+		return ZephyrUpdate(self, orb, ...)
+	end
+end)
+
 function GetSpeed()
 	local Speed = 0
 
@@ -954,6 +1007,10 @@ function GetSpeed()
 
 		if Armor.itemType == "Speed_boots" then 
 			Speed = Speed + 25
+		end
+		
+		if ZephyrOrb ~= 0 then
+			Speed = Speed + 17
 		end
 		
 		if DamageBoost == true then
@@ -1677,7 +1734,7 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if SpeedValue == false then
-			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 50, 0, LayoutOrder + 1, function(Callback)
+			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 23, 0, LayoutOrder + 1, function(Callback)
 				Settings.Speed.Speed = Callback
 			end)
 		end
@@ -1725,27 +1782,15 @@ task.spawn(function()
 		if CallBack == true then
 			task.spawn(function()
 				for i, v in next, Players do
-					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
-						local Esp = Instance.new("Highlight")
-
-						Esp.Parent = v.Character
-						Esp.Name = "Esp"
-						Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-						Esp.FillTransparency = 0.5
-						Esp.OutlineColor = Color3.new(0.666667, 0, 1)
-						Esp.OutlineTransparency = 0
+					if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+						CreateOutline(v)
 					end
-					
-					v.CharacterAdded:Connect(function(Character)
-						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
-							local Esp = Instance.new("Highlight")
 
-							Esp.Parent = v.Character
-							Esp.Name = "Esp"
-							Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-							Esp.FillTransparency = 0.5
-							Esp.OutlineColor = Color3.new(1, 1, 1)
-							Esp.OutlineTransparency = 0
+					v.CharacterAdded:Connect(function(Character)
+						task.wait(0.3)
+						
+						if Settings.Esp.Value == true and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+							CreateOutline(v)
 						end
 					end)
 				end
@@ -1755,8 +1800,8 @@ task.spawn(function()
 		if CallBack == false then
 			task.spawn(function()
 				for i, v in next, Players do
-					if IsAlive(v) and CallBack == false and v.Character:FindFirstChild("Esp") then
-						v.Character:FindFirstChild("Esp"):Destroy()
+					if IsAlive(v) and CallBack == false and v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+						v.Character.HumanoidRootPart:FindFirstChild("Esp"):Destroy()
 					end
 				end
 			end)
@@ -1985,7 +2030,6 @@ task.spawn(function()
 		end)
 		
 		local RangeValue = false
-
 		local Range
 
 		DropDownButton.Activated:Connect(function()			
