@@ -606,7 +606,7 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitPublicUpdate4"
+local SaveFileName = "AlSploitPublicUpdate5"
 
 local IsLoaded = false
 local Settings
@@ -641,7 +641,8 @@ function CreateSettingsFile()
 		Nuker = {Value = true, Range = 30},
 		BedTp = {Value = true},
 		Cape = {Value = true},
-		Esp = {Value = true}
+		Esp = {Value = true},
+		Fov = {Value = false, Fov = 100}
 	}
 	
 	FirstTime = false
@@ -728,6 +729,7 @@ local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
 
 local ZephyrController = AlSploitApi.ZephyrController
+local FovController = AlSploitApi.FovController
 
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
@@ -1809,6 +1811,42 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local OldFov = FovController.setFOV
+	local OldFov2 = FovController.getFOV
+	
+	local Fov, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "Fov", Settings.Fov.Value, function(CallBack)
+		Settings.Fov.Value = CallBack
+	end)
+	
+	local FovValue = false
+	local Fov
+
+	DropDownButton.Activated:Connect(function()			
+		if FovValue == false then
+			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 160, 0, LayoutOrder + 1, function(Callback)
+				Settings.Fov.Fov = Callback
+				
+				if Settings.Esp.Value == true then				
+					FovController.setFOV = function(self, fov) return OldFov(self, Callback) end
+					FovController.getFOV = function(self, fov) return Callback end					
+				end
+				
+				if Settings.Esp.Value == false then
+					FovController.setFOV = OldFov
+					FovController.getFOV = OldFov2
+				end
+			end)
+		end
+
+		if FovValue == true then	
+			Fov:Destroy()
+		end
+
+		FovValue = not FovValue
+	end)	
+end)
+
+task.spawn(function()
 	local GalaxySky = CreateToggle(WorldWindow, "GalaxySky", Settings.GalaxySky.Value, function(CallBack)
 		Settings.GalaxySky.Value = CallBack
 
@@ -2029,7 +2067,6 @@ task.spawn(function()
 		end)
 		
 		local RangeValue = false
-
 		local Range
 
 		DropDownButton.Activated:Connect(function()			
