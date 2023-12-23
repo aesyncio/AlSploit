@@ -1811,9 +1811,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local OldFov = FovController.setFOV
-	local OldFov2 = FovController.getFOV
-	
 	local Fov, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "Fov", Settings.Fov.Value, function(CallBack)
 		Settings.Fov.Value = CallBack
 	end)
@@ -1826,22 +1823,13 @@ task.spawn(function()
 			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 160, 0, LayoutOrder + 1, function(Callback)
 				Settings.Fov.Fov = Callback
 				
-				if Settings.Esp.Value == true then				
-					FovController.setFOV = function(self, fov) 
-						fov = Callback
-						
-						print("ok")
-						
-						return OldFov(self, fov)
-					end
-					
-					FovController.getFOV = function(self, fov) return Callback end					
-				end
+				if Callback == true then
+					FovController:setFOV(Callback)
+				end	
 				
-				if Settings.Esp.Value == false then
-					FovController.setFOV = OldFov
-					FovController.getFOV = OldFov2
-				end
+				if Callback == false then
+					FovController:setFOV(Bedwars.ClientStoreHandler:getState().Settings.fov)
+				end			
 			end)
 		end
 
