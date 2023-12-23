@@ -976,7 +976,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 16
+			Speed = Speed + 17
 		end
 		
 		if DamageBoost == true then
@@ -1754,7 +1754,7 @@ task.spawn(function()
 						Esp.Parent = v.Character
 						Esp.Name = "Esp"
 						Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-						Esp.FillTransparency = 1
+						Esp.FillTransparency = 0
 						Esp.OutlineColor = Color3.new(0.666667, 0, 1)
 						Esp.OutlineTransparency = 0
 					end
@@ -1766,7 +1766,7 @@ task.spawn(function()
 							Esp.Parent = v.Character
 							Esp.Name = "Esp"
 							Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-							Esp.FillTransparency = 1
+							Esp.FillTransparency = 0
 							Esp.OutlineColor = Color3.new(1, 1, 1)
 							Esp.OutlineTransparency = 0
 						end
