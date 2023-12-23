@@ -586,7 +586,7 @@ function CreateOutline(Player)
 		local Frame = Instance.new("Frame")
 		
 		Frame.Size = UDim2.new(1, 0, 1.5, 0)
-		Frame.Position = UDim2.new(0, 0, -Player.Character.LowerTorso.Size.Y / 2, 0)
+		Frame.Position = UDim2.new(0, 0, -Player.Character.LowerTorso.Size.Y / 2 or -Player.PrimaryPart.Size.Y / 2, 0)
 		Frame.BackgroundTransparency = 1
 
 		local Stroke = Instance.new("UIStroke")
@@ -594,6 +594,11 @@ function CreateOutline(Player)
 		Stroke.Thickness = 1.5
 		Stroke.Color = Color3.new(0.635294, 0.313725, 1)
 		Stroke.Transparency = 0
+		
+		local UICorner = Instance.new("UICorner")
+		
+		UICorner.Parent = Frame
+		UICorner.CornerRadius = UDim.new(0, 5)
 
 		Stroke.Parent = Frame
 		Frame.Parent = BillBoard
@@ -1781,6 +1786,8 @@ task.spawn(function()
 					end
 
 					v.CharacterAdded:Connect(function(Character)
+						task.wait(0.3)
+						
 						if Settings.Esp.Value == true and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
 							CreateOutline(v)
 						end
