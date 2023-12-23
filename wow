@@ -575,7 +575,7 @@ function CreateFlyHud()
 	return Main, NumberDisplay, Display
 end
 
-local function CreateOutline(Player)
+function CreateOutline(Player)
 	if IsAlive(Player) then
 		local BillBoard = Instance.new("BillboardGui")
 		
@@ -586,7 +586,7 @@ local function CreateOutline(Player)
 		local Frame = Instance.new("Frame")
 		
 		Frame.Size = UDim2.new(1, 0, 1.5, 0)
-		Frame.Position = UDim2.new(0, 0, -Player.Character.HumanoidRootPart.Size.Y / 2, 0)
+		Frame.Position = UDim2.new(0, 0, -Player.Character.HumanoidRootPart.Size.Y, 0)
 		Frame.BackgroundTransparency = 1
 
 		local Stroke = Instance.new("UIStroke")
@@ -1779,7 +1779,7 @@ task.spawn(function()
 					end
 
 					v.CharacterAdded:Connect(function(Character)
-						if Settings.Esp.Value == true and v ~= LocalPlayer and not Character:FindFirstChild("Esp") then
+						if Settings.Esp.Value == true and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
 							CreateOutline(v)
 						end
 					end)
@@ -1790,8 +1790,8 @@ task.spawn(function()
 		if CallBack == false then
 			task.spawn(function()
 				for i, v in next, Players do
-					if IsAlive(v) and CallBack == false and v.Character:FindFirstChild("Esp") then
-						v.Character:FindFirstChild("Esp"):Destroy()
+					if IsAlive(v) and CallBack == false and v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+						v.Character.HumanoidRootPart:FindFirstChild("Esp"):Destroy()
 					end
 				end
 			end)
