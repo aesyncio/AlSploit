@@ -1749,32 +1749,26 @@ task.spawn(function()
 			task.spawn(function()
 				for i, v in next, Players do
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
-						local Esp = Instance.new("BoxHandleAdornment")
+						local Esp = Instance.new("Highlight")
 
-						Esp.Size = Vector3.new(5, 5, 5)
-						Esp.AlwaysOnTop = true
-						Esp.ZIndex = -1
-						Esp.Visible = true
-						Esp.Adornee = v.Character
-						Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
-						Esp.Name = "Esp"
 						Esp.Parent = v.Character
-						Esp.Transparency = 0.4
+						Esp.Name = "Esp"
+						Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
+						Esp.FillTransparency = 1
+						Esp.OutlineColor = Color3.new(0.666667, 0, 1)
+						Esp.OutlineTransparency = 0
 					end
-					
+
 					v.CharacterAdded:Connect(function(Character)
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
-							local Esp = Instance.new("BoxHandleAdornment")
+							local Esp = Instance.new("Highlight")
 
-							Esp.Size = Vector3.new(5, 5, 5)
-							Esp.AlwaysOnTop = true
-							Esp.ZIndex = -1
-							Esp.Visible = true
-							Esp.Adornee = v.Character
-							Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
-							Esp.Name = "Esp"
 							Esp.Parent = v.Character
-							Esp.Transparency = 0.4
+							Esp.Name = "Esp"
+							Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
+							Esp.FillTransparency = 1
+							Esp.OutlineColor = Color3.new(1, 1, 1)
+							Esp.OutlineTransparency = 0
 						end
 					end)
 				end
