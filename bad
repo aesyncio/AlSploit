@@ -1751,10 +1751,11 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("Highlight")
 
+						Esp.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 						Esp.Parent = v.Character
 						Esp.Name = "Esp"
 						Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-						Esp.FillTransparency = 0
+						Esp.FillTransparency = 0.5
 						Esp.OutlineColor = Color3.new(0.666667, 0, 1)
 						Esp.OutlineTransparency = 0
 					end
@@ -1763,10 +1764,11 @@ task.spawn(function()
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("Highlight")
 
+							Esp.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 							Esp.Parent = v.Character
 							Esp.Name = "Esp"
 							Esp.FillColor = Color3.new(0.666667, 0.333333, 1)
-							Esp.FillTransparency = 0
+							Esp.FillTransparency = 0.5
 							Esp.OutlineColor = Color3.new(1, 1, 1)
 							Esp.OutlineTransparency = 0
 						end
