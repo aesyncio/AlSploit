@@ -1759,7 +1759,7 @@ task.spawn(function()
 						Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 						Esp.Name = "Esp"
 						Esp.Parent = v.Character
-						Esp.Transparency = 0
+						Esp.Transparency = 0.4
 					end
 					
 					v.CharacterAdded:Connect(function(Character)
@@ -1774,7 +1774,7 @@ task.spawn(function()
 							Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 							Esp.Name = "Esp"
 							Esp.Parent = v.Character
-							Esp.Transparency = 0
+							Esp.Transparency = 0.4
 						end
 					end)
 				end
