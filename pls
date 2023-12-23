@@ -1751,7 +1751,7 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Size = v.Character:GetExtentsSize()
+						Esp.Size = Vector3.new(5, 5, 5)
 						Esp.AlwaysOnTop = true
 						Esp.ZIndex = -1
 						Esp.Visible = true
@@ -1766,7 +1766,7 @@ task.spawn(function()
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("BoxHandleAdornment")
 
-							Esp.Size = v.Character:GetExtentsSize()
+							Esp.Size = Vector3.new(5, 5, 5)
 							Esp.AlwaysOnTop = true
 							Esp.ZIndex = -1
 							Esp.Visible = true
