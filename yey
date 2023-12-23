@@ -933,12 +933,11 @@ function IsMoving()
 end
 
 task.spawn(function()
-	local ZephyrUpdate = AlSploitApi.ZephyrController.updateJump
+	local oldZephyrUpdate = ZephyrController.updateJump
 	
-	ZephyrController.updateJump = function(self, Orb, ...)
-		ZephyrOrb = (IsAlive(LocalPlayer) and Orb and 1 or 0)
-		
-		return ZephyrUpdate(self, Orb, ...)
+	ZephyrController.updateJump = function(self, orb, ...)
+		ZephyrOrb = LocalPlayer.Character and LocalPlayer.Character:GetAttribute("Health") > 0 and orb or 0
+		return oldZephyrUpdate(self, orb, ...)
 	end
 end)
 
@@ -1745,12 +1744,12 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Size = v.Character:GetModelSize()
+						Esp.Size = v.Character:GetModelSize() - v.Character:GetModelSize().X
 						Esp.AlwaysOnTop = true
 						Esp.ZIndex = 10
 						Esp.Visible = true
 						Esp.Adornee = v.Character
-						Esp.Color3 = Color3.new(0.666667, 0, 1)
+						Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 						Esp.Name = "Esp"
 						Esp.Parent = v.Character
 						Esp.Transparency = 0.5
@@ -1760,12 +1759,12 @@ task.spawn(function()
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("BoxHandleAdornment")
 
-							Esp.Size = v.Character:GetModelSize()
+							Esp.Size = v.Character:GetModelSize() - v.Character:GetModelSize().X
 							Esp.AlwaysOnTop = true
 							Esp.ZIndex = 10
 							Esp.Visible = true
 							Esp.Adornee = v.Character
-							Esp.Color3 = Color3.new(0.666667, 0, 1)
+							Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 							Esp.Name = "Esp"
 							Esp.Parent = v.Character
 							Esp.Transparency = 0.5
