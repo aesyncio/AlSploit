@@ -1815,7 +1815,7 @@ task.spawn(function()
 		Settings.Fov.Value = CallBack
 		
 		if CallBack == false then
-			FovController:setFOV(Bedwars.ClientStoreHandler:getState().Settings.fov)
+			FovController:setFOV(Bedwars.ClientHandlerStore:getState().Settings.fov)
 		end
 	end)
 	
