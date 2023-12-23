@@ -933,11 +933,18 @@ function IsMoving()
 end
 
 task.spawn(function()
-	local oldZephyrUpdate = ZephyrController.updateJump
+	local ZephyrUpdate = ZephyrController.updateJump
 	
 	ZephyrController.updateJump = function(self, orb, ...)
-		ZephyrOrb = LocalPlayer.Character and LocalPlayer.Character:GetAttribute("Health") > 0 and orb or 0
-		return oldZephyrUpdate(self, orb, ...)
+		if IsAlive(LocalPlayer) and orb then
+			ZephyrOrb = 1
+		end
+		
+		if not IsAlive(LocalPlayer) or not orb then
+			ZephyrOrb = 0
+		end
+		
+		return ZephyrUpdate(self, orb, ...)
 	end
 end)
 
@@ -969,7 +976,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 14
+			Speed = Speed + 16
 		end
 		
 		if DamageBoost == true then
@@ -1744,7 +1751,7 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X, 0, 0)
+						Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X + 2, 0, 0)
 						Esp.AlwaysOnTop = true
 						Esp.ZIndex = 10
 						Esp.Visible = true
@@ -1759,7 +1766,7 @@ task.spawn(function()
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("BoxHandleAdornment")
 
-							Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X, 0, 0)
+							Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X + 2, 0, 0)
 							Esp.AlwaysOnTop = true
 							Esp.ZIndex = 10
 							Esp.Visible = true
