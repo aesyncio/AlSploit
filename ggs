@@ -1751,30 +1751,30 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X + 2, 0, 0)
+						Esp.Size = v.Character:GetExtentsSize()
 						Esp.AlwaysOnTop = true
-						Esp.ZIndex = 10
+						Esp.ZIndex = -1
 						Esp.Visible = true
 						Esp.Adornee = v.Character
 						Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 						Esp.Name = "Esp"
 						Esp.Parent = v.Character
-						Esp.Transparency = 0.5
+						Esp.Transparency = 0
 					end
 					
 					v.CharacterAdded:Connect(function(Character)
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("BoxHandleAdornment")
 
-							Esp.Size = v.Character:GetModelSize() - Vector3.new(v.Character:GetModelSize().X + 2, 0, 0)
+							Esp.Size = v.Character:GetExtentsSize()
 							Esp.AlwaysOnTop = true
-							Esp.ZIndex = 10
+							Esp.ZIndex = -1
 							Esp.Visible = true
 							Esp.Adornee = v.Character
 							Esp.Color3 = Color3.new(0.635294, 0.313725, 1)
 							Esp.Name = "Esp"
 							Esp.Parent = v.Character
-							Esp.Transparency = 0.5
+							Esp.Transparency = 0
 						end
 					end)
 				end
