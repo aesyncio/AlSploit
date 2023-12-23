@@ -1749,7 +1749,7 @@ task.spawn(function()
 						Esp.AlwaysOnTop = true
 						Esp.ZIndex = 10
 						Esp.Visible = true
-						Esp.Adornee = v.Character
+						Esp.Adornee = v.Character.HumanoidRootPart
 						Esp.Color3 = Color3.new(0.666667, 0, 1)
 						Esp.Name = "Esp"
 						Esp.Parent = v.Character.HumanoidRootPart
@@ -1764,7 +1764,7 @@ task.spawn(function()
 							Esp.AlwaysOnTop = true
 							Esp.ZIndex = 10
 							Esp.Visible = true
-							Esp.Adornee = v.Character
+							Esp.Adornee = v.Character.HumanoidRootPart
 							Esp.Transparency = 0.5
 							Esp.Color3 = Color3.new(0.666667, 0, 1)
 							Esp.Name = "Esp"
