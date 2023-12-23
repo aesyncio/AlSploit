@@ -598,7 +598,7 @@ function CreateOutline(Player)
 		local UICorner = Instance.new("UICorner")
 		
 		UICorner.Parent = Frame
-		UICorner.CornerRadius = UDim.new(0, 5)
+		UICorner.CornerRadius = UDim.new(0, 3)
 
 		Stroke.Parent = Frame
 		Frame.Parent = BillBoard
