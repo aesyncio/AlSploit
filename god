@@ -1764,7 +1764,7 @@ task.spawn(function()
 							Esp.ZIndex = 10
 							Esp.Visible = true
 							Esp.Adornee = LocalPlayer.Character.HumanoidRootPart
-							Esp.Color3 = Color3.new(0.666667, 0, 1)n
+							Esp.Color3 = Color3.new(0.666667, 0, 1)
 							Esp.Name = LocalPlayer.Character.HumanoidRootPart
 							Esp.Parent = LocalPlayer.Character.HumanoidRootPart
 						end
