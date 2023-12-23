@@ -1745,14 +1745,14 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Name = "Esp"
-						Esp.Size = Vector3. new (4, 7, 4)
-						Esp.Color3 = Color3.new(0.666667, 0, 1)
-						Esp.Transparency = 0.7
-						Esp.ZIndex = 0
-						Esp.Parent = LocalPlayer.Character
+						Esp.Size = LocalPlayer.Character.HumanoidRootPart.Size + Vector3.new(.01, .01, .01)
 						Esp.AlwaysOnTop = true
+						Esp.ZIndex = 10
 						Esp.Visible = true
+						Esp.Adornee = LocalPlayer.Character.HumanoidRootPart
+						Esp.Color3 = Color3.new(0.666667, 0, 1)
+						Esp.Name = "Esp"
+						Esp.Parent = LocalPlayer.Character.HumanoidRootPart
 					end
 					
 					v.CharacterAdded:Connect(function(Character)
@@ -1765,7 +1765,7 @@ task.spawn(function()
 							Esp.Visible = true
 							Esp.Adornee = LocalPlayer.Character.HumanoidRootPart
 							Esp.Color3 = Color3.new(0.666667, 0, 1)
-							Esp.Name = LocalPlayer.Character.HumanoidRootPart
+							Esp.Name = "Esp"
 							Esp.Parent = LocalPlayer.Character.HumanoidRootPart
 						end
 					end)
