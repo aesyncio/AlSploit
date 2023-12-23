@@ -1828,7 +1828,7 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if FovValue == false then
-			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 160, 0, LayoutOrder + 1, function(Callback)
+			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 130, 0, LayoutOrder + 1, function(Callback)
 				Settings.Fov.Fov = Callback
 				
 				if Settings.Fov.Value == true then
