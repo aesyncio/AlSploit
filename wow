@@ -1011,7 +1011,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 17
+			Speed = Speed + 18
 		end
 		
 		if DamageBoost == true then
