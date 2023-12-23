@@ -1745,14 +1745,14 @@ task.spawn(function()
 					if IsAlive(v) and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and CallBack == true and not v.Character:FindFirstChild("Esp") then
 						local Esp = Instance.new("BoxHandleAdornment")
 
-						Esp.Size = LocalPlayer.Character.HumanoidRootPart.Size + Vector3.new(.01, .01, .01)
+						Esp.Size = v.Character.GetModelSize()
 						Esp.AlwaysOnTop = true
 						Esp.ZIndex = 10
 						Esp.Visible = true
-						Esp.Adornee = v.Character.HumanoidRootPart
+						Esp.Adornee = v.Character
 						Esp.Color3 = Color3.new(0.666667, 0, 1)
 						Esp.Name = "Esp"
-						Esp.Parent = v.Character.HumanoidRootPart
+						Esp.Parent = v.Character
 						Esp.Transparency = 0.5
 					end
 					
@@ -1760,15 +1760,15 @@ task.spawn(function()
 						if Settings.Esp.Value == true and v.Team ~= LocalPlayer.Team and not Character:FindFirstChild("Esp") then
 							local Esp = Instance.new("BoxHandleAdornment")
 
-							Esp.Size = LocalPlayer.Character.HumanoidRootPart.Size + Vector3.new(.01, .01, .01)
+							Esp.Size = v.Character.GetModelSize()
 							Esp.AlwaysOnTop = true
 							Esp.ZIndex = 10
 							Esp.Visible = true
-							Esp.Adornee = v.Character.HumanoidRootPart
-							Esp.Transparency = 0.5
+							Esp.Adornee = v.Character
 							Esp.Color3 = Color3.new(0.666667, 0, 1)
 							Esp.Name = "Esp"
-							Esp.Parent = v.Character.HumanoidRootPart
+							Esp.Parent = v.Character
+							Esp.Transparency = 0.5
 						end
 					end)
 				end
