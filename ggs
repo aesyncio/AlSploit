@@ -1563,7 +1563,9 @@ task.spawn(function()
 	repeat
 		task.wait(0.1)
 		
-		if Settings.AutoBank.Value == true then
+		if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
+			print("e")
+			
 			if LocalPlayer.Character.Humanoid.Health <= 30 then
 				SecureEnderChestItems()
 			end
