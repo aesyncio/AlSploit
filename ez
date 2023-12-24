@@ -1563,9 +1563,10 @@ task.spawn(function()
 	repeat
 		task.wait()
 
-		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
+		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+		local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
-		local ChestItems = EnderChest:GetChildren()
+		local ChestItems = Inventory:GetChildren()
 
 		for i, v in next, (ChestItems) do
 			print(v)
