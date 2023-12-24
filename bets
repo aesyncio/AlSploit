@@ -739,7 +739,7 @@ function CollectEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v)
+			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v.tool)
 		end
 	end
 end
@@ -749,7 +749,7 @@ function SecureEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v)
+			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v.tool)
 		end
 	end
 end
@@ -1562,8 +1562,6 @@ end)
 task.spawn(function()
 	if IsAlive(LocalPlayer) then	
 		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
-			print("e")
-			
 			if Heath <= 30 and Settings.AutoBank.Value == true then
 				SecureEnderChestItems()
 			end
@@ -1577,9 +1575,7 @@ task.spawn(function()
 	LocalPlayer.CharacterAdded:Connect(function()
 		task.wait(0.3)
 		
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
-			print("e")
-			
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)			
 			if Heath <= 30 and Settings.AutoBank.Value == true then
 				SecureEnderChestItems()
 			end
@@ -1605,9 +1601,7 @@ task.spawn(function()
 	Client:WaitFor("EntityDamageEvent"):andThen(function(v)
 		v:Connect(function(Player) 
 			if Player.entityInstance == LocalPlayer.Character and IsAlive(LocalPlayer) and Settings.DamageBoost.Value == true then 
-				task.spawn(function()
-					print("e1")
-					
+				task.spawn(function()					
 					DamageBoost = true
 
 					task.wait(0.9)
