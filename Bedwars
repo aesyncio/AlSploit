@@ -606,15 +606,15 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitPublicUpdate5"
+local SaveFileName = "AlSploitPublicUpdate6"
 
 local IsLoaded = false
 local Settings
 
 function DeleteUnwantedFiles()
 	for i = 1, 1000 do
-		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua") and not SaveFileName:find(i) then
-			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua")
+		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i) and not SaveFileName:find(i) then
+			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i)
 		end
 	end	
 end
@@ -628,10 +628,13 @@ function CreateSettingsFile()
 		Indicators = {Value = true},
 		GalaxySky = {Value = true},
 		PlayAgain = {Value = true},
+		Invisible = {Value = false},
 		AimAssist = {Value = true},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true,},
 		Velocity = {Value = true},	
 		AntiVoid = {Value = true, Transparency = 0.65},
+		AutoBank = {Value = true},
+		HighJump = {Value = false},
 		PlayerTp = {Value = true},
 		Sprint = {Value = true},
 		NoFall = {Value = true},
@@ -722,6 +725,8 @@ local Animations = {
 local Bedwars = AlSploitApi.Bedwars
 
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
+local ChestGiveItemRemote = AlSploit.ChestGiveItemRemote
+local ChestGetItemRemote = AlSploit.ChestGetItemRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
@@ -731,15 +736,36 @@ local BedwarsSwords = AlSploitApi.BedwarsSwords
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
 
+function CollectEnderChestItems()
+	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+
+	for i, v in pairs(EnderChest:GetChildren()) do
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			ChestGetItemRemote:InvokeServer(EnderChest, v)
+		end
+	end
+end
+
+function SecureEnderChestItems()
+	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
+
+	for i, v in pairs(Inventory:GetChildren()) do
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			ChestGiveItemRemote:InvokeServer(EnderChest, v)
+		end
+	end
+end
+
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
 		local NearestPlayer = FindNearestPlayer()
 		
 		if NearestPlayer then
 			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
-
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
 			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+
 
 			PlayerTpTween:Play()
 		end
@@ -855,16 +881,47 @@ function TouchingGround()
 	end
 end
 
-function GetMatchState()
-	return Bedwars.ClientHandlerStore:getState().Game.matchState
-end
-
 local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(Part)
 	if gethiddenproperty(Part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
 		return false
 	end
+
 	return true
 end) or function() return true end
+
+function SetCollisions(Value)
+	if Value == true then
+		if IsAlive(LocalPlayer) then
+			for i, v in next, LocalPlayer.Character:GetDescendants() do
+				if v:IsA("BasePart") then
+					v.CanCollide = true
+					v.CanTouch = true
+				end			
+			end
+
+			LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(1.9, 2, 1)
+			LocalPlayer.Character.HumanoidRootPart.Transparency = 1
+			LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
+		end
+	end
+	
+	if Value == false then
+		for i, v in next, LocalPlayer.Character:GetDescendants() do
+			if v:IsA("BasePart") and v ~= LocalPlayer.Character.PrimaryPart and v.CanCollide then
+				v.CanCollide = false
+				v.CanTouch = false
+			end
+		end
+		
+		LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)	
+		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.6
+		LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
+	end
+end
+
+function GetMatchState()
+	return Bedwars.ClientHandlerStore:getState().Game.matchState
+end
 
 function GetInventory(Player)
 
@@ -927,6 +984,34 @@ function KillHumanoid(Time)
 			ResetCharacterRemote:FireServer()
 		end
 	end
+end
+
+function Invisible()
+	if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then 
+		local Animation = Instance.new("Animation")
+		local Id = 11335949902
+		Animation.AnimationId = "rbxassetid://".. Id
+
+		local PlayerAnimation = LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Animation)
+
+		if PlayerAnimation then
+			LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)
+			LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
+
+			PlayerAnimation.Priority = Enum.AnimationPriority.Action4
+			PlayerAnimation.Looped = false
+
+			task.spawn(function()
+				repeat
+					task.wait()
+					PlayerAnimation:Play(1 / 999999, 999999, 1 / 999999)
+				until Settings.Invisible.Value == false
+
+				SetCollisions(true)
+				Animation:Destroy()
+			end)	
+		end
+	end	
 end
 
 function SetCamera(Camera)
@@ -1320,13 +1405,13 @@ function InfFly()
 			SpoofedCamera:Remove()
 			
 			task.spawn(function()
-				for i = 1, 196 do
+				for i = 1, 192 do
 					game.Workspace.Gravity = i
 					
 					task.wait(0.001)
 				end
 				
-				game.Workspace.Gravity = 196.2
+				game.Workspace.Gravity = 192.6
 			end)
 		end
 	end
@@ -1529,6 +1614,10 @@ task.spawn(function()
 		if IsAlive(LocalPlayer) and Settings.InfiniteJump.Value == true then
 			LocalPlayer.Character.Humanoid:ChangeState("Jumping")
 		end
+		
+		if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
+			LocalPlayer.Character.HumanoidRootPart.Velocity = LocalPlayer.Character.HumanoidRootPart.Velocity + Vector3.new(0, 16.5, 0)
+		end
 	end)
 end)
 
@@ -1543,50 +1632,18 @@ RunService.RenderStepped:Connect(function()
 end)
 
 task.spawn(function()	
-	if IsAlive() then
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+	Client:WaitFor("EntityDamageEvent"):andThen(function(v)
+		v:Connect(function(Player) 
+			if Player.entityInstance == LocalPlayer.Character and IsAlive(LocalPlayer) and Settings.DamageBoost.Value == true then 
+				task.spawn(function()					
+					DamageBoost = true
 
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			if Settings.DamageBoost.Value == true then
-				local HealthChange = CurrentHealth - PreviousHealth
+					task.wait(0.9)
 
-				if HealthChange < 0 then
-					task.spawn(function()
-						DamageBoost = true
-
-						task.wait(0.9)
-
-						DamageBoost = false					
-					end)
-				end
-
-				PreviousHealth = CurrentHealth
-			end
-		end)
-	end
-
-	LocalPlayer.CharacterAdded:Connect(function()
-		repeat task.wait() until IsAlive(LocalPlayer)
-
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			if Settings.DamageBoost.Value == true then
-				local HealthChange = CurrentHealth - PreviousHealth
-
-				if HealthChange < 0 then
-					task.spawn(function()
-						DamageBoost = true
-
-						task.wait(0.9)
-
-						DamageBoost = false					
-					end)
-				end
-
-				PreviousHealth = CurrentHealth
-			end
-		end)
+					DamageBoost = false	
+				end) 
+			end 
+		end)    
 	end)
 end)
 
@@ -1707,8 +1764,32 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Invisible = CreateToggle(BlatantWindow, "Invisible", Settings.Invisible.Value, function(Callback)
+		Settings.Invisible.Value = Callback
+		
+		if Callback == true then
+			Invisible()
+			
+			LocalPlayer.CharacterAdded:Connect(function()
+				task.wait(0.3)
+				
+				if Settings.Invisible.Value == true then
+					Invisible()
+				end
+			end)
+		end
+	end)
+end)
+
+task.spawn(function()
 	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
 		Settings.DamageBoost.Value = Callback
+	end)
+end)
+
+task.spawn(function()
+	local HighJump = CreateToggle(BlatantWindow, "HighJump", Settings.HighJump.Value, function(Callback)
+		Settings.HighJump.Value = Callback
 	end)
 end)
 
@@ -1749,6 +1830,62 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoBank = CreateToggle(UtilityWindow, "AutoBank", Settings.AutoBank.Value, function(CallBack)
+		Settings.AutoBank.Value = CallBack
+		
+		task.spawn(function()
+			if IsAlive(LocalPlayer) then
+				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
+					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
+						if Health <= 30 then
+							SecureEnderChestItems()
+						end
+
+						if Health > 30 then
+							CollectEnderChestItems()
+						end
+					end
+				end)
+			end
+			
+			LocalPlayer.CharacterAdded:Connect(function()
+				task.wait(0.3)
+				CollectEnderChestItems()
+				
+				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
+					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
+						if Health <= 30 then
+							SecureEnderChestItems()
+						end
+
+						if Health > 30 then
+							CollectEnderChestItems()
+						end
+					end
+				end)
+			end)
+		end)
+		
+		task.spawn(function()
+			repeat
+				task.wait(0.5)
+				
+				if Settings.AutoBank.Value == true then
+					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						SecureEnderChestItems()
+					end
+
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
+				end
+				
+			until not game
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local FpsBooster = CreateToggle(UtilityWindow, "FpsBoost", Settings.FpsBooster.Value, function(CallBack)
 		Settings.FpsBooster.Value = CallBack
 
@@ -1759,7 +1896,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AimAssist, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
+	local AimAssist = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
 		Settings.AimAssist.Value = CallBack
 	end)
 end)
@@ -1782,19 +1919,33 @@ task.spawn(function()
 		
 		if CallBack == true then
 			task.spawn(function()
-				for i, v in next, Players do
-					if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
-						CreateOutline(v)
-					end
-
-					v.CharacterAdded:Connect(function(Character)
-						task.wait(0.3)
-						
-						if Settings.Esp.Value == true and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+				task.spawn(function()
+					for i, v in next, Players do
+						if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
 							CreateOutline(v)
 						end
+
+						v.CharacterAdded:Connect(function(Character)
+							task.wait(0.3)
+
+							if Settings.Esp.Value == true and IsAlive(game.Players:FindFirstChild(Character.Name)) and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+								CreateOutline(v)
+							end
+						end)
+					end
+				end)
+				
+				task.spawn(function()
+					game.Players.PlayerAdded:Connect(function(Player)
+						Player.CharacterAdded:Connect(function()
+							task.wait(0.3)
+							
+							if Settings.Esp.Value == true and IsAlive(Player) and Player ~= LocalPlayer and not Player.Character.HumanoidRootPart:FindFirstChild("Esp") then
+								CreateOutline(Player)
+							end
+						end)
 					end)
-				end
+				end)
 			end)
 		end
 		
@@ -2171,14 +2322,14 @@ end)
 setfpscap(10000)
 
 task.spawn(function()
-	local ViewModel = Camera:FindFirstChild("Viewmodel")
-	local C1
-
-	local Depth = {Value = 35} 
 	local Horizontal = {Value = 15}
 	local Vertical = {Value = 5}
+	local Depth = {Value = 35} 
 
 	local RotationZ = {Value = 5}
+
+	local ViewModel = Camera:FindFirstChild("Viewmodel")
+	local C1
 
 	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
 	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
