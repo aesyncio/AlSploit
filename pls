@@ -1569,7 +1569,7 @@ task.spawn(function()
 		
 		
 			for i ,v in next, (ChestItems) do
-				if (((v.Name == 'emerald' or v.Name == 'iron' or v.Name == 'gold')) or v.Name == 'diamond') then
+				if (v.Name == 'emerald' or v.Name == 'iron' or v.Name == 'gold' or v.Name == 'diamond') then
 					print(v)
 					
 					task.spawn(function()
