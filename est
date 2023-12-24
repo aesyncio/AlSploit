@@ -891,8 +891,10 @@ function SetCollisions(Value)
 	if Value == true then
 		if IsAlive(LocalPlayer) then
 			for i, v in next, LocalPlayer.Character:GetDescendants() do
-				v.CanCollide = true
-				v.CanTouch = true
+				if v:IsA("BasePart") then
+					v.CanCollide = true
+					v.CanTouch = true
+				end			
 			end
 
 			LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(1.9, 2, 1)
@@ -910,7 +912,7 @@ function SetCollisions(Value)
 		end
 		
 		LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)	
-		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.5
+		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.6
 		LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
 	end
 end
@@ -1762,7 +1764,6 @@ task.spawn(function()
 		Settings.Invisible.Value = Callback
 		
 		if Callback == true then
-			SetCollisions(false)
 			Invisible()
 		end
 	end)
