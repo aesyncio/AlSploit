@@ -1,5 +1,4 @@
 local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
-local Executed = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Execute"))()
 
 local LocalPlayer = game.Players.LocalPlayer
 
