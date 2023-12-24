@@ -1552,12 +1552,14 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(0.1)
-
+		
+		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 		local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
 		for i, v in pairs(Inventory:GetChildren()) do
 			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
 				ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(Inventory, v)
+				ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
 			end
 		end
 
