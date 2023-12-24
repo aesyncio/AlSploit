@@ -606,7 +606,15 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitPublicUpdate5"
+local SaveFileName = "AlSploitPublicUpdate6"
+
+if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate4") then
+	print("yes1")
+end
+
+if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate5") then
+	print("yes2")
+end
 
 local IsLoaded = false
 local Settings
@@ -626,12 +634,16 @@ function CreateSettingsFile()
 		DamageBoost = {Value = true},
 		FpsBooster = {Value = false},
 		Indicators = {Value = true},
+		ViewModel = {Value = true},
 		GalaxySky = {Value = true},
 		PlayAgain = {Value = true},
+		Invisible = {Value = true},
 		AimAssist = {Value = true},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true,},
 		Velocity = {Value = true},	
 		AntiVoid = {Value = true, Transparency = 0.65},
+		AutoBank = {Value = true},
+		HighJump = {Value = false},
 		PlayerTp = {Value = true},
 		Sprint = {Value = true},
 		NoFall = {Value = true},
@@ -1898,6 +1910,45 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local ViewModel = CreateToggle(WorldWindow, "ViewModel", Settings.ViewModel.Value, function(CallBack)
+		Settings.ViewModel.Value = CallBack
+		
+		local ViewModel = Camera:FindFirstChild("Viewmodel")
+		local C1
+		
+		local OldHorizontal = LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:GetAttribute("ConstantManager_HORIZONTAL_OFFSET")
+		local OldVertical =	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:GetAttribute("ConstantManager_VERTICAL_OFFSET")
+		local OldDepth = LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:GetAttribute("ConstantManager_DEPTH_OFFSET")
+
+		local OldRotationZ = ViewModel.RightHand.RightWrist.C1
+		
+		if CallBack == true then	
+			local Horizontal = {Value = 15}
+			local Vertical = {Value = 5}
+			local Depth = {Value = 35} 
+
+			local RotationZ = {Value = 5}
+
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (Vertical.Value / 10))
+
+			C1 = ViewModel.RightHand.RightWrist.C1
+
+			ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+		end
+		
+		if CallBack == false then
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", OldDepth)
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", OldHorizontal)
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", OldVertical)
+
+			ViewModel.RightHand.RightWrist.C1 = OldRotationZ
+		end
+	end)
+end)
+
+task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
 		
@@ -2183,25 +2234,6 @@ task.spawn(function()
 end)
 
 setfpscap(10000)
-
-task.spawn(function()
-	local ViewModel = Camera:FindFirstChild("Viewmodel")
-	local C1
-
-	local Depth = {Value = 35} 
-	local Horizontal = {Value = 15}
-	local Vertical = {Value = 5}
-
-	local RotationZ = {Value = 5}
-
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (Vertical.Value / 10))
-
-	C1 = ViewModel.RightHand.RightWrist.C1
-
-	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
-end)
 
 task.spawn(function()
 	repeat 
