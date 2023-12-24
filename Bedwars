@@ -725,8 +725,8 @@ local Animations = {
 local Bedwars = AlSploitApi.Bedwars
 
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
-local ChestGiveItemRemote = AlSploit.ChestGiveItemRemote
-local ChestGetItemRemote = AlSploit.ChestGetItemRemote
+local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
+local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
@@ -1764,6 +1764,18 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
+		Settings.DamageBoost.Value = Callback
+	end)
+end)
+
+task.spawn(function()
+	local HighJump = CreateToggle(BlatantWindow, "HighJump", Settings.HighJump.Value, function(Callback)
+		Settings.HighJump.Value = Callback
+	end)
+end)
+
+task.spawn(function()
 	local Invisible = CreateToggle(BlatantWindow, "Invisible", Settings.Invisible.Value, function(Callback)
 		Settings.Invisible.Value = Callback
 		
@@ -1778,18 +1790,6 @@ task.spawn(function()
 				end
 			end)
 		end
-	end)
-end)
-
-task.spawn(function()
-	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
-		Settings.DamageBoost.Value = Callback
-	end)
-end)
-
-task.spawn(function()
-	local HighJump = CreateToggle(BlatantWindow, "HighJump", Settings.HighJump.Value, function(Callback)
-		Settings.HighJump.Value = Callback
 	end)
 end)
 
@@ -1821,12 +1821,24 @@ task.spawn(function()
 			end)
 		end
 
-		if SpeedValue == true then					
+		if SpeedValue == true then
 			SpeedSlider:Destroy()
 		end
 
 		SpeedValue = not SpeedValue
 	end)	
+end)
+
+task.spawn(function()
+	local PlayAgain = CreateToggle(UtilityWindow, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
+		Settings.PlayAgain.Value = CallBack
+	end)
+end)
+
+task.spawn(function()
+	local AimAssist = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
+		Settings.AimAssist.Value = CallBack
+	end)
 end)
 
 task.spawn(function()
@@ -1892,18 +1904,6 @@ task.spawn(function()
 		if CallBack == true then
 			FpsBoostTextures()
 		end
-	end)
-end)
-
-task.spawn(function()
-	local AimAssist = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
-		Settings.AimAssist.Value = CallBack
-	end)
-end)
-
-task.spawn(function()
-	local PlayAgain = CreateToggle(UtilityWindow, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
-		Settings.PlayAgain.Value = CallBack
 	end)
 end)
 
