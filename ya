@@ -1563,7 +1563,7 @@ task.spawn(function()
 	repeat
 		task.wait()
 
-		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
 		local ChestItems = EnderChest:GetChildren()
 
@@ -1571,7 +1571,6 @@ task.spawn(function()
 			print(v)
 			
 			pcall(function()
-				Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
 				Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v)
 			end)			
 		end
