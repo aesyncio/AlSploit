@@ -1572,7 +1572,7 @@ task.spawn(function()
 			print(v)
 			
 			pcall(function()
-				Client:GetNamespace("Inventory"):Get("ChestgGiveItem"):CallServer(EnderChest, v)
+				Client:GetNamespace("Inventory"):Get("ChestgGiveItem"):CallServer(Inventory, v)
 			end)			
 		end
 
