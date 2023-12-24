@@ -1562,6 +1562,8 @@ end)
 task.spawn(function()
 	if IsAlive(LocalPlayer) then	
 		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
+			print("e")
+			
 			if Heath <= 30 and Settings.AutoBank.Value == true then
 				SecureEnderChestItems()
 			end
@@ -1576,6 +1578,8 @@ task.spawn(function()
 		task.wait(0.3)
 		
 		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
+			print("e")
+			
 			if Heath <= 30 and Settings.AutoBank.Value == true then
 				SecureEnderChestItems()
 			end
@@ -1602,6 +1606,8 @@ task.spawn(function()
 		v:Connect(function(Player) 
 			if Player.entityInstance == LocalPlayer.Character and IsAlive(LocalPlayer) and Settings.DamageBoost.Value == true then 
 				task.spawn(function()
+					print("e1")
+					
 					DamageBoost = true
 
 					task.wait(0.9)
