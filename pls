@@ -1572,7 +1572,7 @@ task.spawn(function()
 				if v3:IsA('Accessory') and (((v3.Name == 'emerald' or v3.Name == 'iron' or v3.Name == 'gold')) or v3.Name == 'diamond') then
 					task.spawn(function()
 						pcall(function()
-							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v3)
+							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v3.tool)
 						end)
 					end)
 				end
