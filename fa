@@ -740,8 +740,6 @@ function CollectEnderChestItems()
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
 			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(EnderChest, v)
-			
-			print(v)
 		end
 	end
 end
@@ -750,11 +748,12 @@ function SecureEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 
 	for i, v in pairs(EnderChest:GetChildren()) do
-		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(EnderChest)
-			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
-			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v.tool)
-			print(v)
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then		
+			local Success, Return = pcall(function() 
+				return ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
+			end)
+			
+			print(Success, Return)
 		end
 	end
 end
