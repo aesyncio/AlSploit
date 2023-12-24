@@ -1565,6 +1565,8 @@ end)
 
 task.spawn(function()
 	repeat
+		task.wait()
+		
 		SecureEnderChestItems()
 	until not game
 end)
