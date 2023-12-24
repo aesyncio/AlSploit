@@ -739,7 +739,7 @@ function CollectEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestgetItem"):CallServer(EnderChest, v)
+			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v)
 		end
 	end
 end
