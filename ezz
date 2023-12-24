@@ -725,8 +725,8 @@ local Animations = {
 local Bedwars = AlSploitApi.Bedwars
 
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
-local ChestGiveItemRemote = AlSploit.ChestGiveItemRemote
-local ChestGetItemRemote = AlSploit.ChestGetItemRemote
+local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
+local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
