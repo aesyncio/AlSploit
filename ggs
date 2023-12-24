@@ -739,7 +739,7 @@ function CollectEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v)
+			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(EnderChest, v)
 		end
 	end
 end
@@ -1561,19 +1561,9 @@ end)
 
 task.spawn(function()
 	repeat
-		task.wait(0.1)
+		task.wait()
 		
-		if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
-			print("e")
-			
-			if LocalPlayer.Character.Humanoid.Health <= 30 then
-				SecureEnderChestItems()
-			end
-
-			if LocalPlayer.Character.Humanoid.Health > 30 then
-				CollectEnderChestItems()
-			end
-		end	
+		SecureEnderChestItems()
 	until not game
 end)
 
