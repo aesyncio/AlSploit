@@ -608,10 +608,6 @@ end
 
 local SaveFileName = "AlSploitPublicUpdate6"
 
-if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate5") then
-	print("yes")
-end
-
 local IsLoaded = false
 local Settings
 
@@ -737,6 +733,26 @@ local BedwarsSwords = AlSploitApi.BedwarsSwords
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
+
+function CollectEnderChestItems()
+	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+
+	for i, v in pairs(EnderChest:GetChildren()) do
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v)
+		end
+	end
+end
+
+function SecureEnderChestItems()
+	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+
+	for i, v in pairs(EnderChest:GetChildren()) do
+		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v)
+		end
+	end
+end
 
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
@@ -1543,6 +1559,34 @@ task.spawn(function()
 	end)
 end)
 
+task.spawn(function()
+	if IsAlive(LocalPlayer) then	
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
+			if Heath <= 30 and Settings.AutoBank.Value == true then
+				SecureEnderChestItems()
+			end
+			
+			if Heath > 30 and Settings.AutoBank.Value == true then
+				CollectEnderChestItems()
+			end
+		end)
+	end
+	
+	LocalPlayer.CharacterAdded:Connect(function()
+		task.wait(0.3)
+		
+		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
+			if Heath <= 30 and Settings.AutoBank.Value == true then
+				SecureEnderChestItems()
+			end
+
+			if Heath > 30 and Settings.AutoBank.Value == true then
+				CollectEnderChestItems()
+			end
+		end)
+	end)
+end)
+
 RunService.RenderStepped:Connect(function()
 	local NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
 
@@ -1554,50 +1598,18 @@ RunService.RenderStepped:Connect(function()
 end)
 
 task.spawn(function()	
-	if IsAlive() then
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
+	Client:WaitFor("EntityDamageEvent"):andThen(function(v)
+		v:Connect(function(Player) 
+			if Player.entityInstance == LocalPlayer.Character and IsAlive(LocalPlayer) and Settings.DamageBoost.Value == true then 
+				task.spawn(function()
+					DamageBoost = true
 
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			if Settings.DamageBoost.Value == true then
-				local HealthChange = CurrentHealth - PreviousHealth
+					task.wait(0.9)
 
-				if HealthChange < 0 then
-					task.spawn(function()
-						DamageBoost = true
-
-						task.wait(0.9)
-
-						DamageBoost = false					
-					end)
-				end
-
-				PreviousHealth = CurrentHealth
-			end
-		end)
-	end
-
-	LocalPlayer.CharacterAdded:Connect(function()
-		repeat task.wait() until IsAlive(LocalPlayer)
-
-		local PreviousHealth = LocalPlayer.Character.Humanoid.Health
-
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(CurrentHealth)
-			if Settings.DamageBoost.Value == true then
-				local HealthChange = CurrentHealth - PreviousHealth
-
-				if HealthChange < 0 then
-					task.spawn(function()
-						DamageBoost = true
-
-						task.wait(0.9)
-
-						DamageBoost = false					
-					end)
-				end
-
-				PreviousHealth = CurrentHealth
-			end
-		end)
+					DamageBoost = false					
+				end) 
+			end 
+		end)    
 	end)
 end)
 
@@ -1766,6 +1778,12 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoBank = CreateToggle(UtilityWindow, "AutoBank", Settings.AutoBank.Value, function(CallBack)
+		Settings.AutoBank.Value = CallBack
+	end)
+end)
+
+task.spawn(function()
 	local FpsBooster = CreateToggle(UtilityWindow, "FpsBoost", Settings.FpsBooster.Value, function(CallBack)
 		Settings.FpsBooster.Value = CallBack
 
@@ -1776,7 +1794,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AimAssist, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
+	local AimAssist = CreateToggle(UtilityWindow, "AimAssist", Settings.AimAssist.Value, function(CallBack)
 		Settings.AimAssist.Value = CallBack
 	end)
 end)
