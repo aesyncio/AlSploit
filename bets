@@ -985,7 +985,7 @@ end
 function Invisible()
 	if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then 
 		local Animation = Instance.new("Animation")
-		local Id = 11330409797
+		local Id = 11335949902
 		Animation.AnimationId = "rbxassetid://".. Id
 
 		local PlayerAnimation = LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Animation)
@@ -996,8 +996,8 @@ function Invisible()
 
 			PlayerAnimation.Priority = Enum.AnimationPriority.Action4
 			PlayerAnimation.Looped = true
-			PlayerAnimation:AdjustSpeed(1 / 10)
-			PlayerAnimation:Play()			
+			PlayerAnimation:AdjustSpeed(9999)
+			PlayerAnimation:Play()
 		end
 	end	
 end
