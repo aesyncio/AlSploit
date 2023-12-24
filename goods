@@ -1564,31 +1564,9 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	if IsAlive(LocalPlayer) then	
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)
-			if Heath <= 30 and Settings.AutoBank.Value == true then
-				SecureEnderChestItems()
-			end
-			
-			if Heath > 30 and Settings.AutoBank.Value == true then
-				CollectEnderChestItems()
-			end
-		end)
-	end
-	
-	LocalPlayer.CharacterAdded:Connect(function()
-		task.wait(0.3)
-		
-		LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Heath)			
-			if Heath <= 30 and Settings.AutoBank.Value == true then
-				SecureEnderChestItems()
-			end
-
-			if Heath > 30 and Settings.AutoBank.Value == true then
-				CollectEnderChestItems()
-			end
-		end)
-	end)
+	repeat
+		SecureEnderChestItems()
+	until not game
 end)
 
 RunService.RenderStepped:Connect(function()
