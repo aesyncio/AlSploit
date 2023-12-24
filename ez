@@ -887,9 +887,9 @@ local IsNetworkOwner = isnetworkowner or (gethiddenproperty and function(Part)
 	if gethiddenproperty(Part, "NetworkOwnershipRule") == Enum.NetworkOwnership.Manual then 
 		return false
 	end
+	
 	return true
-end) or function() return true end
-
+end)
 function GetInventory(Player)
 
 	if not Player then 
@@ -1765,7 +1765,7 @@ task.spawn(function()
 						if Health > 30 then
 							CollectEnderChestItems()
 						end
-					end					
+					end
 				end)
 			end
 			
@@ -1782,9 +1782,26 @@ task.spawn(function()
 						if Health > 30 then
 							CollectEnderChestItems()
 						end
-					end					
+					end
 				end)
 			end)
+		end)
+		
+		task.spawn(function()
+			repeat
+				task.wait(0.5)
+				
+				if Settings.AutoBank.Value == true then
+					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						SecureEnderChestItems()
+					end
+
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
+				end
+				
+			until not game
 		end)
 	end)
 end)
