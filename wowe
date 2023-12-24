@@ -1782,19 +1782,33 @@ task.spawn(function()
 		
 		if CallBack == true then
 			task.spawn(function()
-				for i, v in next, Players do
-					if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
-						CreateOutline(v)
-					end
-
-					v.CharacterAdded:Connect(function(Character)
-						task.wait(0.3)
-						
-						if Settings.Esp.Value == true and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+				task.spawn(function()
+					for i, v in next, Players do
+						if IsAlive(v) and v ~= LocalPlayer and CallBack == true and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
 							CreateOutline(v)
 						end
+
+						v.CharacterAdded:Connect(function(Character)
+							task.wait(0.3)
+
+							if Settings.Esp.Value == true and IsAlive(game.Players:FindFirstChild(Character.Name)) and v ~= LocalPlayer and not v.Character.HumanoidRootPart:FindFirstChild("Esp") then
+								CreateOutline(v)
+							end
+						end)
+					end
+				end)
+				
+				task.spawn(function()
+					game.Players.PlayerAdded:Connect(function(Player)
+						Player.CharacterAdded:Connect(function()
+							task.wait(0.3)
+							
+							if Settings.Esp.Value == true and IsAlive(Player) and Player ~= LocalPlayer and not Player.Character.HumanoidRootPart:FindFirstChild("Esp") then
+								CreateOutline(Player)
+							end
+						end)
 					end)
-				end
+				end)
 			end)
 		end
 		
