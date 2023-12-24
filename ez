@@ -744,6 +744,17 @@ function CollectEnderChestItems()
 	end
 end
 
+function SecureEnderChestItems()
+	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
+
+	for i, v in pairs(Inventory:GetChildren()) do
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
+		end
+	end
+end
+
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
 		local NearestPlayer = FindNearestPlayer()
@@ -1549,22 +1560,6 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()
-	repeat
-		task.wait(0.1)
-		
-		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
-		local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
-
-		for i, v in pairs(Inventory:GetChildren()) do
-			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-				ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
-			end
-		end
-
-	until not game
-end)
-
 RunService.RenderStepped:Connect(function()
 	local NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
 
@@ -1758,6 +1753,34 @@ end)
 task.spawn(function()
 	local AutoBank = CreateToggle(UtilityWindow, "AutoBank", Settings.AutoBank.Value, function(CallBack)
 		Settings.AutoBank.Value = CallBack
+		
+		task.spawn(function()
+			if IsAlive(LocalPlayer) then
+				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
+					if Health <= 30 then
+						SecureEnderChestItems()
+					end
+					
+					if Health > 30 then
+						CollectEnderChestItems()
+					end
+				end)
+			end
+			
+			LocalPlayer.CharacterAdded:Connect(function()
+				task.wait(0.3)
+				
+				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
+					if Health <= 30 then
+						SecureEnderChestItems()
+					end
+
+					if Health > 30 then
+						CollectEnderChestItems()
+					end
+				end)
+			end)
+		end)
 	end)
 end)
 
