@@ -1567,17 +1567,19 @@ task.spawn(function()
 		
 		local ChestItems = EnderChest:GetChildren()
 		
-		if #ChestItems > 0 then
-			for i3 ,v3 in next, (ChestItems) do
-				if v3:IsA('Accessory') and (((v3.Name == 'emerald' or v3.Name == 'iron' or v3.Name == 'gold')) or v3.Name == 'diamond') then
+		
+			for i ,v in next, (ChestItems) do
+				if (((v.Name == 'emerald' or v.Name == 'iron' or v.Name == 'gold')) or v.Name == 'diamond') then
+					print(v)
+					
 					task.spawn(function()
 						pcall(function()
-							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v3.tool)
+							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
 						end)
 					end)
 				end
 			end
-		end
+		
 
 	until not game
 end)
