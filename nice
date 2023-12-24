@@ -995,9 +995,11 @@ function Invisible()
 			LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
 
 			PlayerAnimation.Priority = Enum.AnimationPriority.Action4
-			PlayerAnimation.Looped = true
-			PlayerAnimation:AdjustSpeed(1 / 10)
-			PlayerAnimation:Play()
+			PlayerAnimation.Looped = false
+
+			repeat
+				PlayerAnimation:Play(1 / 999999, 999999, 1 / 999999)
+			until not game
 		end
 	end	
 end
