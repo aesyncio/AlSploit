@@ -1562,8 +1562,10 @@ end)
 task.spawn(function()
 	repeat
 		task.wait()
+		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 		
-		SecureEnderChestItems()
+		Client:GetNamespace('Inventory'):Get('ChestGiveItem'):CallServer(EnderChest, "iron")
+
 	until not game
 end)
 
