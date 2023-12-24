@@ -1000,7 +1000,10 @@ function Invisible()
 			repeat
 				task.wait()
 				PlayerAnimation:Play(1 / 999999, 999999, 1 / 999999)
-			until not game
+			until Settings.Invisible.Value == false
+			
+			SetCollisions(true)
+			Animation:Destroy()
 		end
 	end	
 end
