@@ -749,7 +749,7 @@ function SecureEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGivetItem"]:InvokeServer(EnderChest, v)
+			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
 		end
 	end
 end
