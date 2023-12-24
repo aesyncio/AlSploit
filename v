@@ -998,6 +998,7 @@ function Invisible()
 			PlayerAnimation.Looped = false
 
 			repeat
+				task.wait()
 				PlayerAnimation:Play(1 / 999999, 999999, 1 / 999999)
 			until not game
 		end
