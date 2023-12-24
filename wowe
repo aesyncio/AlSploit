@@ -608,21 +608,13 @@ end
 
 local SaveFileName = "AlSploitPublicUpdate6"
 
-if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate4") then
-	print("yes1")
-end
-
-if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate5") then
-	print("yes2")
-end
-
 local IsLoaded = false
 local Settings
 
 function DeleteUnwantedFiles()
 	for i = 1, 1000 do
-		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua") and not SaveFileName:find(i) then
-			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i .. ".lua")
+		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i) and not SaveFileName:find(i) then
+			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i)
 		end
 	end	
 end
@@ -1920,7 +1912,7 @@ task.spawn(function()
 		local OldVertical =	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:GetAttribute("ConstantManager_VERTICAL_OFFSET")
 		local OldDepth = LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:GetAttribute("ConstantManager_DEPTH_OFFSET")
 
-		local OldRotationZ = ViewModel.RightHand.RightWrist.C1
+		local OldC1 = ViewModel.RightHand.RightWrist.C1
 		
 		if CallBack == true then	
 			local Horizontal = {Value = 15}
@@ -1943,7 +1935,7 @@ task.spawn(function()
 			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", OldHorizontal)
 			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", OldVertical)
 
-			ViewModel.RightHand.RightWrist.C1 = OldRotationZ
+			ViewModel.RightHand.RightWrist.C1 = OldC1
 		end
 	end)
 end)
