@@ -1533,6 +1533,10 @@ task.spawn(function()
 		if IsAlive(LocalPlayer) and Settings.InfiniteJump.Value == true then
 			LocalPlayer.Character.Humanoid:ChangeState("Jumping")
 		end
+		
+		if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
+			LocalPlayer.Character.HumanoidRootPart.Velocity = LocalPlayer.Character.HumanoidRootPart.Velocity + Vector3.new(0, 500, 0)
+		end
 	end)
 end)
 
@@ -1713,6 +1717,12 @@ end)
 task.spawn(function()
 	local DamageBoost = CreateToggle(BlatantWindow, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
 		Settings.DamageBoost.Value = Callback
+	end)
+end)
+
+task.spawn(function()
+	local HighJump = CreateToggle(BlatantWindow, "HighJump", Settings.HighJump.Value, function(Callback)
+		Settings.HighJump.Value = Callback
 	end)
 end)
 
@@ -1912,6 +1922,7 @@ task.spawn(function()
 		local RotationZ = {Value = 5}
 		
 		local ViewModel = Camera:FindFirstChild("Viewmodel")
+		local OldC1 = ViewModel.RightHand.RightWrist.C1
 		local C1
 		
 		if CallBack == true then	
@@ -1929,7 +1940,7 @@ task.spawn(function()
 			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", 0)
 			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", 0)
 
-			ViewModel.RightHand.RightWrist.C1 = C1 / CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+			ViewModel.RightHand.RightWrist.C1 = OldC1
 		end
 	end)
 end)
