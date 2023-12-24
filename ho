@@ -1562,24 +1562,19 @@ end)
 task.spawn(function()
 	repeat
 		task.wait()
-		
+
 		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
-		
+
 		local ChestItems = EnderChest:GetChildren()
-		
-		
-			for i ,v in next, (ChestItems) do
-				if (v.Name == 'emerald' or v.Name == 'iron' or v.Name == 'gold' or v.Name == 'diamond') then
-					print(v)
-					
-					task.spawn(function()
-						pcall(function()
-							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
-						end)
-					end)
-				end
-			end
-		
+
+		for i, v in next, (ChestItems) do
+			task.spawn(function()
+				pcall(function()
+					Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
+					Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v)
+				end)
+			end)
+		end
 
 	until not game
 end)
