@@ -750,7 +750,7 @@ function SecureEnderChestItems()
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then		
 			local Success, Return = pcall(function() 
-				return ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(EnderChest, v)
+				return ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(EnderChest, v)
 			end)
 			
 			print(Success, Return)
