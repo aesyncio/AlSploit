@@ -1562,9 +1562,22 @@ end)
 task.spawn(function()
 	repeat
 		task.wait()
+		
 		local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 		
-		Client:GetNamespace('Inventory'):Get('ChestGiveItem'):CallServer(EnderChest, "iron")
+		local ChestItems = EnderChest:GetChildren()
+		
+		if #ChestItems > 0 then
+			for i3 ,v3 in next, (ChestItems) do
+				if v3:IsA('Accessory') and (((v3.Name == 'emerald' or v3.Name == 'iron' or v3.Name == 'gold')) or v3.Name == 'diamond') then
+					task.spawn(function()
+						pcall(function()
+							Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v3)
+						end)
+					end)
+				end
+			end
+		end
 
 	until not game
 end)
