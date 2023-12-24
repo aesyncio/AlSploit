@@ -628,7 +628,7 @@ function CreateSettingsFile()
 		Indicators = {Value = true},
 		GalaxySky = {Value = true},
 		PlayAgain = {Value = true},
-		Invisible = {Value = false},
+		Invisible = {Value = true},
 		AimAssist = {Value = true},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true,},
 		Velocity = {Value = true},	
