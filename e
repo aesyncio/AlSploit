@@ -1757,7 +1757,7 @@ task.spawn(function()
 		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
-					if Settings.AutoBank.Value == true then
+					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
 						if Health <= 30 then
 							SecureEnderChestItems()
 						end
@@ -1771,9 +1771,10 @@ task.spawn(function()
 			
 			LocalPlayer.CharacterAdded:Connect(function()
 				task.wait(0.3)
+				CollectEnderChestItems()
 				
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
-					if Settings.AutoBank.Value == true then
+					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
 						if Health <= 30 then
 							SecureEnderChestItems()
 						end
