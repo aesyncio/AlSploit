@@ -1568,12 +1568,12 @@ task.spawn(function()
 		local ChestItems = EnderChest:GetChildren()
 
 		for i, v in next, (ChestItems) do
-			task.spawn(function()
-				pcall(function()
-					Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
-					Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v)
-				end)
-			end)
+			print(v)
+			
+			pcall(function()
+				Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v.tool)
+				Client:GetNamespace('Inventory'):Get('ChestGetItem'):CallServer(EnderChest, v)
+			end)			
 		end
 
 	until not game
