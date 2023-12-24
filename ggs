@@ -750,6 +750,8 @@ function SecureEnderChestItems()
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
 			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(game.ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal"), v)
+			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v)
+			ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestgiveItem"]:InvokeServer(EnderChest, v)
 		end
 	end
 end
