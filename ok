@@ -1548,7 +1548,6 @@ task.spawn(function()
 
 		for i, v in pairs(EnderChest:GetChildren()) do
 			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-				ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(EnderChest, v)
 				ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(Inventory, v)
 			end
 		end
@@ -1575,7 +1574,7 @@ task.spawn(function()
 
 					task.wait(0.9)
 
-					DamageBoost = false					
+					DamageBoost = false	
 				end) 
 			end 
 		end)    
