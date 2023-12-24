@@ -745,15 +745,11 @@ function CollectEnderChestItems()
 end
 
 function SecureEnderChestItems()
-	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
+	local EnderChest = game.ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
 	for i, v in pairs(EnderChest:GetChildren()) do
-		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then		
-			local Success, Return = pcall(function() 
-				return ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(EnderChest, v)
-			end)
-			
-			print(Success, Return)
+		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(game.ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal"), v)
 		end
 	end
 end
