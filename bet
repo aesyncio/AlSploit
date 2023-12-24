@@ -910,7 +910,7 @@ function SetCollisions(Value)
 		end
 		
 		LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)	
-		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.8
+		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.5
 		LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
 	end
 end
@@ -985,7 +985,7 @@ end
 function Invisible()
 	if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then 
 		local Animation = Instance.new("Animation")
-		local Id = 11335949902
+		local Id = 11330409797
 		Animation.AnimationId = "rbxassetid://".. Id
 
 		local PlayerAnimation = LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Animation)
