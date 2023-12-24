@@ -1324,13 +1324,13 @@ function InfFly()
 			SpoofedCamera:Remove()
 			
 			task.spawn(function()
-				for i = 1, 196 do
+				for i = 1, 192 do
 					game.Workspace.Gravity = i
 					
 					task.wait(0.001)
 				end
 				
-				game.Workspace.Gravity = 196.2
+				game.Workspace.Gravity = 192.6
 			end)
 		end
 	end
@@ -1535,7 +1535,19 @@ task.spawn(function()
 		end
 		
 		if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
-			LocalPlayer.Character.HumanoidRootPart.Velocity = LocalPlayer.Character.HumanoidRootPart.Velocity + Vector3.new(0, 25, 0)
+			LocalPlayer.Character.HumanoidRootPart.Velocity = LocalPlayer.Character.HumanoidRootPart.Velocity + Vector3.new(0, 30, 0)
+			
+			task.wait(0.5)
+			
+			game.Workspace.Gravity = 20
+			
+			task.wait(0.2)
+			
+			game.Workspace.Gravity = 500
+			
+			task.wait(1)
+			
+			game.Workspace.Gravity = 192.6
 		end
 	end)
 end)
