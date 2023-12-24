@@ -739,7 +739,8 @@ function CollectEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v.tool)
+			Client:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(EnderChest, v)
+			game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]:InvokeServer(game:GetService("ReplicatedStorage").Inventories.SkidB4IsBa_d_personal, v.tool)
 		end
 	end
 end
@@ -749,7 +750,8 @@ function SecureEnderChestItems()
 
 	for i, v in pairs(EnderChest:GetChildren()) do
 		if (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v.tool)
+			Client:GetNamespace("Inventory"):Get("ChestGiveItem"):CallServer(EnderChest, v)
+			game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]:InvokeServer(game:GetService("ReplicatedStorage").Inventories.SkidB4IsBa_d_personal, v.tool)
 		end
 	end
 end
@@ -760,9 +762,9 @@ function TweenToNearestPlayer()
 		
 		if NearestPlayer then
 			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
-
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
 			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+
 
 			PlayerTpTween:Play()
 		end
