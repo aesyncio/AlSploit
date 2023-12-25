@@ -1151,11 +1151,11 @@ end
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find(Name) then
-			return true
+			return v
 		end
 	end	
 
-	return false
+	return nil
 end
 
 task.spawn(function()
@@ -1598,7 +1598,8 @@ task.spawn(function()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			if GetItem("wood_bow") then
-				ShootProjectile("wood_bow", "arrow")
+				ShootProjectile("wood_bow", "arrow")				
+				SwitchItem(GetItem("wood_bow"))
 			end
 			
 			if GetItem("wood_crossbow") then
