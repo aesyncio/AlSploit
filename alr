@@ -1206,9 +1206,7 @@ task.spawn(function()
 
 									KillAuraAnimationCooldown = true
 								end
-							end)		
-							
-							SwitchItem(Sword.tool)
+							end)
 
 							KillauraRemote:FireServer({
 								chargedAttack = {chargeRatio = 0},
@@ -1289,6 +1287,7 @@ task.spawn(function()
 	
 	task.spawn(function()
 		task.wait(0.1)
+		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 		
 		task.spawn(KillAuraHitMob)
 	end)
