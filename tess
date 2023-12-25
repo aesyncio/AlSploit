@@ -1630,8 +1630,8 @@ task.spawn(function()
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			local Bow = GetBow()
 			
-			if Bow and GetItem(Bow.Name) then
-				ShootProjectile(Bow.Name, "arrow")
+			if Bow and GetItem(Bow.itemType) then
+				ShootProjectile(Bow.itemType, "arrow")
 			end
 			
 			if GetItem("fireball") then
