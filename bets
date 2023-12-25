@@ -1176,6 +1176,8 @@ function GetBow()
 	end
 	
 	print(BestBow)
+	print(BestBow.Name)
+	print(BestBow.itemType)
 	
 	return BestBow
 end
@@ -1629,10 +1631,7 @@ task.spawn(function()
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			local Bow = GetBow()
 			
-			if Bow then
-				ShootProjectile(Bow.item, "arrow")
-				ShootProjectile(Bow.itemType, "arrow")
-				ShootProjectile(Bow.tool, "arrow")
+			if Bow and GetItem(Bow.Name) then
 				ShootProjectile(Bow.Name, "arrow")
 			end
 			
