@@ -1619,9 +1619,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	repeat
-		local Tick = tick()
-		
+	repeat		
 		task.wait()
 
 		local NearestPlayer = FindNearestPlayer()
@@ -1635,18 +1633,17 @@ task.spawn(function()
 				if Bow then
 					ShootProjectile(BestBow.itemType, "arrow")
 					SwitchItem(BestBow.tool)
-					
-					print(tick() - Tick)
 				end
 			end
 			
-			
-			if GetItem("fireball") then
-				ShootProjectile("fireball", "fireball")
-			end
+			if not BestBow then
+				if GetItem("fireball") then
+					ShootProjectile("fireball", "fireball")
+				end
 
-			if GetItem("snowball") then
-				ShootProjectile("snowball", "snowball")
+				if GetItem("snowball") then
+					ShootProjectile("snowball", "snowball")
+				end
 			end
 		end
 	until not game
