@@ -1175,7 +1175,7 @@ function GetBow()
 		end
 	end
 	
-	return BestBow, Arrow
+	return Arrow, BestBow
 end
 
 task.spawn(function()
@@ -1625,7 +1625,7 @@ task.spawn(function()
 		local NearestPlayer = FindNearestPlayer()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
-			local BestBow, Arrow = GetBow()
+			local Arrow, BestBow = GetBow()
 			
 			if BestBow then
 				local Bow = GetItem(BestBow.itemType)
