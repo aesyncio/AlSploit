@@ -731,8 +731,10 @@ local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
+local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
+local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
@@ -1151,11 +1153,29 @@ end
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find(Name) then
-			return v
+			return true
 		end
 	end	
 
-	return nil
+	return false
+end
+
+function GetBow()
+	local BestBow, BestBowDamage = nil, 0
+
+	for i, v in next, (GetInventory(LocalPlayer).items) do
+		if v.itemType:find("bow") then 
+			local Item = ItemTable[v.itemType].projectileSource
+			local Arrow = Item.projectileType("arrow")	
+			local Damage = ProjectileMeta[Arrow].combat.damage
+			
+			if Damage > BestBowDamage then
+				BestBow, BestBowDamage = v, Damage
+			end
+		end
+	end
+	
+	return BestBow
 end
 
 task.spawn(function()
@@ -1597,17 +1617,10 @@ task.spawn(function()
 		local NearestPlayer = FindNearestPlayer()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
-			if GetItem("wood_bow") then
-				ShootProjectile("wood_bow", "arrow")				
-				SwitchItem(GetItem("wood_bow"))
-			end
+			local Bow = GetBow()
 			
-			if GetItem("wood_crossbow") then
-				ShootProjectile("wood_crossbow", "arrow")
-			end
-			
-			if GetItem("tactical_crossbow") then
-				ShootProjectile("tactical_crossbow", "arrow")
+			if Bow then
+				ShootProjectile(Bow.itemType)
 			end
 			
 			if GetItem("fireball") then
@@ -1858,6 +1871,23 @@ task.spawn(function()
 		Settings.AutoBank.Value = CallBack
 		
 		task.spawn(function()
+			repeat
+				task.wait(0.5)
+
+				if Settings.AutoBank.Value == true then
+					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						SecureEnderChestItems()
+					end
+
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
+				end
+
+			until not game
+		end)
+		
+		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
 					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
@@ -1888,23 +1918,6 @@ task.spawn(function()
 					end
 				end)
 			end)
-		end)
-		
-		task.spawn(function()
-			repeat
-				task.wait(0.5)
-				
-				if Settings.AutoBank.Value == true then
-					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						SecureEnderChestItems()
-					end
-
-					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						CollectEnderChestItems()
-					end
-				end
-				
-			until not game
 		end)
 	end)
 end)
