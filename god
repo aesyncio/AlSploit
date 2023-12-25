@@ -1175,6 +1175,8 @@ function GetBow()
 		end
 	end
 	
+	print(Arrow)
+	
 	return BestBow
 end
 
