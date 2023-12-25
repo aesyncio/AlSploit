@@ -1175,9 +1175,8 @@ function GetBow()
 		end
 	end
 	
-	print(BestBow)
-	print(BestBow.Name)
 	print(BestBow.itemType)
+	print(BestBow.tool)
 	
 	return BestBow
 end
