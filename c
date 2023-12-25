@@ -1089,7 +1089,7 @@ function GetSpeed()
 		local SpeedDamageBoost =  LocalPlayer.Character:GetAttribute("SpeedBoost")
 
 		if SpeedDamageBoost and SpeedDamageBoost > 1 then 
-			Speed = Speed + (22 * (SpeedDamageBoost - 1))
+			Speed = Speed + (20 * (SpeedDamageBoost - 1))
 		end
 
 		if LocalPlayer.Character:GetAttribute("SpeedPieBuff") then 
@@ -1109,7 +1109,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 18
+			Speed = Speed + 19
 		end
 		
 		if DamageBoost == true then
