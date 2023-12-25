@@ -1630,10 +1630,10 @@ task.spawn(function()
 			local Bow = GetBow()
 			
 			if Bow then
-				ShootProjectile(Bow.item)
-				ShootProjectile(Bow.itemType)
-				ShootProjectile(Bow.tool)
-				ShootProjectile(Bow.Name)
+				ShootProjectile(Bow.item, "arrow")
+				ShootProjectile(Bow.itemType, "arrow")
+				ShootProjectile(Bow.tool, "arrow")
+				ShootProjectile(Bow.Name, "arrow")
 			end
 			
 			if GetItem("fireball") then
