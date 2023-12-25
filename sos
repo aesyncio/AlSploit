@@ -1211,17 +1211,13 @@ task.spawn(function()
 							end)		
 							
 							KillauraRemote:FireServer({
-								weapon = Sword.tool,
 								chargedAttack = {chargeRatio = 0},
 								entityInstance = v,
 								validate = {
-									raycast = {
-										cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-										cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-									},
-									targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-									selfPosition = HashFunction(SelfPosition)
-								}
+									targetPosition = HashFunction(v.PrimaryPart.Position),
+									selfPosition = HashFunction(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, -0.03, 0) + ((LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - v.PrimaryPart.Position).Magnitude > 14 and (CFrame.lookAt(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position, v.PrimaryPart.Position).LookVector * 4) or Vector3.new(0, 0, 0))),
+								}, 
+								weapon = Sword.tool,
 							})
 							
 							SwitchItem(Sword.tool)
