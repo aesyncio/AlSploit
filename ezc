@@ -1520,6 +1520,14 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	task.spawn(function()
+		if GetQueueType():find("skywars") then
+			repeat task.wait(1) until not IsAlive(LocalPlayer)
+			
+			PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
+		end
+	end)
+	
 	repeat task.wait(1) until GetMatchState() == 2
 
 	if Settings.PlayAgain.Value == true then
