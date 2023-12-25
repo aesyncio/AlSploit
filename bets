@@ -1684,7 +1684,7 @@ task.spawn(function()
 				local Bow = GetItem(BestBow.itemType)
 				
 				if Bow then
-					print(Arrow:lower())
+					print(Arrow.tool:lower())
 					
 					ShootProjectile(BestBow.itemType, Arrow)				
 				end
