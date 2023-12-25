@@ -1153,15 +1153,15 @@ end
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find(Name) then
-			return true
+			return v
 		end
 	end	
 
-	return false
+	return nil
 end
 
 function GetBow()
-	local BestBow, BestBowDamage = nil, 0
+	local Arrow, BestBow, BestBowDamage = nil, nil, 0
 
 	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find("bow") then 
@@ -1170,15 +1170,12 @@ function GetBow()
 			local Damage = ProjectileMeta[Arrow].combat.damage
 			
 			if Damage > BestBowDamage then
-				BestBow, BestBowDamage = v, Damage
+				Arrow, BestBow, BestBowDamage = Arrow, Item, Damage
 			end
 		end
 	end
 	
-	print(BestBow.itemType)
-	print(BestBow.tool)
-	
-	return BestBow
+	return BestBow, Arrow
 end
 
 task.spawn(function()
@@ -1628,11 +1625,16 @@ task.spawn(function()
 		local NearestPlayer = FindNearestPlayer()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
-			local Bow = GetBow()
+			local BestBow, Arrow = GetBow()
 			
-			if Bow and GetItem(Bow.itemType) then
-				ShootProjectile(Bow.itemType, "arrow")
+			if BestBow then
+				local Bow = GetItem(BestBow)
+				
+				if Bow then
+					ShootProjectile(Bow.itemType, Arrow.itemType)
+				end
 			end
+			
 			
 			if GetItem("fireball") then
 				ShootProjectile("fireball", "fireball")
