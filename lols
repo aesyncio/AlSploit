@@ -1153,11 +1153,11 @@ end
 function GetItem(Name)
 	for i, v in next, (GetInventory(LocalPlayer).items) do
 		if v.itemType:find(Name) then
-			return v
+			return true
 		end
 	end	
 
-	return nil
+	return false
 end
 
 function GetBow()
@@ -1631,7 +1631,7 @@ task.spawn(function()
 				local Bow = GetItem(BestBow.itemType)
 				
 				if Bow then
-					ShootProjectile(Bow.itemType, Arrow.itemType)
+					ShootProjectile(BestBow.itemType, Arrow.itemType)
 				end
 			end
 			
