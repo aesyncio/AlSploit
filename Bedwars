@@ -702,12 +702,13 @@ task.spawn(function()
 	until not game
 end)
 
-task.wait(1)
+task.wait(0.8)
 
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
+local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 
 local KillAuraAnimationCooldown = true
@@ -730,9 +731,12 @@ local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
 local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
+local EquipItemRemote = AlSploitApi.EquipItemRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
+local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
+local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
@@ -987,6 +991,12 @@ function KillHumanoid(Time)
 	end
 end
 
+function SwitchItem(Item)
+	if LocalPlayer.Character.HandInvItem.Value ~= Item then
+		Client:Get(EquipItemRemote):CallServerAsync({hand = Item})
+	end	
+end
+
 function Invisible()
 	if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then 
 		local Animation = Instance.new("Animation")
@@ -1020,19 +1030,22 @@ function SetCamera(Camera)
 end
 
 function GetSword()
-	local Highest, Returning = -9e9, nil
+	local HighestDamage, Sword = -math.huge, nil
 
 	for i, v in next, GetInventory(LocalPlayer).items do 
-		local Power = table.find(BedwarsSwords, v.itemType)
-
-		if not Power then continue end 
-		if Power > Highest then 
-			Returning = v
-			Highest = Power
+		local SwordMeta = ItemTable[v.itemType].sword
+		
+		if SwordMeta then
+			local SwordDamage = SwordMeta.damage / SwordMeta.attackSpeed
+			
+			if SwordDamage > HighestDamage then
+				HighestDamage = SwordDamage
+				Sword = v
+			end
 		end
 	end
 
-	return Returning
+	return Sword
 end
 
 function IsMoving()	
@@ -1077,7 +1090,7 @@ function GetSpeed()
 		local SpeedDamageBoost =  LocalPlayer.Character:GetAttribute("SpeedBoost")
 
 		if SpeedDamageBoost and SpeedDamageBoost > 1 then 
-			Speed = Speed + (22 * (SpeedDamageBoost - 1))
+			Speed = Speed + (20 * (SpeedDamageBoost - 1))
 		end
 
 		if LocalPlayer.Character:GetAttribute("SpeedPieBuff") then 
@@ -1097,7 +1110,7 @@ function GetSpeed()
 		end
 		
 		if ZephyrOrb ~= 0 then
-			Speed = Speed + 18
+			Speed = Speed + 19
 		end
 		
 		if DamageBoost == true then
@@ -1150,6 +1163,25 @@ function GetItem(Name)
 	return false
 end
 
+function GetBow()
+	local BestBow, BestBowDamage = nil, 0
+
+	for i, v in next, (GetInventory(LocalPlayer).items) do
+		if v.itemType:find("bow") then 
+			local Item = ItemTable[v.itemType].projectileSource
+			local Arrow = Item.projectileType("arrow")	
+			local Damage = ProjectileMeta[Arrow].combat.damage
+			
+			if Damage > BestBowDamage then
+				BestBowDamage = Damage
+				BestBow = v
+			end
+		end
+	end	
+	
+	return BestBow
+end
+
 task.spawn(function()
 	local function KillAuraHit()	
 		for i, v in next, Players do
@@ -1162,15 +1194,12 @@ task.spawn(function()
 					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-
+					
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
 						if Sword then
-
-							Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-
-							spawn(function()
+							task.spawn(function()
 								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 									KillAuraAnimationCooldown = false
 
@@ -1184,7 +1213,9 @@ task.spawn(function()
 							end)		
 
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-
+							
+							SwitchItem(Sword.tool)
+							
 							KillauraRemote:FireServer({
 								weapon = Sword.tool,
 								chargedAttack = {chargeRatio = 0},
@@ -1197,7 +1228,7 @@ task.spawn(function()
 									targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
 									selfPosition = HashFunction(SelfPosition)
 								}
-							})		
+							})							
 						end
 					end
 				end
@@ -1208,6 +1239,7 @@ task.spawn(function()
 	task.spawn(function()
 		repeat
 			task.wait()
+			
 			task.spawn(KillAuraHit)
 		until not game
 	end)
@@ -1490,6 +1522,14 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	task.spawn(function()
+		if GetQueueType():find("skywars") then
+			repeat task.wait(1) until not IsAlive(LocalPlayer)
+			
+			PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
+		end
+	end)
+	
 	repeat task.wait(1) until GetMatchState() == 2
 
 	if Settings.PlayAgain.Value == true then
@@ -1581,30 +1621,32 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	repeat
+	repeat		
 		task.wait()
 
 		local NearestPlayer = FindNearestPlayer()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
-			if GetItem("wood_bow") then
-				ShootProjectile("wood_bow", "arrow")
+			local BestBow = GetBow()
+			
+			if BestBow and IsAlive(LocalPlayer) then
+				SwitchItem(BestBow.tool)
+				
+				local Bow = GetItem(BestBow.itemType)
+				
+				if Bow then					
+					ShootProjectile(BestBow.itemType, "arrow")
+				end
 			end
 			
-			if GetItem("wood_crossbow") then
-				ShootProjectile("wood_crossbow", "arrow")
-			end
-			
-			if GetItem("tactical_crossbow") then
-				ShootProjectile("tactical_crossbow", "arrow")
-			end
-			
-			if GetItem("fireball") then
-				ShootProjectile("fireball", "fireball")
-			end
+			if not BestBow and IsAlive(LocalPlayer) then
+				if GetItem("fireball") then
+					ShootProjectile("fireball", "fireball")
+				end
 
-			if GetItem("snowball") then
-				ShootProjectile("snowball", "snowball")
+				if GetItem("snowball") then
+					ShootProjectile("snowball", "snowball")
+				end
 			end
 		end
 	until not game
@@ -1639,7 +1681,7 @@ task.spawn(function()
 				task.spawn(function()					
 					DamageBoost = true
 
-					task.wait(0.9)
+					task.wait(0.8)
 
 					DamageBoost = false	
 				end) 
@@ -1847,6 +1889,23 @@ task.spawn(function()
 		Settings.AutoBank.Value = CallBack
 		
 		task.spawn(function()
+			repeat
+				task.wait(0.5)
+
+				if Settings.AutoBank.Value == true then
+					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						SecureEnderChestItems()
+					end
+
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
+				end
+
+			until not game
+		end)
+		
+		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
 					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
@@ -1877,23 +1936,6 @@ task.spawn(function()
 					end
 				end)
 			end)
-		end)
-		
-		task.spawn(function()
-			repeat
-				task.wait(0.5)
-				
-				if Settings.AutoBank.Value == true then
-					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						SecureEnderChestItems()
-					end
-
-					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						CollectEnderChestItems()
-					end
-				end
-				
-			until not game
 		end)
 	end)
 end)
