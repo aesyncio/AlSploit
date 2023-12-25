@@ -1627,6 +1627,8 @@ task.spawn(function()
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			local Arrow, BestBow = GetBow()
 			
+			print(BestBow.itemType)
+			
 			if BestBow then
 				local Bow = GetItem(BestBow.itemType)
 				
