@@ -1182,8 +1182,11 @@ end
 task.spawn(function()
 	local function KillAuraHitMob()
 		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+			print("1")
 			for i, v in next, (CollectionServiceDiamondGuardian) do
-				if v and v.PrimaryPart then
+				print("2")
+				if v.PrimaryPart then
+					print("3")
 					local LocalPlayerCharacter = LocalPlayer.Character
 
 					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
