@@ -1185,10 +1185,9 @@ task.spawn(function()
 			for i, v in next, (CollectionServiceDiamondGuardian) do
 				if v and v.PrimaryPart then
 					local LocalPlayerCharacter = LocalPlayer.Character
-					local EnemyCharacter = v
 
 					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
-					local EnemyHumanoidRootPart = EnemyCharacter.PrimaryPart
+					local EnemyHumanoidRootPart = v.PrimaryPart
 					
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 					
@@ -1214,7 +1213,7 @@ task.spawn(function()
 							KillauraRemote:FireServer({
 								weapon = Sword.tool,
 								chargedAttack = {chargeRatio = 0},
-								entityInstance = v.Character,
+								entityInstance = v,
 								validate = {
 									raycast = {
 										cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
