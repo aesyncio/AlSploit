@@ -1634,6 +1634,7 @@ task.spawn(function()
 				
 				if Bow then
 					ShootProjectile(BestBow.itemType, "arrow")
+					SwitchItem(BestBow.tool)
 				end
 			end
 			
