@@ -1622,6 +1622,8 @@ end)
 
 task.spawn(function()
 	repeat
+		local Tick = tick()
+		
 		task.wait()
 
 		local NearestPlayer = FindNearestPlayer()
@@ -1635,6 +1637,8 @@ task.spawn(function()
 				if Bow then
 					ShootProjectile(BestBow.itemType, "arrow")
 					SwitchItem(BestBow.tool)
+					
+					print(tick() - Tick)
 				end
 			end
 			
@@ -1679,7 +1683,7 @@ task.spawn(function()
 				task.spawn(function()					
 					DamageBoost = true
 
-					task.wait(0.9)
+					task.wait(0.8)
 
 					DamageBoost = false	
 				end) 
