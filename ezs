@@ -1174,7 +1174,7 @@ function GetBow()
 		end
 	end	
 	
-	return BestBow, ProjectileMeta.projectile:find("arrow")
+	return BestBow
 end
 
 task.spawn(function()
@@ -1676,7 +1676,7 @@ task.spawn(function()
 		local NearestPlayer = FindNearestPlayer()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
-			local BestBow, Arrow = GetBow()
+			local BestBow = GetBow()
 			
 			if BestBow and IsAlive(LocalPlayer) then
 				SwitchItem(BestBow.tool)
@@ -1684,7 +1684,7 @@ task.spawn(function()
 				local Bow = GetItem(BestBow.itemType)
 				
 				if Bow then					
-					ShootProjectile(BestBow.itemType, Arrow:lower())				
+					ShootProjectile(BestBow.itemType, "arrow")				
 				end
 			end
 			
