@@ -1207,6 +1207,8 @@ task.spawn(function()
 									KillAuraAnimationCooldown = true
 								end
 							end)		
+							
+							SwitchItem(Sword.tool)
 
 							KillauraRemote:FireServer({
 								chargedAttack = {chargeRatio = 0},
@@ -1216,9 +1218,7 @@ task.spawn(function()
 									selfPosition = HashFunction(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, -0.03, 0) + ((LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - v.PrimaryPart.Position).Magnitude > 14 and (CFrame.lookAt(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position, v.PrimaryPart.Position).LookVector * 4) or Vector3.new(0, 0, 0))),
 								}, 
 								weapon = Sword.tool,
-							})
-
-							SwitchItem(Sword.tool)
+							})							
 						end
 					end
 				end
@@ -1684,6 +1684,9 @@ task.spawn(function()
 				local Bow = GetItem(BestBow.itemType)
 				
 				if Bow then
+					print(Arrow.itemType:lower())
+					print(Arrow.tool:lower())
+					
 					ShootProjectile(BestBow.itemType, Arrow)				
 				end
 			end
