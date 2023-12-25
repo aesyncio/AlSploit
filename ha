@@ -740,6 +740,24 @@ local ItemTable = AlSploitApi.ItemTable
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
 
+function FindNearestDiamondGuardian(MaxDistance)
+	local NearestDiamondGuardianDistance = MaxDistance or math.huge
+	local NearestDiamondGuardianPlayer = nil
+
+	for i, v in next, (CollectionServiceDiamondGuardian) do
+		if v.PrimaryPart then
+			local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < NearestDiamondGuardianDistance then
+				NearestDiamondGuardianPlayer = v
+				NearestDiamondGuardianDistance = Distance
+			end
+		end
+	end
+	
+	return NearestDiamondGuardianPlayer, NearestDiamondGuardianDistance
+end
+
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 
@@ -1182,55 +1200,52 @@ end
 task.spawn(function()
 	local function KillAuraHitMob()
 		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-			print("1")
-			for i, v in next, (CollectionServiceDiamondGuardian) do
-				print("2")
-				if v.PrimaryPart then
-					print("3")
-					local LocalPlayerCharacter = LocalPlayer.Character
+			local NearestDiamondGuardian = FindNearestDiamondGuardian(Settings.Killaura.Range)
 
-					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
-					local EnemyHumanoidRootPart = v.PrimaryPart
-					
-					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-					
-					if Magnitude <= Settings.KillAura.Range then
-						local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+			if NearestDiamondGuardian then
+				local LocalPlayerCharacter = LocalPlayer.Character
 
-						local Sword = GetSword()
-						
-						if Sword then
-							task.spawn(function()
-								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
-									KillAuraAnimationCooldown = false
+				local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
+				local EnemyHumanoidRootPart = NearestDiamondGuardian.PrimaryPart
 
-									for i, v in next, Animations["Slow"] do
-										TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-										task.wait(v.Time - 0.01)
-									end
+				local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 
-									KillAuraAnimationCooldown = true
+				if Magnitude <= Settings.KillAura.Range then
+					local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+
+					local Sword = GetSword()
+
+					if Sword then
+						task.spawn(function()
+							if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
+								KillAuraAnimationCooldown = false
+
+								for i, v in next, Animations["Slow"] do
+									TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+									task.wait(v.Time - 0.01)
 								end
-							end)		
-							
-							KillauraRemote:FireServer({
-								chargedAttack = {chargeRatio = 0},
-								entityInstance = v,
-								validate = {
-									targetPosition = HashFunction(v.PrimaryPart.Position),
-									selfPosition = HashFunction(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, -0.03, 0) + ((LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - v.PrimaryPart.Position).Magnitude > 14 and (CFrame.lookAt(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position, v.PrimaryPart.Position).LookVector * 4) or Vector3.new(0, 0, 0))),
-								}, 
-								weapon = Sword.tool,
-							})
-							
-							SwitchItem(Sword.tool)
-						end
+
+								KillAuraAnimationCooldown = true
+							end
+						end)		
+
+						KillauraRemote:FireServer({
+							chargedAttack = {chargeRatio = 0},
+							entityInstance = NearestDiamondGuardian,
+							validate = {
+								targetPosition = HashFunction(NearestDiamondGuardian.PrimaryPart.Position),
+								selfPosition = HashFunction(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position + Vector3.new(0, -0.03, 0) + ((LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestDiamondGuardian.PrimaryPart.Position).Magnitude > 14 and (CFrame.lookAt(LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position, NearestDiamondGuardian.PrimaryPart.Position).LookVector * 4) or Vector3.new(0, 0, 0))),
+							}, 
+							weapon = Sword.tool,
+						})
+
+						SwitchItem(Sword.tool)
 					end
 				end
 			end
 		end	
 	end
-	
+
 	local function KillAuraHit()	
 		for i, v in next, Players do
 			if IsAlive(v) and Settings.KillAura.Value == true and v.Team ~= LocalPlayer.Team then
@@ -1242,6 +1257,10 @@ task.spawn(function()
 					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
+
+					if Magnitude > Settings.KillAura.Range and FindNearestDiamondGuardian(Settings.Killaura.Range) then
+						KillAuraHitMob()
+					end
 
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
@@ -1275,7 +1294,7 @@ task.spawn(function()
 									selfPosition = HashFunction(SelfPosition)
 								}
 							})
-							
+
 							SwitchItem(Sword.tool)
 						end
 					end
@@ -1287,8 +1306,7 @@ task.spawn(function()
 	task.spawn(function()
 		repeat
 			task.wait()
-			
-			task.spawn(KillAuraHitMob)
+
 			task.spawn(KillAuraHit)
 		until not game
 	end)
