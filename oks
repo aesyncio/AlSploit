@@ -1175,6 +1175,8 @@ function GetBow()
 		end
 	end
 	
+	print(BestBow)
+	
 	return BestBow
 end
 
@@ -1628,7 +1630,10 @@ task.spawn(function()
 			local Bow = GetBow()
 			
 			if Bow then
-				ShootProjectile(Bow)
+				ShootProjectile(Bow.item)
+				ShootProjectile(Bow.itemType)
+				ShootProjectile(Bow.tool)
+				ShootProjectile(Bow.Name)
 			end
 			
 			if GetItem("fireball") then
