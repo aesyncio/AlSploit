@@ -1193,11 +1193,24 @@ task.spawn(function()
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 					
 					if Magnitude <= Settings.KillAura.Range then
-						local SelfPosition = LocalPlayerHumanoidRootPart.Position + (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14) or Vector3.zero)
+						local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
 						local Sword = GetSword()
 						
 						if Sword then
+							task.spawn(function()
+								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
+									KillAuraAnimationCooldown = false
+
+									for i, v in next, Animations["Slow"] do
+										TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+										task.wait(v.Time - 0.01)
+									end
+
+									KillAuraAnimationCooldown = true
+								end
+							end)		
+							
 							KillauraRemote:FireServer({
 								weapon = Sword.tool,
 								chargedAttack = {chargeRatio = 0},
@@ -1211,7 +1224,9 @@ task.spawn(function()
 									selfPosition = HashFunction(SelfPosition)
 								}
 							})
-						end					
+							
+							SwitchItem(Sword.tool)
+						end
 					end
 				end
 			end
