@@ -1029,19 +1029,22 @@ function SetCamera(Camera)
 end
 
 function GetSword()
-	local Highest, Returning = -9e9, nil
+	local HighestDamage, Sword = -math.huge, nil
 
 	for i, v in next, GetInventory(LocalPlayer).items do 
-		local Power = table.find(BedwarsSwords, v.itemType)
-
-		if not Power then continue end 
-		if Power > Highest then 
-			Returning = v
-			Highest = Power
+		local SwordMeta = ItemTable[v.itemType].sword
+		
+		if SwordMeta then
+			local SwordDamage = SwordMeta.damage / SwordMeta.attackSpeed
+			
+			if SwordDamage > HighestDamage then
+				HighestDamage = SwordDamage
+				Sword = v
+			end
 		end
 	end
 
-	return Returning
+	return Sword
 end
 
 function IsMoving()	
@@ -1169,7 +1172,8 @@ function GetBow()
 			local Damage = ProjectileMeta[Arrow].combat.damage
 			
 			if Damage > BestBowDamage then
-				BestBow, BestBowDamage = v, Damage
+				BestBowDamage = Damage
+				BestBow = v
 			end
 		end
 	end	
