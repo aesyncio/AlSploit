@@ -1170,7 +1170,7 @@ function GetBow()
 			local Damage = ProjectileMeta[Arrow].combat.damage
 			
 			if Damage > BestBowDamage then
-				Arrow, BestBow, BestBowDamage = Arrow, Item, Damage
+				Arrow, BestBow, BestBowDamage = Arrow, v, Damage
 			end
 		end
 	end
@@ -1626,8 +1626,6 @@ task.spawn(function()
 		
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			local Arrow, BestBow = GetBow()
-			
-			print(BestBow.itemType)
 			
 			if BestBow then
 				local Bow = GetItem(BestBow.itemType)
