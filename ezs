@@ -1610,7 +1610,7 @@ task.spawn(function()
 							end
 							
 							if Settings.Nuker.ToolCheck == true then
-								if GetItem("axe") or GetItem("pickaxe") or GetItem("shears") then
+								if GetItem("axe") or GetItem("shears") then
 									ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 										["blockRef"] = {
 											["blockPosition"] = GetServerPosition(TargetBlock.Position)
@@ -2564,5 +2564,3 @@ task.spawn(function()
 		Players = game.Players:GetPlayers()		
 	until not game
 end)
-
-game:GetService("CollectionService"):GetTagged("Monster")
