@@ -1844,6 +1844,10 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	repeat task.wait() until GetMatchState() ~= 0
+	
+	task.wait(0.3)
+	
 	for i, v in next, Players do
 		if IsAlive(v) then
 			v.Character.Humanoid.HealthChanged:Connect(function(Health)
