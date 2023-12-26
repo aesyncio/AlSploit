@@ -1593,6 +1593,7 @@ task.spawn(function()
 					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
 						for i, v in pairs(CollectionServiceBlocks) do
 							if v.Name:lower():find("ore") then
+								print("e")
 								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 									["blockRef"] = {
 										["blockPosition"] = GetServerPosition(v.Position)
