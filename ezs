@@ -1337,7 +1337,7 @@ task.spawn(function()
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
-									entityInstance = DiamondGuardian.Character,
+									entityInstance = DiamondGuardian,
 									validate = {
 										raycast = {
 											cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
