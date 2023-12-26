@@ -1608,14 +1608,28 @@ task.spawn(function()
 							if not RaycastResult.Instance then
 								TargetBlock = NearestBed
 							end
+							
+							if Settings.Nuker.ToolCheck == true then
+								if GetItem("axe") or GetItem("pickaxe") or GetItem("shears") then
+									ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+										["blockRef"] = {
+											["blockPosition"] = GetServerPosition(TargetBlock.Position)
+										},
+										["hitPosition"] = GetServerPosition(TargetBlock.Position),
+										["hitNormal"] = GetServerPosition(TargetBlock.Position)
+									})
+								end								
+							end
 
-							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
-								["blockRef"] = {
-									["blockPosition"] = GetServerPosition(TargetBlock.Position)
-								},
-								["hitPosition"] = GetServerPosition(TargetBlock.Position),
-								["hitNormal"] = GetServerPosition(TargetBlock.Position)
-							})
+							if Settings.Nuker.ToolCheck == false then
+								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+									["blockRef"] = {
+										["blockPosition"] = GetServerPosition(TargetBlock.Position)
+									},
+									["hitPosition"] = GetServerPosition(TargetBlock.Position),
+									["hitNormal"] = GetServerPosition(TargetBlock.Position)
+								})
+							end							
 						end
 					end
 				end
@@ -2404,20 +2418,35 @@ task.spawn(function()
 			Settings.Nuker.Value = CallBack
 		end)
 		
+		local ToolCheckValue = false
 		local RangeValue = false
+		
+		local ToolCheck
 		local Range
+		
+		DropDownButton.Activated:Connect(function()	
+			if ToolCheckValue == false then
+				ToolCheck = CreateMiniToggle(WorldWindow, "ToolCheck", Settings.Nuker.ToolCheck, LayoutOrder + 1, function(Callback)
+					Settings.Nukert.ToolCheck = Callback
+				end)
+			end
 
-		DropDownButton.Activated:Connect(function()			
+
 			if RangeValue == false then
-				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 1, function(Callback)
+				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 2, function(Callback)
 					Settings.Nuker.Range = Callback
 				end)
+			end			
+			
+			if ToolCheckValue == true then					
+				ToolCheck:Destroy()
 			end
 
 			if RangeValue == true then					
 				Range:Destroy()
 			end
 
+			ToolCheckValue = not ToolCheckValue
 			RangeValue = not RangeValue
 		end)	
 	end			
