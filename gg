@@ -830,7 +830,7 @@ function FindNearestDiamondGuardian(MaxDistance)
 		local NearestDiamondGuardian
 
 		if v.PrimaryPart then
-			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
 			if Distance < NearestDiamondGuardianDistance then
 				NearestDiamondGuardianDistance = Distance
