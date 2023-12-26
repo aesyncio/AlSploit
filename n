@@ -711,7 +711,6 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local CollectionServiceChest = CollectionService:GetTagged("chest")
-local CollectionServiceOre = CollectionService:GetTagged("ore")
 
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
@@ -1592,14 +1591,16 @@ task.spawn(function()
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 					
 					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
-						for i, v in pairs(CollectionServiceOre) do
-							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
-								["blockRef"] = {
-									["blockPosition"] = GetServerPosition(v.Position)
-								},
-								["hitPosition"] = GetServerPosition(v.Position),
-								["hitNormal"] = GetServerPosition(v.Position)
-							})	
+						for i, v in pairs(CollectionServiceBlocks) do
+							if v.Name:lower():find("ore") then
+								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+									["blockRef"] = {
+										["blockPosition"] = GetServerPosition(v.Position)
+									},
+									["hitPosition"] = GetServerPosition(v.Position),
+									["hitNormal"] = GetServerPosition(v.Position)
+								})
+							end							
 						end
 					end
 
