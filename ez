@@ -607,7 +607,7 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitPublicUpdate7"
+local SaveFileName = "AlSploitPublicUpdate8"
 
 local IsLoaded = false
 local Settings
@@ -629,7 +629,7 @@ function CreateSettingsFile()
 		Indicators = {Value = true},
 		GalaxySky = {Value = true},
 		PlayAgain = {Value = true},
-		Invisible = {Value = true},
+		Invisible = {Value = false},
 		AimAssist = {Value = true},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false},
 		Velocity = {Value = true},	
@@ -1591,7 +1591,7 @@ task.spawn(function()
 				if NearestBed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 					
-					if NearestBed and Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres.Value == true then
+					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres.Value == true then
 						for i, v in pairs(CollectionServiceOre) do
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 								["blockRef"] = {
@@ -2418,21 +2418,34 @@ task.spawn(function()
 			Settings.Nuker.Value = CallBack
 		end)
 		
+		local BreakOresValue = false
 		local RangeValue = false
 
+		local BreakOres
 		local Range
 		
 		DropDownButton.Activated:Connect(function()	
+			if BreakOresValue == false then
+				BreakOres = CreateMiniToggle(WorldWindow, "BreakOres", Settings.Nuker.BreakOres, LayoutOrder + 1, function(Callback)
+					Settings.Nuker.BreakOres = Callback
+				end)
+			end		
+			
 			if RangeValue == false then
 				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 2, function(Callback)
 					Settings.Nuker.Range = Callback
 				end)
 			end			
 
+			if BreakOresValue == true then					
+				BreakOres:Destroy()
+			end
+			
 			if RangeValue == true then					
 				Range:Destroy()
 			end
 
+			BreakOresValue = not BreakOresValue
 			RangeValue = not RangeValue
 		end)	
 	end			
