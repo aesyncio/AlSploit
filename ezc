@@ -799,10 +799,12 @@ end
 function SecureEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
-
-	for i, v in pairs(Inventory:GetChildren()) do
-		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			ChestGiveItemRemote:InvokeServer(EnderChest, v)
+	
+	if Inventory then
+		for i, v in pairs(Inventory:GetChildren()) do
+			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+				ChestGiveItemRemote:InvokeServer(EnderChest, v)
+			end
 		end
 	end
 end
@@ -814,7 +816,7 @@ function TweenToNearestPlayer()
 		if NearestPlayer then
 			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.PrimaryPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
 
 
 			PlayerTpTween:Play()
@@ -830,7 +832,7 @@ function TweenToNearestBed()
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
 
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local BedTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
+			local BedTpTween = TweenService:Create(LocalPlayer.Character.PrimaryPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
 
 			BedTpTween:Play()
 		end
