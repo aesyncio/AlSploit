@@ -1733,12 +1733,24 @@ task.spawn(function()
 			local BestBow = GetBow()
 			
 			if BestBow and IsAlive(LocalPlayer) then
-				SwitchItem(BestBow.tool)
+				if Settings.Aimbot.ToolCheck == true then
+					if GetItem(BestBow.itemType) then
+						local Bow = GetItem(BestBow.itemType)
+
+						if Bow then					
+							ShootProjectile(BestBow.itemType, "arrow")
+						end
+					end
+				end
 				
-				local Bow = GetItem(BestBow.itemType)
-				
-				if Bow then					
-					ShootProjectile(BestBow.itemType, "arrow")
+				if Settings.Aimbot.ToolCheck == false then
+					SwitchItem(BestBow.tool)
+					
+					local Bow = GetItem(BestBow.itemType)
+
+					if Bow then					
+						ShootProjectile(BestBow.itemType, "arrow")
+					end
 				end
 			end
 			
@@ -1956,6 +1968,23 @@ task.spawn(function()
 	local Aimbot, DropDownButton, LayoutOrder = CreateToggle(BlatantWindow, "Aimbot", Settings.Aimbot.Value, function(CallBack)
 		Settings.Aimbot.Value = CallBack
 	end)
+	
+	local ToolCheckValue = false
+	local ToolCheck
+
+	DropDownButton.Activated:Connect(function()			
+		if ToolCheckValue == false then
+			ToolCheck = CreateMiniToggle(WorldWindow, "ToolCheck", Settings.Nuker.ToolCheck, LayoutOrder + 1, function(Callback)
+				Settings.Nuker.ToolCheck = Callback
+			end)
+		end
+
+		if ToolCheckValue == true then					
+			ToolCheck:Destroy()
+		end
+
+		ToolCheckValue = not ToolCheckValue
+	end)	
 end)
 
 task.spawn(function()
