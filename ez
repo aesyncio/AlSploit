@@ -1283,7 +1283,7 @@ end
 
 task.spawn(function()
 	local function KillAuraHitMobs()	
-		local DiamondGuardian = FindNearestDiamondGuardian(Settings.Killaura.Range)
+		local DiamondGuardian = FindNearestDiamondGuardian(Settings.KillAura.Range)
 
 		if Settings.KillAura.Value == true and DiamondGuardian then
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and DiamondGuardian and DiamondGuardian.PrimaryPart then
