@@ -800,11 +800,13 @@ function SecureEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
-	for i, v in pairs(Inventory:GetChildren()) do
-		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-			ChestGiveItemRemote:InvokeServer(EnderChest, v)
+	if Inventory then
+		for i, v in pairs(Inventory:GetChildren()) do
+			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+				ChestGiveItemRemote:InvokeServer(EnderChest, v)
+			end
 		end
-	end
+	end	
 end
 
 function TweenToNearestPlayer()
@@ -2588,9 +2590,7 @@ task.spawn(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
 							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
-								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
-
-								task.wait(0.1)
+								task.wait(0.25)
 
 								TweenToNearestPlayer()
 							end
