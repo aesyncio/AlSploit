@@ -1187,7 +1187,7 @@ task.spawn(function()
 		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 		
 		for i, v in pairs(CollectionServiceDiamondGuardian) do
-			if IsAlive(v) and Settings.KillAura.Value == true and v.Team ~= LocalPlayer.Team then
+			if Settings.KillAura.Value == true then
 				if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then
 					local LocalPlayerCharacter = LocalPlayer.Character
 					local EnemyCharacter = v
