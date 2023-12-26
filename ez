@@ -493,7 +493,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaxValue, MinValue, LayoutOrde
 			end
 		until not Slider
 	end)
-	
+
 	return Slider
 end
 
@@ -580,25 +580,25 @@ end
 function CreateOutline(Player)
 	if IsAlive(Player) then
 		local BillBoard = Instance.new("BillboardGui")
-		
+
 		BillBoard.Size = UDim2.new(4, 0, 4, 0)
 		BillBoard.AlwaysOnTop = true
 		BillBoard.Name = "Esp"
 
 		local Frame = Instance.new("Frame")
-		
+
 		Frame.Size = UDim2.new(1, 0, 1.5, 0)
 		Frame.Position = UDim2.new(0, 0, -Player.Character.LowerTorso.Size.Y / 2 or -Player.PrimaryPart.Size.Y / 2, 0)
 		Frame.BackgroundTransparency = 1
 
 		local Stroke = Instance.new("UIStroke")
-		
+
 		Stroke.Thickness = 1.5
 		Stroke.Color = Color3.new(0.635294, 0.313725, 1)
 		Stroke.Transparency = 0
-		
+
 		local UICorner = Instance.new("UICorner")
-		
+
 		UICorner.Parent = Frame
 		UICorner.CornerRadius = UDim.new(0, 3)
 
@@ -651,7 +651,7 @@ function CreateSettingsFile()
 		Esp = {Value = true},
 		Fov = {Value = false, Fov = 100}
 	}
-	
+
 	FirstTime = false
 
 	local JsonEncodeSettings = HttpService:JSONEncode(Settings)
@@ -673,7 +673,7 @@ end
 function SaveSettings()	
 	if not FirstTime then
 		local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-		
+
 		if writefile then
 			writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
 		end
@@ -700,7 +700,7 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(1)
-		
+
 		SaveSettings()
 	until not game
 end)
@@ -771,7 +771,7 @@ end
 function TweenToNearestPlayer()
 	if IsAlive(LocalPlayer) then
 		local NearestPlayer = FindNearestPlayer()
-		
+
 		if NearestPlayer then
 			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
@@ -856,18 +856,18 @@ end
 function FindNearestBed()
 	local MinDistance = math.huge
 	local NearestBed = nil
-	
+
 	for i, v in next, (game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-			
+
 			if Distance < MinDistance then
 				MinDistance = Distance
 				NearestBed = v
 			end
 		end
 	end
-	
+
 	return NearestBed
 end
 
@@ -921,7 +921,7 @@ function TouchingGround()
 				IsTouchingFloor = true			
 			end
 		end	
-		
+
 		return IsTouchingFloor
 	end
 end
@@ -949,7 +949,7 @@ function SetCollisions(Value)
 			LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
 		end
 	end
-	
+
 	if Value == false then
 		for i, v in next, (LocalPlayer.Character:GetDescendants()) do
 			if v:IsA("BasePart") and v ~= LocalPlayer.Character.PrimaryPart and v.CanCollide then
@@ -957,7 +957,7 @@ function SetCollisions(Value)
 				v.CanTouch = false
 			end
 		end
-		
+
 		LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)	
 		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.6
 		LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
@@ -1074,10 +1074,10 @@ function GetSword()
 
 	for i, v in next, GetInventory(LocalPlayer).items do 
 		local SwordMeta = ItemTable[v.itemType].sword
-		
+
 		if SwordMeta then
 			local SwordDamage = SwordMeta.damage / SwordMeta.attackSpeed
-			
+
 			if SwordDamage > HighestDamage then
 				HighestDamage = SwordDamage
 				Sword = v
@@ -1106,18 +1106,18 @@ end
 
 task.spawn(function()
 	repeat task.wait() until GetMatchState() ~= 0
-	
+
 	local ZephyrUpdate = ZephyrController.updateJump
-	
+
 	ZephyrController.updateJump = function(self, orb, ...)
 		if IsAlive(LocalPlayer) and orb then
 			ZephyrOrb = 1
 		end
-		
+
 		if not IsAlive(LocalPlayer) or not orb then
 			ZephyrOrb = 0
 		end
-		
+
 		return ZephyrUpdate(self, orb, ...)
 	end
 end)
@@ -1148,11 +1148,11 @@ function GetSpeed()
 		if Armor.itemType == "Speed_boots" then 
 			Speed = Speed + 25
 		end
-		
+
 		if ZephyrOrb ~= 0 then
 			Speed = Speed + 19
 		end
-		
+
 		if DamageBoost == true then
 			Speed = Speed + 22.5
 		end
@@ -1169,23 +1169,23 @@ end
 
 function IsAlive(Player)
 	Player = Player or LocalPlayer
-	
+
 	if not Player.Character then
 		return false
 	end
-	
+
 	if not Player.Character:FindFirstChild("Head") then		
 		return false
 	end
-	
+
 	if not Player.Character:FindFirstChild("Humanoid") then 
 		return  false 
 	end
-	
+
 	if Player.Character:GetAttribute("Health") <= 0 then 
 		return  false 
 	end
-	
+
 	if not Player.Character:FindFirstChild("HumanoidRootPart") then 	
 		return  false 
 	end	
@@ -1211,14 +1211,14 @@ function GetBow()
 			local Item = ItemTable[v.itemType].projectileSource
 			local Arrow = Item.projectileType("arrow")	
 			local Damage = ProjectileMeta[Arrow].combat.damage
-			
+
 			if Damage > BestBowDamage then
 				BestBowDamage = Damage
 				BestBow = v
 			end
 		end
 	end	
-	
+
 	return BestBow
 end
 
@@ -1253,10 +1253,12 @@ task.spawn(function()
 							end)		
 
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-							
+
 							if Settings.KillAura.ToolCheck == false then
-								SwitchItem(Sword.tool)
-								
+								if not GetItem(Sword.itemType) then
+									SwitchItem(Sword.tool)
+								end
+
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
@@ -1271,7 +1273,7 @@ task.spawn(function()
 									}
 								})
 							end
-							
+
 							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword.itemType) then
 									KillauraRemote:FireServer({
@@ -1295,7 +1297,7 @@ task.spawn(function()
 			end
 		end
 	end
-	
+
 	local function KillAuraHit()	
 		for i, v in next, Players do
 			if IsAlive(v) and Settings.KillAura.Value == true and v.Team ~= LocalPlayer.Team then
@@ -1307,7 +1309,7 @@ task.spawn(function()
 					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-					
+
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
@@ -1326,10 +1328,12 @@ task.spawn(function()
 							end)		
 
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-							
+
 							if Settings.KillAura.ToolCheck == false then
-								SwitchItem(Sword.tool)
-								
+								if not GetItem(Sword.itemType) then
+									SwitchItem(Sword.tool)
+								end
+
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
@@ -1361,7 +1365,7 @@ task.spawn(function()
 										}
 									})
 								end
-							end														
+							end
 						end
 					end
 				end
@@ -1372,15 +1376,15 @@ task.spawn(function()
 	task.spawn(function()
 		repeat
 			task.wait()
-			
+
 			task.spawn(KillAuraHit)
 		until not game
 	end)
-	
+
 	task.spawn(function()
 		repeat
 			task.wait(0.1)
-			
+
 			task.spawn(KillAuraHitMobs)
 		until not game
 	end)
@@ -1484,7 +1488,7 @@ function Fly()
 							FlyTeleportPosition = LocalPlayer.Character.HumanoidRootPart.Position.Y
 
 							local Args = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-							
+
 							Args[2] = Raycast.Position.Y + 1 + LocalPlayer.Character.Humanoid.HipHeight
 
 							LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args))
@@ -1559,9 +1563,9 @@ function InfFly()
 		SpoofedCamera.Anchored = true
 		SpoofedCamera.Transparency = 1
 		SpoofedCamera.Position = LocalPlayer.Character.Head.Position
-		
+
 		SetCamera(SpoofedCamera)
-		
+
 		LocalPlayer.Character.PrimaryPart.CFrame += Vector3.new(0, 1000000, 0)
 		SpoofedCamera.Position = Vector3.new(SpoofedCamera.Position.X, StartLevel, SpoofedCamera.Position.Z)
 
@@ -1573,18 +1577,18 @@ function InfFly()
 		if not InfFlying or not IsAlive(LocalPlayer) then
 			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
 			game.Workspace.Gravity = 0	
-			
+
 			SetCamera(LocalPlayer.Character)
-			
+
 			SpoofedCamera:Remove()
-			
+
 			task.spawn(function()
 				for i = 1, 192 do
 					game.Workspace.Gravity = i
-					
+
 					task.wait(0.001)
 				end
-				
+
 				game.Workspace.Gravity = 192.6
 			end)
 		end
@@ -1601,7 +1605,7 @@ end)
 
 task.spawn(function()	
 	local NearestBed = nil
-	
+
 	local function GetServerPosition(Position)
 		local X = math.round(Position.X / 3)
 		local Y = math.round(Position.Y / 3)
@@ -1613,23 +1617,23 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(1)
-				
+
 				if IsAlive(LocalPlayer) then
 					NearestBed = FindNearestBed()
 				end			
 			until not game
 		end)
-		
+
 		repeat	
 			task.wait(0.1)
 
 			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
 				if NearestBed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
-					
+
 					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
 						local NearestOre = FindNearestOre()
-						
+
 						if NearestOre then
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 								["blockRef"] = {
@@ -1643,7 +1647,7 @@ task.spawn(function()
 
 					if NearestBed and Magnitude <= Settings.Nuker.Range then
 						local RaycastParameters = RaycastParams.new()
-						
+
 						RaycastParameters.FilterType = Enum.RaycastFilterType.Exclude
 						RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 						RaycastParameters.IgnoreWater = true
@@ -1660,7 +1664,7 @@ task.spawn(function()
 							if not RaycastResult.Instance then
 								TargetBlock = NearestBed
 							end							
-							
+
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 								["blockRef"] = {
 									["blockPosition"] = GetServerPosition(TargetBlock.Position)
@@ -1680,11 +1684,11 @@ task.spawn(function()
 	task.spawn(function()
 		if GetQueueType():find("skywars") then
 			repeat task.wait(1) until not IsAlive(LocalPlayer)
-			
+
 			PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
 		end
 	end)
-	
+
 	repeat task.wait(1) until GetMatchState() == 2
 
 	if Settings.PlayAgain.Value == true then
@@ -1718,9 +1722,9 @@ task.spawn(function()
 		for i, v in next, CollectionServiceChest do
 			if (LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
 				local Chest = v:FindFirstChild("ChestFolderValue")
-				
+
 				Chest = Chest and Chest.Value or nil				
-				
+
 				local Chestitems = Chest and Chest:GetChildren()
 
 				if #Chestitems > 1 then
@@ -1764,7 +1768,7 @@ task.spawn(function()
 
 					task.spawn(function()						
 						task.wait(0.75)
-						
+
 						if Settings.Indicators.Value == true then
 							obj.Parent:Destroy()
 						end
@@ -1780,10 +1784,10 @@ task.spawn(function()
 		task.wait()
 
 		local NearestPlayer = FindNearestPlayer()
-		
+
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
 			local BestBow = GetBow()
-			
+
 			if BestBow and IsAlive(LocalPlayer) then
 				if Settings.Aimbot.ToolCheck == true then
 					if GetItem(BestBow.itemType) then
@@ -1794,10 +1798,10 @@ task.spawn(function()
 						end
 					end
 				end
-				
+
 				if Settings.Aimbot.ToolCheck == false then
 					SwitchItem(BestBow.tool)
-					
+
 					local Bow = GetItem(BestBow.itemType)
 
 					if Bow then					
@@ -1805,7 +1809,7 @@ task.spawn(function()
 					end
 				end
 			end
-			
+
 			if not BestBow and IsAlive(LocalPlayer) then
 				if GetItem("fireball") then
 					ShootProjectile("fireball", "fireball")
@@ -1824,7 +1828,7 @@ task.spawn(function()
 		if IsAlive(LocalPlayer) and Settings.InfiniteJump.Value == true then
 			LocalPlayer.Character.Humanoid:ChangeState("Jumping")
 		end
-		
+
 		if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
 			LocalPlayer.Character.HumanoidRootPart.Velocity = LocalPlayer.Character.HumanoidRootPart.Velocity + Vector3.new(0, 16.5, 0)
 		end
@@ -1842,43 +1846,43 @@ task.spawn(function()
 					if Randomized == 0 then
 						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					if Randomized ~= 0 then
 						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					if Randomized == 2 then
 						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					if Randomized == 3 then
 						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					if Randomized == 4 then
 						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					if Randomized == 5 then
 						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
 					end
-					
+
 					local Args = {
 						[1] = KillMessage,
 						[2] = "All"
 					}
-					
+
 					SendMessageRemote:FireServer(unpack(Args))
 				end
 			end)
 		end	
-		
+
 		task.spawn(function()
 			v.CharacterAdded:Connect(function(Character)
 				task.spawn(0.3)
-				
+
 				local v = game.Players:FindFirstChild(Character.Name) or v
-				
+
 				v.Character.Humanoid.HealthChanged:Connect(function(Health)
 					if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
 						local Randomized = math.random(0, 5)
@@ -1924,7 +1928,7 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(100 / Settings.ChatSpammer.Speed * 2)
-		
+
 		if Settings.ChatSpammer.Value == true then
 			local Randomized = math.random(0, 5)
 			local KillMessage = ""					
@@ -1968,7 +1972,7 @@ RunService.RenderStepped:Connect(function()
 
 	if NearestPlayer and GetMatchState() ~= 0 and NearestPlayerDistance <= 18 and IsAlive(LocalPlayer) and IsAlive(NearestPlayer) and Settings.AimAssist.Value == true then
 		local LookVector = (NearestPlayer.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
-		
+
 		Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
 	end
 end)
@@ -2019,7 +2023,7 @@ task.spawn(function()
 				Settings.KillAura.CustomAnimation = Callback
 			end)
 		end
-		
+
 		if ToolCheckValue == false then
 			ToolCheck = CreateMiniToggle(CombatWindow, "ToolCheck", Settings.KillAura.ToolCheck, LayoutOrder + 2, function(Callback)
 				Settings.KillAura.ToolCheck = Callback
@@ -2035,7 +2039,7 @@ task.spawn(function()
 		if CustomAnimationsValue == true then					
 			CustomAnimations:Destroy()
 		end
-		
+
 		if ToolCheckValue == true then					
 			ToolCheck:Destroy()
 		end
@@ -2080,7 +2084,7 @@ task.spawn(function()
 				local Call = OldSprintFunction(...)
 
 				Bedwars.SprintController:startSprinting()
-				
+
 				return Call
 			end
 
@@ -2139,13 +2143,13 @@ end)
 task.spawn(function()
 	local Invisible = CreateToggle(BlatantWindow, "Invisible", Settings.Invisible.Value, function(Callback)
 		Settings.Invisible.Value = Callback
-		
+
 		if Callback == true then
 			Invisible()
-			
+
 			LocalPlayer.CharacterAdded:Connect(function()
 				task.wait(0.3)
-				
+
 				if Settings.Invisible.Value == true then
 					Invisible()
 				end
@@ -2158,7 +2162,7 @@ task.spawn(function()
 	local Aimbot, DropDownButton, LayoutOrder = CreateToggle(BlatantWindow, "Aimbot", Settings.Aimbot.Value, function(CallBack)
 		Settings.Aimbot.Value = CallBack
 	end)
-	
+
 	local ToolCheckValue = false
 	local ToolCheck
 
@@ -2166,14 +2170,14 @@ task.spawn(function()
 		if ToolCheckValue == false then
 			ToolCheck = CreateMiniToggle(BlatantWindow, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 1, function(Callback)
 				Settings.Aimbot.ToolCheck = Callback
-				
+
 				if Callback == false then
 					local Sword = GetSword()
-					
+
 					SwitchItem(Sword.itemType)
-					
+
 					task.wait(0.3)
-					
+
 					SwitchItem(Sword.itemType)
 				end
 			end)
@@ -2199,7 +2203,7 @@ task.spawn(function()
 	end)
 
 	local SpeedSlider
-	
+
 	local SpeedValue = false
 
 	DropDownButton.Activated:Connect(function()			
@@ -2226,24 +2230,24 @@ end)
 task.spawn(function()
 	local AutoBank = CreateToggle(UtilityWindow, "AutoBank", Settings.AutoBank.Value, function(CallBack)
 		Settings.AutoBank.Value = CallBack
-		
+
 		task.spawn(function()
 			repeat
 				task.wait(0.5)
 
-				local NearestNpc = FindNearestNpc(20)
-				
+				local NearestNpc = FindNearestNpc(25)
+
 				if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
 					CollectEnderChestItems()
 				end
-				
-				if IsAlive(LocalPlayer) and not NearestNpc or LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+
+				if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
 					SecureEnderChestItems()
 				end
 
 			until not game
 		end)
-		
+
 		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
@@ -2258,11 +2262,11 @@ task.spawn(function()
 					end
 				end)
 			end
-			
+
 			LocalPlayer.CharacterAdded:Connect(function()
 				task.wait(0.3)
 				CollectEnderChestItems()
-				
+
 				LocalPlayer.Character.Humanoid.HealthChanged:Connect(function(Health)
 					if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) then
 						if Health <= 30 then
@@ -2327,7 +2331,7 @@ end)
 task.spawn(function()
 	local Esp = CreateToggle(UtilityWindow, "Esp", Settings.Esp.Value, function(CallBack)
 		Settings.Esp.Value = CallBack
-		
+
 		if CallBack == true then
 			task.spawn(function()
 				task.spawn(function()
@@ -2345,12 +2349,12 @@ task.spawn(function()
 						end)
 					end
 				end)
-				
+
 				task.spawn(function()
 					game.Players.PlayerAdded:Connect(function(Player)
 						Player.CharacterAdded:Connect(function()
 							task.wait(0.3)
-							
+
 							if Settings.Esp.Value == true and IsAlive(Player) and Player ~= LocalPlayer and not Player.Character.HumanoidRootPart:FindFirstChild("Esp") then
 								CreateOutline(Player)
 							end
@@ -2359,7 +2363,7 @@ task.spawn(function()
 				end)
 			end)
 		end
-		
+
 		if CallBack == false then
 			task.spawn(function()
 				for i, v in next, Players do
@@ -2375,16 +2379,16 @@ end)
 task.spawn(function()
 	local Fov, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "Fov", Settings.Fov.Value, function(CallBack)
 		Settings.Fov.Value = CallBack
-		
+
 		if CallBack == true then
 			FovController:setFOV(Settings.Fov.Fov)
 		end
-		
+
 		if CallBack == false then
 			FovController:setFOV(Bedwars.ClientHandlerStore:getState().Settings.fov)
 		end
 	end)
-	
+
 	local FovValue = false
 	local Fov
 
@@ -2392,7 +2396,7 @@ task.spawn(function()
 		if FovValue == false then
 			Fov = CreateSlider(UtilityWindow, "Fov", Settings.Fov.Fov, 130, 0, LayoutOrder + 1, function(Callback)
 				Settings.Fov.Fov = Callback
-				
+
 				if Settings.Fov.Value == true then
 					FovController:setFOV(Callback)	
 				end
@@ -2448,19 +2452,19 @@ end)
 task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
-		
+
 		task.spawn(function()
 			repeat task.wait() until GetMatchState() ~= 0
-	
+
 			if CallBack == true then	
 				local OldLowestPosition = math.huge
 				local LowestPosition = 99999
-				
+
 				local Blockraycast = RaycastParams.new()
 
 				Blockraycast.FilterType = Enum.RaycastFilterType.Include
 				Blockraycast.FilterDescendantsInstances = CollectionServiceBlocks
-				
+
 				AntiVoidPart = Instance.new("Part")
 				AntiVoidPart.Parent = game.Workspace
 				AntiVoidPart.Material = Enum.Material.Neon
@@ -2471,7 +2475,7 @@ task.spawn(function()
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
 				AntiVoidPart.CanCollide = false
 				AntiVoidPart.Anchored = true
-				
+
 				for i, v in pairs(CollectionServiceBlocks) do
 					local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
 
@@ -2496,14 +2500,14 @@ task.spawn(function()
 				end)
 			end
 		end)	
-		
+
 		if CallBack == false then
 			if game.Workspace:FindFirstChild("AntiVoidPart") then		
 				AntiVoidPart:Destroy()
 			end
 		end
 	end)
-	
+
 	task.spawn(function()
 		local AntiVoidValue = false
 
@@ -2532,7 +2536,7 @@ end)
 task.spawn(function()
 	local PlayerTp = CreateToggle(WorldWindow, "PlayerTp", false, function(CallBack)
 		Settings.PlayerTp.Value = CallBack
-		
+
 		if CallBack == true then
 			task.spawn(function()
 				if IsAlive(LocalPlayer) then
@@ -2578,12 +2582,12 @@ end)
 task.spawn(function()
 	local BedTp = CreateToggle(WorldWindow, "BedTp", false, function(CallBack)
 		Settings.BedTp.Value = CallBack
-		
+
 		if CallBack == true then
 			task.spawn(function()
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
-					
+
 					if FindNearestBed() ~= nil then
 						KillHumanoid()
 
@@ -2626,20 +2630,20 @@ task.spawn(function()
 		local Nuker, DropDownButton, LayoutOrder = CreateToggle(WorldWindow, "Nuker", Settings.Nuker.Value, function(CallBack)
 			Settings.Nuker.Value = CallBack
 		end)
-		
+
 		local BreakOresValue = false
 		local RangeValue = false
 
 		local BreakOres
 		local Range
-		
+
 		DropDownButton.Activated:Connect(function()	
 			if BreakOresValue == false then
 				BreakOres = CreateMiniToggle(WorldWindow, "BreakOres", Settings.Nuker.BreakOres, LayoutOrder + 1, function(Callback)
 					Settings.Nuker.BreakOres = Callback
 				end)
 			end		
-			
+
 			if RangeValue == false then
 				Range = CreateSlider(WorldWindow, "Range", Settings.Nuker.Range, 30, 0, LayoutOrder + 2, function(Callback)
 					Settings.Nuker.Range = Callback
@@ -2649,7 +2653,7 @@ task.spawn(function()
 			if BreakOresValue == true then					
 				BreakOres:Destroy()
 			end
-			
+
 			if RangeValue == true then					
 				Range:Destroy()
 			end
@@ -2770,7 +2774,7 @@ task.spawn(function()
 		task.wait(1)
 
 		Players = game.Players:GetPlayers()	
-		
+
 		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 		CollectionServiceBlocks = CollectionService:GetTagged("block")
 		CollectionServiceChest = CollectionService:GetTagged("chest")
