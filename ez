@@ -1591,7 +1591,7 @@ task.spawn(function()
 				if NearestBed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 					
-					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres.Value == true then
+					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
 						for i, v in pairs(CollectionServiceOre) do
 							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
 								["blockRef"] = {
