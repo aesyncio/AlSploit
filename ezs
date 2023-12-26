@@ -1831,7 +1831,7 @@ task.spawn(function()
 					end
 					
 					if Randomized == 2 then
-						KillMessage = "I do not care about the fact that I am hacking but that you died in a block game. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized == 3 then
@@ -1854,47 +1854,89 @@ task.spawn(function()
 					SendMessageRemote:FireServer(unpack(Args))
 				end
 			end)
-		end
+		end	
 		
 		task.spawn(function()
-			v.CharacterAdded:Connect(function()
-				task.wait(0.3)
-				
-				v.Character.Humanoid.HealthChanged:Connect(function(Health)
-					if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer then
-						local Randomized = math.random(0, 5)
-						local KillMessage = ""					
+			v.Character.Humanoid.HealthChanged:Connect(function(Health)
+				if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer then
+					local Randomized = math.random(0, 5)
+					local KillMessage = ""					
 
-						if Randomized == 0 then
-							KillMessage = "You are so bad u died. | AlSpoit on top"
-						end
-
-						if Randomized ~= 0 then
-							KillMessage = "I could probably win without cheats. | AlSpoit on top"
-						end
-
-						if Randomized == 2 then
-							KillMessage = "I do not care about the fact that I am hacking but that you died in a block game. | AlSpoit on top"
-						end
-
-						if Randomized == 3 then
-							KillMessage = "Rats. Imagine dying in a block game. | AlSpoit on top"
-						end
-
-						if Randomized == 4 then
-							KillMessage = "I hack for fun. Too bad your fun is ruined. | Alsploit on top"
-						end
-
-						if Randomized == 5 then
-							KillMessage = "I ruined a good day for a good reason. | Alsploit on top"
-						end
-
-						TextChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(KillMessage)
+					if Randomized == 0 then
+						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
 					end
-				end)
+
+					if Randomized ~= 0 then
+						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
+					end
+
+					if Randomized == 2 then
+						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
+					end
+
+					if Randomized == 3 then
+						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
+					end
+
+					if Randomized == 4 then
+						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
+					end
+
+					if Randomized == 5 then
+						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
+					end
+
+					local Args = {
+						[1] = KillMessage,
+						[2] = "All"
+					}
+
+					SendMessageRemote:FireServer(unpack(Args))
+				end
 			end)
-		end)		
+		end)	
 	end
+end)
+
+task.spawn(function()
+	repeat
+		task.wait(100 / Settings.ChatSpammer.Speed * 2)
+		
+		local Randomized = math.random(0, 5)
+		local KillMessage = ""					
+
+		if Randomized == 0 then
+			KillMessage = "AlSploit does more updates than Bedwars 💀. | AlSploit On Top"
+		end
+
+		if Randomized ~= 0 then
+			KillMessage = "SkidB4 is as bad as how you felt when your dad left you. | AlSploit On Top"
+		end
+
+		if Randomized == 2 then
+			KillMessage = "Switch to AlSploit, ez wins. | AlSploit On Top"
+		end
+
+		if Randomized == 3 then
+			KillMessage = "I am not cheating, my gaming chair is. | AlSploit On Top"
+		end
+
+		if Randomized == 4 then
+			KillMessage = "3 years now and the anticheat is still the same. | AlSploit On Top"
+		end
+
+		if Randomized == 5 then
+			KillMessage = "Kids on bedwars just keep getting worst. | AlSploit On Top"
+		end
+
+		local Args = {
+			[1] = KillMessage,
+			[2] = "All"
+		}
+
+		SendMessageRemote:FireServer(unpack(Args))
+end
+	until not game
 end)
 
 RunService.RenderStepped:Connect(function()
