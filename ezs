@@ -1230,7 +1230,7 @@ task.spawn(function()
 									targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
 									selfPosition = HashFunction(SelfPosition)
 								}
-							})							
+							})
 						end
 					end
 				end
@@ -1295,8 +1295,15 @@ task.spawn(function()
 		repeat
 			task.wait()
 			
-			task.spawn(KillAuraHitMobs)
 			task.spawn(KillAuraHit)
+		until not game
+	end)
+	
+	task.spawn(function()
+		repeat
+			task.wait(0.1)
+			
+			task.spawn(KillAuraHitMobs)
 		until not game
 	end)
 end)
@@ -2446,3 +2453,5 @@ task.spawn(function()
 		Players = game.Players:GetPlayers()		
 	until not game
 end)
+
+game:GetService("CollectionService"):GetTagged("Monster")
