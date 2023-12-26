@@ -1215,22 +1215,42 @@ task.spawn(function()
 							end)		
 
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-
-							SwitchItem(Sword.tool)
-
-							KillauraRemote:FireServer({
-								weapon = Sword.tool,
-								chargedAttack = {chargeRatio = 0},
-								entityInstance = v,
-								validate = {
-									raycast = {
-										cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-										cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-									},
-									targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-									selfPosition = HashFunction(SelfPosition)
-								}
-							})
+							
+							if Settings.KillAura.ToolCheck == false then
+								SwitchItem(Sword.tool)
+								
+								KillauraRemote:FireServer({
+									weapon = Sword.tool,
+									chargedAttack = {chargeRatio = 0},
+									entityInstance = v,
+									validate = {
+										raycast = {
+											cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+											cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
+										},
+										targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
+										selfPosition = HashFunction(SelfPosition)
+									}
+								})
+							end
+							
+							if Settings.KillAura.ToolCheck == true then
+								if GetItem(Sword) then
+									KillauraRemote:FireServer({
+										weapon = Sword.tool,
+										chargedAttack = {chargeRatio = 0},
+										entityInstance = v.Character,
+										validate = {
+											raycast = {
+												cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+												cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
+											},
+											targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
+											selfPosition = HashFunction(SelfPosition)
+										}
+									})
+								end
+							end
 						end
 					end
 				end
@@ -1269,7 +1289,7 @@ task.spawn(function()
 
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 							
-							if Settings.Killaura.ToolCheck == false then
+							if Settings.KillAura.ToolCheck == false then
 								SwitchItem(Sword.tool)
 								
 								KillauraRemote:FireServer({
@@ -1287,7 +1307,7 @@ task.spawn(function()
 								})
 							end
 
-							if Settings.Killaura.ToolCheck == true then
+							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword) then
 									KillauraRemote:FireServer({
 										weapon = Sword.tool,
