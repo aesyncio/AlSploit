@@ -759,6 +759,7 @@ local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
+local KillAuraing = false
 local ZephyrOrb = 0
 
 local Animations = {
@@ -779,7 +780,7 @@ local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
 local ProjectileMeta = AlSploitApi.ProjectileMeta
-local KillauraRemote = AlSploitApi.KillauraRemote
+local KillAuraRemote = AlSploitApi.KillAuraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
 local ItemTable = AlSploitApi.ItemTable
 
@@ -1267,7 +1268,7 @@ task.spawn(function()
 	local function KillAuraHitMobs()	
 		for i, v in next, CollectionServiceDiamondGuardian do
 			if Settings.KillAura.Value == true then
-				if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then
+				if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and v and v.PrimaryPart then
 					local LocalPlayerCharacter = LocalPlayer.Character
 					local EnemyCharacter = v
 
@@ -1276,10 +1277,16 @@ task.spawn(function()
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 
+					if Magnitude > Settings.Killaura.Range then
+						KillAuraing = false
+					end
+
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
 						if Sword then
+							KillAuraing = true
+							
 							task.spawn(function()
 								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 									KillAuraAnimationCooldown = false
@@ -1298,7 +1305,7 @@ task.spawn(function()
 							if Settings.KillAura.ToolCheck == false then
 								SwitchItem(Sword.tool)
 
-								KillauraRemote:FireServer({
+								KillAuraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
 									entityInstance = v,
@@ -1315,7 +1322,7 @@ task.spawn(function()
 
 							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword.itemType) then
-									KillauraRemote:FireServer({
+									KillAuraRemote:FireServer({
 										weapon = Sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -1348,11 +1355,17 @@ task.spawn(function()
 					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
+					
+					if Magnitude > Settings.Killaura.Range then
+						KillAuraing = false
+					end
 
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
 						if Sword then
+							KillAuraing = true
+							
 							task.spawn(function()
 								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 									KillAuraAnimationCooldown = false
@@ -1371,7 +1384,7 @@ task.spawn(function()
 							if Settings.KillAura.ToolCheck == false then
 								SwitchItem(Sword.tool)							
 
-								KillauraRemote:FireServer({
+								KillAuraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
 									entityInstance = v.Character,
@@ -1388,7 +1401,7 @@ task.spawn(function()
 
 							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword.itemType) then
-									KillauraRemote:FireServer({
+									KillAuraRemote:FireServer({
 										weapon = Sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -1837,8 +1850,10 @@ task.spawn(function()
 				end
 
 				if Settings.Aimbot.ToolCheck == false then
-					SwitchItem(BestBow.tool)
-
+					if not KillAuraing then
+						SwitchItem(BestBow.tool)
+					end
+					
 					local Bow = GetItem(BestBow.itemType)
 
 					if Bow then					
@@ -1995,7 +2010,7 @@ task.spawn(function()
 			end
 
 			if Randomized == 5 then
-				KillMessage = "Kids on bedwars just keep getting worst. | AlSploit On Top"
+				KillMessage = "Kids in bedwars just keep getting worst. | AlSploit On Top"
 			end
 
 			local Args = {
@@ -2046,7 +2061,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatWindow, "Killaura", Settings.KillAura.Value, function(CallBack)
+	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatWindow, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
 
@@ -2275,16 +2290,18 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(0.5)
+				
+				if IsAlive(LocalPlayer) then
+					local NearestNpc = FindNearestNpc(25)
 
-				local NearestNpc = FindNearestNpc(25)
+					if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
 
-				if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-					CollectEnderChestItems()
-				end
-
-				if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
-					SecureEnderChestItems()
-				end
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
+						SecureEnderChestItems()
+					end
+				end				
 
 			until not game
 		end)
@@ -2595,8 +2612,8 @@ task.spawn(function()
 								TweenToNearestPlayer()
 							end
 						end)
-					end										
-				end			
+					end	
+				end
 
 				if not IsAlive(LocalPlayer) then
 					if FindNearestPlayer() ~= nil then
