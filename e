@@ -852,7 +852,7 @@ function FindNearestBed()
 	local MinDistance = math.huge
 	local NearestBed = nil
 	
-	for i, v in next(game.Workspace:GetDescendants()) do
+	for i, v in next, (game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 			
@@ -870,7 +870,7 @@ function FindNearestOre()
 	local MinDistance = math.huge
 	local NearestOre = nil
 
-	for i, v in next(CollectionServiceBlocks) do
+	for i, v in next, (CollectionServiceBlocks) do
 		if v.Name:lower():find("ore") then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
