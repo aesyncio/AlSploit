@@ -1857,43 +1857,49 @@ task.spawn(function()
 		end	
 		
 		task.spawn(function()
-			v.Character.Humanoid.HealthChanged:Connect(function(Health)
-				if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
-					local Randomized = math.random(0, 5)
-					local KillMessage = ""					
+			v.CharacterAdded:Connect(function(Character)
+				task.spawn(0.3)
+				
+				local v = game.Players:FindFirstChild(Character.Name) or v
+				
+				v.Character.Humanoid.HealthChanged:Connect(function(Health)
+					if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
+						local Randomized = math.random(0, 5)
+						local KillMessage = ""					
 
-					if Randomized == 0 then
-						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+						if Randomized == 0 then
+							KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						if Randomized ~= 0 then
+							KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						if Randomized == 2 then
+							KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						if Randomized == 3 then
+							KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						if Randomized == 4 then
+							KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						if Randomized == 5 then
+							KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
+						end
+
+						local Args = {
+							[1] = KillMessage,
+							[2] = "All"
+						}
+
+						SendMessageRemote:FireServer(unpack(Args))
 					end
-
-					if Randomized ~= 0 then
-						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
-					end
-
-					if Randomized == 2 then
-						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
-					end
-
-					if Randomized == 3 then
-						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
-					end
-
-					if Randomized == 4 then
-						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
-					end
-
-					if Randomized == 5 then
-						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
-					end
-
-					local Args = {
-						[1] = KillMessage,
-						[2] = "All"
-					}
-
-					SendMessageRemote:FireServer(unpack(Args))
-				end
-			end)
+				end)
+			end)			
 		end)	
 	end
 end)
@@ -1902,7 +1908,7 @@ task.spawn(function()
 	repeat
 		task.wait(100 / Settings.ChatSpammer.Speed * 2)
 		
-		if Settings.ChatSpammer == true then
+		if Settings.ChatSpammer.Value == true then
 			local Randomized = math.random(0, 5)
 			local KillMessage = ""					
 
@@ -2255,12 +2261,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoToxic = CreateToggle(UtilityWindow, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
-		Settings.AutoToxic.Value = CallBack
-	end)
-end)
-
-task.spawn(function()
 	local ChatSpammer, DropDownButton, LayoutOrder = CreateToggle(UtilityWindow, "ChatSpam", Settings.ChatSpammer.Value, function(CallBack)
 		Settings.ChatSpammer.Value = CallBack
 	end)
@@ -2281,6 +2281,12 @@ task.spawn(function()
 
 		SpeedValue = not SpeedValue
 	end)	
+end)
+
+task.spawn(function()
+	local AutoToxic = CreateToggle(UtilityWindow, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
+		Settings.AutoToxic.Value = CallBack
+	end)
 end)
 
 task.spawn(function()
