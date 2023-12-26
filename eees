@@ -824,7 +824,7 @@ function TweenToNearestPlayer()
 	end
 end
 
-function GetDiamondGuardian(MaxDistance)
+function FindNearestDiamondGuardian(MaxDistance)
 	for i, v in next, CollectionServiceDiamondGuardian do
 		local NearestDiamondGuardianDistance = MaxDistance or math.huge
 		local NearestDiamondGuardian
@@ -1283,43 +1283,61 @@ end
 
 task.spawn(function()
 	local function KillAuraHitMobs()	
-		for i, v in next, CollectionServiceDiamondGuardian do
-			if Settings.KillAura.Value == true then
-				if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and v and v.PrimaryPart then
-					local LocalPlayerCharacter = LocalPlayer.Character
-					local EnemyCharacter = v
+		local DiamondGuardian = FindNearestDiamondGuardian(Settings.Killaura.Range)
 
-					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
-					local EnemyHumanoidRootPart = EnemyCharacter.PrimaryPart
+		if Settings.KillAura.Value == true and DiamondGuardian then
+			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and DiamondGuardian and DiamondGuardian.PrimaryPart then
+				local LocalPlayerCharacter = LocalPlayer.Character
+				local EnemyCharacter = DiamondGuardian
 
-					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
+				local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
+				local EnemyHumanoidRootPart = EnemyCharacter.PrimaryPart
 
-					if Magnitude <= Settings.KillAura.Range then
-						local Sword = GetSword()
+				local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 
-						if Sword then
-							task.spawn(function()
-								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
-									KillAuraAnimationCooldown = false
+				if Magnitude <= Settings.KillAura.Range then
+					local Sword = GetSword()
 
-									for i, v in next, Animations["Slow"] do
-										TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-										task.wait(v.Time - 0.01)
-									end
+					if Sword then
+						task.spawn(function()
+							if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
+								KillAuraAnimationCooldown = false
 
-									KillAuraAnimationCooldown = true
+								for i, v in next, Animations["Slow"] do
+									TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+									task.wait(v.Time - 0.01)
 								end
-							end)		
 
-							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+								KillAuraAnimationCooldown = true
+							end
+						end)		
 
-							if Settings.KillAura.ToolCheck == false then
-								SwitchItem(Sword.tool)
+						local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
+						if Settings.KillAura.ToolCheck == false then
+							SwitchItem(Sword.tool)
+
+							KillauraRemote:FireServer({
+								weapon = Sword.tool,
+								chargedAttack = {chargeRatio = 0},
+								entityInstance = DiamondGuardian,
+								validate = {
+									raycast = {
+										cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+										cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
+									},
+									targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
+									selfPosition = HashFunction(SelfPosition)
+								}
+							})
+						end
+
+						if Settings.KillAura.ToolCheck == true then
+							if GetItem(Sword.itemType) then
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
-									entityInstance = v,
+									entityInstance = DiamondGuardian.Character,
 									validate = {
 										raycast = {
 											cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
@@ -1329,24 +1347,6 @@ task.spawn(function()
 										selfPosition = HashFunction(SelfPosition)
 									}
 								})
-							end
-
-							if Settings.KillAura.ToolCheck == true then
-								if GetItem(Sword.itemType) then
-									KillauraRemote:FireServer({
-										weapon = Sword.tool,
-										chargedAttack = {chargeRatio = 0},
-										entityInstance = v.Character,
-										validate = {
-											raycast = {
-												cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-												cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-											},
-											targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-											selfPosition = HashFunction(SelfPosition)
-										}
-									})
-								end
 							end
 						end
 					end
