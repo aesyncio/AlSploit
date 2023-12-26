@@ -799,12 +799,10 @@ end
 function SecureEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
-	
-	if Inventory then
-		for i, v in pairs(Inventory:GetChildren()) do
-			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
-				ChestGiveItemRemote:InvokeServer(EnderChest, v)
-			end
+
+	for i, v in pairs(Inventory:GetChildren()) do
+		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
+			ChestGiveItemRemote:InvokeServer(EnderChest, v)
 		end
 	end
 end
@@ -816,7 +814,7 @@ function TweenToNearestPlayer()
 		if NearestPlayer then
 			local TweenTime = AlSploitApi.TweenNumbers.PlayerTp
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.PrimaryPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
 
 
 			PlayerTpTween:Play()
@@ -832,7 +830,7 @@ function TweenToNearestBed()
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
 
 			local TweenInformation = TweenInfo.new(TweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local BedTpTween = TweenService:Create(LocalPlayer.Character.PrimaryPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
+			local BedTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestBed.CFrame + Vector3.new(0, 10, 0)})
 
 			BedTpTween:Play()
 		end
@@ -845,7 +843,7 @@ function FindNearestPlayer(MaxDistance)
 
 	for i, v in next, Players do
 		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team then
-			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
 			if Distance < NearestDistance then
 				NearestPlayer = v
@@ -900,7 +898,7 @@ function FindNearestBed()
 
 	for i, v in next, (game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
-			local Distance = (v.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
 			if Distance < MinDistance then
 				MinDistance = Distance
@@ -1195,7 +1193,7 @@ function GetSpeed()
 		end
 
 		if DamageBoost == true then
-			Speed = Speed + 22.5
+			Speed = Speed + 20
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -1227,7 +1225,7 @@ function IsAlive(Player)
 		return  false 
 	end
 
-	if not Player.Character.PrimaryPart then 	
+	if not Player.Character:FindFirstChild("HumanoidRootPart") then 	
 		return  false 
 	end	
 
@@ -2275,18 +2273,16 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(0.5)
-				
-				if IsAlive() then
-					local NearestNpc = FindNearestNpc(25)
 
-					if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						CollectEnderChestItems()
-					end
+				local NearestNpc = FindNearestNpc(25)
 
-					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
-						SecureEnderChestItems()
-					end
-				end				
+				if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+					CollectEnderChestItems()
+				end
+
+				if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
+					SecureEnderChestItems()
+				end
 
 			until not game
 		end)
@@ -2638,9 +2634,7 @@ task.spawn(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
 							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
-								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
-
-								task.wait(0.15)
+								task.wait(0.3)
 
 								TweenToNearestBed()
 							end
@@ -2654,9 +2648,7 @@ task.spawn(function()
 							repeat task.wait() until IsAlive(LocalPlayer)
 
 							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
-								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
-
-								task.wait(0.15)
+								task.wait(0.3)
 
 								TweenToNearestBed()
 							end
