@@ -607,7 +607,7 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitPublicUpdate6"
+local SaveFileName = "AlSploitPublicUpdate7"
 
 local IsLoaded = false
 local Settings
