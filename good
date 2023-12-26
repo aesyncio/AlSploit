@@ -1974,8 +1974,8 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if ToolCheckValue == false then
-			ToolCheck = CreateMiniToggle(WorldWindow, "ToolCheck", Settings.Nuker.ToolCheck, LayoutOrder + 1, function(Callback)
-				Settings.Nuker.ToolCheck = Callback
+			ToolCheck = CreateMiniToggle(BlatantWindow, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 1, function(Callback)
+				Settings.Aimbot.ToolCheck = Callback
 			end)
 		end
 
