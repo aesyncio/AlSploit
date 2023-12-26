@@ -2579,6 +2579,10 @@ task.spawn(function()
 	repeat 
 		task.wait(1)
 
-		Players = game.Players:GetPlayers()		
+		Players = game.Players:GetPlayers()	
+		
+		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
+		CollectionServiceBlocks = CollectionService:GetTagged("block")
+		CollectionServiceChest = CollectionService:GetTagged("chest")
 	until not game
 end)
