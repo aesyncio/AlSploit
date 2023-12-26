@@ -905,6 +905,14 @@ function FindNearestOre()
 	return NearestOre
 end
 
+function GetEquippedItem(Item)
+	if LocalPlayer.Character.HandInvItem.Value == Item then
+		return true
+	end	
+	
+	return false
+end
+
 function TouchingGround()
 	if IsAlive(LocalPlayer) then
 		local Parameters = RaycastParams.new()
@@ -1255,7 +1263,7 @@ task.spawn(function()
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
 							if Settings.KillAura.ToolCheck == false then
-								if not GetItem(Sword.itemType) then
+								if not GetEquippedItem(Sword.itemType) then
 									SwitchItem(Sword.tool)
 								end
 
@@ -1330,7 +1338,7 @@ task.spawn(function()
 							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (18 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
 							if Settings.KillAura.ToolCheck == false then
-								if not GetItem(Sword.itemType) then
+								if not GetEquippedItem(Sword.itemType) then
 									SwitchItem(Sword.tool)
 								end
 
