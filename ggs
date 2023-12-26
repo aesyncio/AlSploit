@@ -2009,10 +2009,18 @@ task.spawn(function()
 		if ToolCheckValue == false then
 			ToolCheck = CreateMiniToggle(BlatantWindow, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 1, function(Callback)
 				Settings.Aimbot.ToolCheck = Callback
+				
+				if Callback == false then
+					local Sword = GetSword()
+					
+					if Sword then
+						SwitchItem(Sword.itemType)
+					end
+				end
 			end)
 		end
 
-		if ToolCheckValue == true then					
+		if ToolCheckValue == true then	
 			ToolCheck:Destroy()
 		end
 
