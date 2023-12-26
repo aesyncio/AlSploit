@@ -871,7 +871,7 @@ function FindNearestOre()
 	local NearestOre = nil
 
 	for i, v in next, (CollectionServiceBlocks) do
-		if v.Name:lower():find("ore") then
+		if v.Name == "iron_ore" then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
 			if Distance < MinDistance then
