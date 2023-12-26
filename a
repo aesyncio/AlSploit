@@ -1935,7 +1935,6 @@ task.spawn(function()
 		}
 
 		SendMessageRemote:FireServer(unpack(Args))
-end
 	until not game
 end)
 
