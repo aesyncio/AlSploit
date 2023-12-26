@@ -714,6 +714,7 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local CollectionServiceChest = CollectionService:GetTagged("chest")
+local CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
 
 local KillAuraAnimationCooldown = true
 local JumpCooldown = false
@@ -868,6 +869,22 @@ function FindNearestBed()
 	end
 	
 	return NearestBed
+end
+
+function FindNearestNpc(MaxDistance)
+	local MinDistance = MaxDistance or math.huge
+	local NearestNpc = nil
+
+	for i, v in next, CollectionServiceNps do
+		local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+		if Distance < MinDistance then
+			MinDistance = Distance
+			NearestNpc = v		
+		end
+	end
+
+	return NearestNpc
 end
 
 function FindNearestOre()
@@ -1929,7 +1946,7 @@ task.spawn(function()
 			end
 
 			if Randomized == 4 then
-				KillMessage = "3 years now and the anticheat is still the same. | AlSploit On Top"
+				KillMessage = "3 years now, and the anticheat is still the same. | AlSploit On Top"
 			end
 
 			if Randomized == 5 then
@@ -2214,14 +2231,14 @@ task.spawn(function()
 			repeat
 				task.wait(0.5)
 
-				if Settings.AutoBank.Value == true then
-					if IsAlive(LocalPlayer) and not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						SecureEnderChestItems()
-					end
-
-					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-						CollectEnderChestItems()
-					end
+				local NearestNpc = FindNearestNpc(20)
+				
+				if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+					CollectEnderChestItems()
+				end
+				
+				if IsAlive(LocalPlayer) and not NearestNpc or LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+					SecureEnderChestItems()
 				end
 
 			until not game
@@ -2757,5 +2774,6 @@ task.spawn(function()
 		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 		CollectionServiceBlocks = CollectionService:GetTagged("block")
 		CollectionServiceChest = CollectionService:GetTagged("chest")
+		CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
 	until not game
 end)
