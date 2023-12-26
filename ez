@@ -733,6 +733,7 @@ local Bedwars = AlSploitApi.Bedwars
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
 local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
+local SendMessageRemote = AlSploitApi.SendMessageRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
@@ -1822,30 +1823,35 @@ task.spawn(function()
 					local KillMessage = ""					
 
 					if Randomized == 0 then
-						KillMessage = "You are so bad u died. | AlSpoit on top"
+						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized ~= 0 then
-						KillMessage = "I could probably win without cheats. | AlSpoit on top"
+						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized == 2 then
-						KillMessage = "I do not care about the fact that I am hacking but that you died in a block game. | AlSpoit on top"
+						KillMessage = "I do not care about the fact that I am hacking but that you died in a block game. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized == 3 then
-						KillMessage = "Rats. Imagine dying in a block game. | AlSpoit on top"
+						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized == 4 then
-						KillMessage = "I hack for fun. Too bad your fun is ruined. | Alsploit on top"
+						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
 					if Randomized == 5 then
-						KillMessage = "I ruined a good day for a good reason. | Alsploit on top"
+						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
 					end
 					
-					TextChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(KillMessage)
+					local Args = {
+						[1] = KillMessage,
+						[2] = "All"
+					}
+					
+					SendMessageRemote:FireServer(unpack(Args))
 				end
 			end)
 		end
