@@ -1225,7 +1225,7 @@ function IsAlive(Player)
 		return  false 
 	end
 
-	if not Player.Character:FindFirstChild("HumanoidRootPart") then 	
+	if not Player.Character.PrimaryPart then 	
 		return  false 
 	end	
 
@@ -1820,7 +1820,7 @@ task.spawn(function()
 
 		local NearestPlayer = FindNearestPlayer()
 
-		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer then	
+		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then	
 			local BestBow = GetBow()
 
 			if BestBow and IsAlive(LocalPlayer) then
