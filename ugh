@@ -759,7 +759,6 @@ local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
-local KillAuraing = false
 local ZephyrOrb = 0
 
 local Animations = {
@@ -780,7 +779,7 @@ local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
 local ProjectileMeta = AlSploitApi.ProjectileMeta
-local KillAuraRemote = AlSploitApi.KillAuraRemote
+local KillauraRemote = AlSploitApi.KillauraRemote
 local BedwarsSwords = AlSploitApi.BedwarsSwords
 local ItemTable = AlSploitApi.ItemTable
 
@@ -1277,16 +1276,10 @@ task.spawn(function()
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 
-					if Magnitude > Settings.KillAura.Range then
-						KillAuraing = false
-					end
-
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
 						if Sword then
-							KillAuraing = true
-							
 							task.spawn(function()
 								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 									KillAuraAnimationCooldown = false
@@ -1305,7 +1298,7 @@ task.spawn(function()
 							if Settings.KillAura.ToolCheck == false then
 								SwitchItem(Sword.tool)
 
-								KillAuraRemote:FireServer({
+								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
 									entityInstance = v,
@@ -1322,7 +1315,7 @@ task.spawn(function()
 
 							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword.itemType) then
-									KillAuraRemote:FireServer({
+									KillauraRemote:FireServer({
 										weapon = Sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -1355,17 +1348,11 @@ task.spawn(function()
 					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-					
-					if Magnitude > Settings.KillAura.Range then
-						KillAuraing = false
-					end
 
 					if Magnitude <= Settings.KillAura.Range then
 						local Sword = GetSword()
 
 						if Sword then
-							KillAuraing = true
-							
 							task.spawn(function()
 								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 									KillAuraAnimationCooldown = false
@@ -1384,7 +1371,7 @@ task.spawn(function()
 							if Settings.KillAura.ToolCheck == false then
 								SwitchItem(Sword.tool)							
 
-								KillAuraRemote:FireServer({
+								KillauraRemote:FireServer({
 									weapon = Sword.tool,
 									chargedAttack = {chargeRatio = 0},
 									entityInstance = v.Character,
@@ -1401,7 +1388,7 @@ task.spawn(function()
 
 							if Settings.KillAura.ToolCheck == true then
 								if GetItem(Sword.itemType) then
-									KillAuraRemote:FireServer({
+									KillauraRemote:FireServer({
 										weapon = Sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -1850,10 +1837,8 @@ task.spawn(function()
 				end
 
 				if Settings.Aimbot.ToolCheck == false then
-					if not KillAuraing then
-						SwitchItem(BestBow.tool)
-					end
-					
+					SwitchItem(BestBow.tool)
+
 					local Bow = GetItem(BestBow.itemType)
 
 					if Bow then					
@@ -2061,7 +2046,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatWindow, "KillAura", Settings.KillAura.Value, function(CallBack)
+	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatWindow, "Killaura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
 
