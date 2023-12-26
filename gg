@@ -2153,9 +2153,11 @@ task.spawn(function()
 				if Callback == false then
 					local Sword = GetSword()
 					
-					if Sword then
-						SwitchItem(Sword.itemType)
-					end
+					SwitchItem(Sword.itemType)
+					
+					task.wait(0.3)
+					
+					SwitchItem(Sword.itemType)
 				end
 			end)
 		end
