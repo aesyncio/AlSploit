@@ -845,7 +845,7 @@ function FindNearestPlayer(MaxDistance)
 
 	for i, v in next, Players do
 		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team then
-			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 			if Distance < NearestDistance then
 				NearestPlayer = v
@@ -900,7 +900,7 @@ function FindNearestBed()
 
 	for i, v in next, (game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
-			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			local Distance = (v.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 			if Distance < MinDistance then
 				MinDistance = Distance
@@ -2275,16 +2275,18 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(0.5)
+				
+				if IsAlive() then
+					local NearestNpc = FindNearestNpc(25)
 
-				local NearestNpc = FindNearestNpc(25)
+					if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
+						CollectEnderChestItems()
+					end
 
-				if NearestNpc and LocalPlayer.Character:GetAttribute("Health") > 30 and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) then
-					CollectEnderChestItems()
-				end
-
-				if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
-					SecureEnderChestItems()
-				end
+					if IsAlive(LocalPlayer) and LocalPlayer.Character:GetAttribute("Health") <= 30 or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or not NearestNpc then
+						SecureEnderChestItems()
+					end
+				end				
 
 			until not game
 		end)
