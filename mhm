@@ -1277,7 +1277,7 @@ task.spawn(function()
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 
-					if Magnitude > Settings.Killaura.Range then
+					if Magnitude > Settings.KillAura.Range then
 						KillAuraing = false
 					end
 
@@ -1356,7 +1356,7 @@ task.spawn(function()
 
 					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
 					
-					if Magnitude > Settings.Killaura.Range then
+					if Magnitude > Settings.KillAura.Range then
 						KillAuraing = false
 					end
 
