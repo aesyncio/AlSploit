@@ -2803,36 +2803,42 @@ task.spawn(function()
 	end)
 end)
 
-setfpscap(10000)
-
-task.spawn(function()
-	local Horizontal = {Value = 15}
-	local Vertical = {Value = 5}
-	local Depth = {Value = 35} 
-
-	local RotationZ = {Value = 5}
-
-	local ViewModel = Camera:FindFirstChild("Viewmodel")
-	local C1
-
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
-	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (Vertical.Value / 10))
-
-	C1 = ViewModel.RightHand.RightWrist.C1
-
-	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
-end)
-
 task.spawn(function()
 	repeat 
-		task.wait(1)
+		task.wait(0.5)
+		
+		task.spawn(function()
+			Players = game.Players:GetPlayers()	
+		end)		
+		
+		task.spawn(function()
+			CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
+			CollectionServiceBlocks = CollectionService:GetTagged("block")
+			CollectionServiceChest = CollectionService:GetTagged("chest")
+			CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
+		end)		
+		
+		task.spawn(function()
+			FovController:setFOV(Settings.Fov.Fov)
+		end)		
+		
+		task.spawn(function()
+			local Horizontal = {Value = 15}
+			local Vertical = {Value = 5}
+			local Depth = {Value = 35} 
 
-		Players = game.Players:GetPlayers()	
+			local RotationZ = {Value = 5}
 
-		CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
-		CollectionServiceBlocks = CollectionService:GetTagged("block")
-		CollectionServiceChest = CollectionService:GetTagged("chest")
-		CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
+			local ViewModel = Camera:FindFirstChild("Viewmodel")
+			local C1
+
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
+			LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (Vertical.Value / 10))
+
+			C1 = ViewModel.RightHand.RightWrist.C1
+
+			ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+		end)
 	until not game
 end)
