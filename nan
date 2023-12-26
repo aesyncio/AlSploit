@@ -849,21 +849,39 @@ function ShootProjectile(Item, Projectile)
 end
 
 function FindNearestBed()
-	local NearestBed = nil
 	local MinDistance = math.huge
+	local NearestBed = nil
 	
-	for _,v in pairs(game.Workspace:GetDescendants()) do
+	for i, v in next(game.Workspace:GetDescendants()) do
 		if v.Name:lower() == "bed" and v:FindFirstChild("Covers") and v:FindFirstChild("Covers").BrickColor ~= LocalPlayer.Team.TeamColor then
 			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 			
 			if Distance < MinDistance then
-				NearestBed = v
 				MinDistance = Distance
+				NearestBed = v
 			end
 		end
 	end
 	
 	return NearestBed
+end
+
+function FindNearestOre()
+	local MinDistance = math.huge
+	local NearestOre = nil
+
+	for i, v in next(CollectionServiceBlocks) do
+		if v.Name:lower():find("ore") then
+			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < MinDistance then
+				MinDistance = Distance
+				NearestOre = v
+			end
+		end
+	end
+
+	return NearestOre
 end
 
 function TouchingGround()
@@ -1591,17 +1609,16 @@ task.spawn(function()
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 					
 					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
-						for i, v in pairs(CollectionServiceBlocks) do
-							if v.Name:lower():find("ore") then
-								print("e")
-								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
-									["blockRef"] = {
-										["blockPosition"] = GetServerPosition(v.Position)
-									},
-									["hitPosition"] = GetServerPosition(v.Position),
-									["hitNormal"] = GetServerPosition(v.Position)
-								})
-							end							
+						local NearestOre = FindNearestOre()
+						
+						if NearestOre then
+							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+								["blockRef"] = {
+									["blockPosition"] = GetServerPosition(NearestOre.Position)
+								},
+								["hitPosition"] = GetServerPosition(NearestOre.Position),
+								["hitNormal"] = GetServerPosition(NearestOre.Position)
+							})
 						end
 					end
 
