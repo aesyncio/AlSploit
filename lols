@@ -1235,7 +1235,7 @@ task.spawn(function()
 							end
 							
 							if Settings.KillAura.ToolCheck == true then
-								if GetItem(Sword) then
+								if GetItem(Sword.tool) then
 									KillauraRemote:FireServer({
 										weapon = Sword.tool,
 										chargedAttack = {chargeRatio = 0},
