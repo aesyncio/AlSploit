@@ -1841,7 +1841,7 @@ task.spawn(function()
 						local Bow = GetItem(BestBow.itemType)
 
 						if Bow then					
-							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itenType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
+							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itemType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
 						end
 					end
 				end
@@ -1852,7 +1852,7 @@ task.spawn(function()
 					if Bow and GetItem("arrow") then			
 						SwitchItem(BestBow.tool)
 						
-						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itenType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
+						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itemType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
 					end
 				end
 			end
