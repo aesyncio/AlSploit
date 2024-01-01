@@ -464,7 +464,7 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 		local BarPosition = FillCircle.Position
 
 		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
-		local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(DefaultValue / MaximumValue - 0.025, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
+		local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(DefaultValue / MaximumValue, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
 
 		PositionTween:Play()
 
@@ -489,7 +489,7 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 				local Percentage = math.clamp(Position, 0, 0.99)
 
 				local TweenInformation = TweenInfo.new(0.05, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
-				local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(Percentage - 0.05, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
+				local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(Percentage - 0.025, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
 
 				PositionTween:Play()
 
