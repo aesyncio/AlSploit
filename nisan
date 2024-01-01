@@ -464,7 +464,7 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 		local BarPosition = FillCircle.Position
 
 		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
-		local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(DefaultValue / MaximumValue, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
+		local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(DefaultValue / MaximumValue - 0.025, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
 
 		PositionTween:Play()
 
@@ -486,7 +486,7 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 				local Position = Snap((MousePosition - FramePosition) / FrameSize, 0.01)
 
-				local Percentage = math.clamp(Position, 0, 0.99)
+				local Percentage = math.clamp(Position, 0, 1)
 
 				local TweenInformation = TweenInfo.new(0.05, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
 				local PositionTween = TweenService:Create(FillCircle, TweenInformation, {Position = UDim2.new(Percentage - 0.025, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
@@ -498,9 +498,9 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 				SizeTween:Play()
 
-				SliderValue.Text = math.round(Percentage * MaximumValue + 1)
+				SliderValue.Text = math.round(Percentage * MaximumValue)
 
-				CallBack(math.round(Percentage * MaximumValue + 1))
+				CallBack(math.round(Percentage * MaximumValue))
 			end
 		until not Slider
 	end)
