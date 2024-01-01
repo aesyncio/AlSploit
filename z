@@ -1833,7 +1833,7 @@ task.spawn(function()
 		local NearestPlayer = NearestPlayer
 
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer and not NearestPlayer:FindFirstChildOfClass("ForceField") then	
-			local BestBow, BestBowDamage = GetBow()
+			local BestBow = GetBow()
 
 			if BestBow and IsAlive(LocalPlayer) then
 				if Settings.Aimbot.ToolCheck == true then
@@ -1841,7 +1841,7 @@ task.spawn(function()
 						local Bow = GetItem(BestBow.itemType)
 
 						if Bow then					
-							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBowDamage > 35 and true or false))
+							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itenType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
 						end
 					end
 				end
@@ -1852,7 +1852,7 @@ task.spawn(function()
 					if Bow and GetItem("arrow") then			
 						SwitchItem(BestBow.tool)
 						
-						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), (BestBowDamage > 35 and true or false))
+						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itenType:lower():find("tactical") or BestBow.itenType:lower():find("cross") and true or false))
 					end
 				end
 			end
@@ -1933,44 +1933,46 @@ task.spawn(function()
 				task.wait(0.3)
 
 				local v = game.Players:FindFirstChild(Character.Name) or v
+				
+				if IsAlive(v) then
+					v.Character.Humanoid.HealthChanged:Connect(function(Health)
+						if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
+							local Randomized = math.random(0, 5)
+							local KillMessage = ""					
 
-				v.Character.Humanoid.HealthChanged:Connect(function(Health)
-					if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
-						local Randomized = math.random(0, 5)
-						local KillMessage = ""					
+							if Randomized == 0 then
+								KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+							end
 
-						if Randomized == 0 then
-							KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+							if Randomized ~= 0 then
+								KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
+							end
+
+							if Randomized == 2 then
+								KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
+							end
+
+							if Randomized == 3 then
+								KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
+							end
+
+							if Randomized == 4 then
+								KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
+							end
+
+							if Randomized == 5 then
+								KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
+							end
+
+							local Args = {
+								[1] = KillMessage,
+								[2] = "All"
+							}
+
+							SendMessageRemote:FireServer(unpack(Args))
 						end
-
-						if Randomized ~= 0 then
-							KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
-						end
-
-						if Randomized == 2 then
-							KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
-						end
-
-						if Randomized == 3 then
-							KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
-						end
-
-						if Randomized == 4 then
-							KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
-						end
-
-						if Randomized == 5 then
-							KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
-						end
-
-						local Args = {
-							[1] = KillMessage,
-							[2] = "All"
-						}
-
-						SendMessageRemote:FireServer(unpack(Args))
-					end
-				end)
+					end)
+				end				
 			end)			
 		end)	
 	end
@@ -2299,7 +2301,7 @@ task.spawn(function()
 						CollectEnderChestItems()
 					end
 
-					if not NearestNpc or not IsAlive(LocalPlayer) or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or LocalPlayer.Character:GetAttribute("Health") < 30 then
+					if Settings.AutoBank.Value == true and not NearestNpc or not IsAlive(LocalPlayer) or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or LocalPlayer.Character:GetAttribute("Health") < 30 then
 						SecureEnderChestItems()
 					end
 					
