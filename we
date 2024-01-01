@@ -895,7 +895,7 @@ function FpsBoostTextures()
 	end
 end
 
-function ShootProjectile(Item, Projectile, Slowdown)
+function ShootProjectile(Item, Projectile)
 	local NearestPlayer = NearestPlayer
 
 	if NearestPlayer then
@@ -907,8 +907,8 @@ function ShootProjectile(Item, Projectile, Slowdown)
 			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
-			[8] = {["drawDurationSeconds"] = (Slowdown and 0.6 or 0.96), ["shotId"] = HttpService:GenerateGUID(false)},
-			[9] = (game.Workspace:GetServerTimeNow() - math.random(0.105, 0.115))
+			[8] = {["drawDurationSeconds"] = math.random(0.94, 0.97), ["shotId"] = HttpService:GenerateGUID(false)},
+			[9] = (game.Workspace:GetServerTimeNow() - math.random(0.108, 0.115))
 		}
 
 		ProjectileRemote:InvokeServer(unpack(Args))
@@ -1841,7 +1841,7 @@ task.spawn(function()
 						local Bow = GetItem(BestBow.itemType)
 
 						if Bow then					
-							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itemType:lower():find("tactical") or BestBow.itemType:lower():find("cross") and true or false))
+							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
 						end
 					end
 				end
@@ -1852,7 +1852,7 @@ task.spawn(function()
 					if Bow and GetItem("arrow") then			
 						SwitchItem(BestBow.tool)
 						
-						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow", (BestBow.itemType:lower():find("tactical") or BestBow.itemType:lower():find("cross") and true or false))
+						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
 					end
 				end
 			end
