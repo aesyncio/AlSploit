@@ -907,7 +907,7 @@ function ShootProjectile(Item, Projectile)
 			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
-			[8] = {["drawDurationSeconds"] = math.random(0.94, 0.97), ["shotId"] = HttpService:GenerateGUID(false)},
+			[8] = {["drawDurationSeconds"] = math.random(0.954, 0.97), ["shotId"] = HttpService:GenerateGUID(false)},
 			[9] = (game.Workspace:GetServerTimeNow() - math.random(0.108, 0.115))
 		}
 
