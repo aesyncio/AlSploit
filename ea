@@ -2806,11 +2806,13 @@ task.spawn(function()
 		end)		
 		
 		task.spawn(function()
-			NearestDiamondGuardian, NearestDiamondGuardianDistance = FindNearestDiamondGuardian()
-			NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
-			NearestBed = FindNearestBed()
-			NearestOre = FindNearestOre()
-			NearestNpc = FindNearestNpc()
+			if IsAlive(LocalPlayer) then
+				NearestDiamondGuardian, NearestDiamondGuardianDistance = FindNearestDiamondGuardian()
+				NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
+				NearestBed = FindNearestBed()
+				NearestOre = FindNearestOre()
+				NearestNpc = FindNearestNpc()
+			end			
 		end)
 		
 		task.spawn(function()
