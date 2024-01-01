@@ -498,9 +498,9 @@ function CreateSlider(Name, Parent, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 				SizeTween:Play()
 
-				SliderValue.Text = math.round(Percentage * MaximumValue)
+				SliderValue.Text = math.round(Percentage * MaximumValue + 1)
 
-				CallBack(math.round(Percentage * MaximumValue))
+				CallBack(math.round(Percentage * MaximumValue + 1))
 			end
 		until not Slider
 	end)
