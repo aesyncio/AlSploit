@@ -848,7 +848,7 @@ end
 
 function TweenToNearestBed()
 	if IsAlive(LocalPlayer) then
-		local NearestBed = NearestBed
+		local NearestBed = FindNearestBed()
 
 		if NearestBed then						
 			local TweenTime = AlSploitApi.TweenNumbers.BedTp
