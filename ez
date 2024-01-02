@@ -914,8 +914,8 @@ function ShootProjectile(Item, Projectile)
 	end
 end
 
-function FindNearestBed()
-	local MinDistance = math.huge
+function FindNearestBed(MaxDistance)
+	local MinDistance = MaxDistance or math.huge
 	local NearestBed = nil
 
 	for i, v in next, (game.Workspace:GetDescendants()) do
@@ -948,8 +948,8 @@ function FindNearestNpc(MaxDistance)
 	return NearestNpc
 end
 
-function FindNearestOre()
-	local MinDistance = math.huge
+function FindNearestOre(MaxDistance)
+	local MinDistance = MaxDistance or math.huge
 	local NearestOre = nil
 
 	for i, v in next, CollectionServiceBlocks do
@@ -1647,39 +1647,43 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()	
+task.spawn(function()
+	local NearestOre = nil	
 	local NearestBed = nil
 
 	local function GetServerPosition(Position)
 		local X = math.round(Position.X / 3)
 		local Y = math.round(Position.Y / 3)
 		local Z = math.round(Position.Z / 3)
-		
+
 		return Vector3.new(X, Y, Z)
 	end
 
 	if not GetQueueType():find("skywars") then
-		repeat	
+		task.spawn(function()
+			repeat
+				task.wait(0.5)
+				
+				NearestOre = FindNearestOre(30)
+				NearestBed = FindNearestBed(30)
+			until not game
+		end)
+
+		repeat
 			task.wait(0.1)
 
-			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then
-				local NearestBed = NearestBed or FindNearestBed()
-				
+			if GetMatchState() ~= 0 and IsAlive(LocalPlayer) and Settings.Nuker.Value == true then				
 				if NearestBed then
 					local Magnitude = (LocalPlayer.Character:FindFirstChild("HumanoidRootPart").Position - NearestBed.Position).Magnitude
 
-					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true then
-						local NearestOre = FindNearestOre()
-
-						if NearestOre then
-							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
-								["blockRef"] = {
-									["blockPosition"] = GetServerPosition(NearestOre.Position)
-								},
-								["hitPosition"] = GetServerPosition(NearestOre.Position),
-								["hitNormal"] = GetServerPosition(NearestOre.Position)
-							})
-						end
+					if Magnitude > Settings.Nuker.Range and Settings.Nuker.BreakOres == true and NearestOre then
+						ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+							["blockRef"] = {
+								["blockPosition"] = GetServerPosition(NearestOre.Position)
+							},
+							["hitPosition"] = GetServerPosition(NearestOre.Position),
+							["hitNormal"] = GetServerPosition(NearestOre.Position)
+						})
 					end
 
 					if NearestBed and Magnitude <= Settings.Nuker.Range then
@@ -1711,6 +1715,18 @@ task.spawn(function()
 							})												
 						end
 					end
+				end
+			end
+
+			if not NearestBed then
+				if Settings.Nuker.BreakOres == true and NearestOre then
+					ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@easy-games"):FindFirstChild("block-engine").node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DamageBlock:InvokeServer({
+						["blockRef"] = {
+							["blockPosition"] = GetServerPosition(NearestOre.Position)
+						},
+						["hitPosition"] = GetServerPosition(NearestOre.Position),
+						["hitNormal"] = GetServerPosition(NearestOre.Position)
+					})
 				end
 			end
 		until not game
@@ -2580,19 +2596,15 @@ task.spawn(function()
 				end
 
 				if not IsAlive(LocalPlayer) then
-					if NearestPlayer ~= nil then
-						LocalPlayer.CharacterAdded:Connect(function()
-							repeat task.wait() until IsAlive(LocalPlayer)
+					LocalPlayer.CharacterAdded:Connect(function()
+						repeat task.wait() until IsAlive(LocalPlayer)						
 
-							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
-								repeat task.wait() until LocalPlayer.Character:FindFirstChildOfClass("ForceField")
-
-								task.wait(0.1)
-
-								TweenToNearestPlayer()
-							end
-						end)
-					end					
+						if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true and FindNearestPlayer() then
+							task.wait(0.25)
+							
+							TweenToNearestPlayer()
+						end
+					end)
 				end
 			end)
 		end
@@ -2624,17 +2636,15 @@ task.spawn(function()
 				end			
 
 				if not IsAlive(LocalPlayer) then
-					if FindNearestBed() then
-						LocalPlayer.CharacterAdded:Connect(function()
-							repeat task.wait() until IsAlive(LocalPlayer)
+					LocalPlayer.CharacterAdded:Connect(function()
+						repeat task.wait() until IsAlive(LocalPlayer)
 
-							if IsAlive(LocalPlayer) and Settings.BedTp.Value == true then
-								task.wait(0.3)
+						if IsAlive(LocalPlayer) and Settings.BedTp.Value == true and FindNearestBed() then
+							task.wait(0.25)
 
-								TweenToNearestBed()
-							end
-						end)
-					end
+							TweenToNearestBed()
+						end
+					end)
 				end
 			end)
 		end
