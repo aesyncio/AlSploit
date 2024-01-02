@@ -756,7 +756,6 @@ local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local CollectionServiceChest = CollectionService:GetTagged("chest")
 local CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
 
-local NearestDiamondGuardian, NearestDiamondGuardianDistance = nil, nil
 local NearestPlayer, NearestPlayerDistance = nil, nil
 
 local NearestNpc = nil
@@ -1272,7 +1271,7 @@ end
 task.spawn(function()
 	local function KillAuraHitMobs()	
 		if IsAlive(LocalPlayer) and Settings.KillAura.Value == true then
-			local DiamondGuardian, DiamondGuardianDistance = NearestDiamondGuardian, NearestDiamondGuardianDistance
+			local DiamondGuardian, DiamondGuardianDistance = FindNearestDiamondGuardian()
 
 			if DiamondGuardian and DiamondGuardianDistance < Settings.KillAura.Range then
 				if GetMatchState() ~= 0 and DiamondGuardian and DiamondGuardian.PrimaryPart then
@@ -2812,7 +2811,6 @@ task.spawn(function()
 		
 		task.spawn(function()
 			if IsAlive(LocalPlayer) then
-				NearestDiamondGuardian, NearestDiamondGuardianDistance = FindNearestDiamondGuardian()
 				NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
 				NearestNpc = FindNearestNpc()
 			end			
