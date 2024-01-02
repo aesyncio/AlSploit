@@ -1662,9 +1662,9 @@ task.spawn(function()
 	if not GetQueueType():find("skywars") then
 		task.spawn(function()
 			repeat
-				if IsAlive(LocalPlayer) then
-					task.wait(0.5)
-
+				task.wait(0.5)
+				
+				if IsAlive(LocalPlayer) then				
 					NearestOre = FindNearestOre(30)
 					NearestBed = FindNearestBed(30)
 				end				
@@ -1761,7 +1761,7 @@ task.spawn(function()
 			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
 			RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 
-			local Raycast = workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
+			local Raycast = game.Workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
 
 			if Raycast then
 				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.HumanoidRootPart.Position) 
