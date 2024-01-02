@@ -1662,10 +1662,12 @@ task.spawn(function()
 	if not GetQueueType():find("skywars") then
 		task.spawn(function()
 			repeat
-				task.wait(0.5)
-				
-				NearestOre = FindNearestOre(30)
-				NearestBed = FindNearestBed(30)
+				if IsAlive(LocalPlayer) then
+					task.wait(0.5)
+
+					NearestOre = FindNearestOre(30)
+					NearestBed = FindNearestBed(30)
+				end				
 			until not game
 		end)
 
