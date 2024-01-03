@@ -1217,7 +1217,7 @@ function GetSpeed()
 			Speed = Speed + 18
 		end
 
-		Speed = ((Speed + Settings.Speed.Speed) - 20)
+		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
 	end
 
 	return Speed
@@ -1803,7 +1803,7 @@ task.spawn(function()
 	repeat
 		task.wait(0.5)
 
-		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then			
+		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
 			Steal()
 		end
 	until not game
@@ -2305,11 +2305,11 @@ task.spawn(function()
 				task.wait(0.5)
 				
 				if IsAlive(LocalPlayer) then
-					if NearestNpc and IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) and LocalPlayer.Character:GetAttribute("Health") >= 30 and Settings.AutoBank.Value == true then
+					if NearestNpc and Settings.AutoBank.Value == true then
 						CollectEnderChestItems()
 					end
 
-					if Settings.AutoBank.Value == true and (not NearestNpc or not IsAlive(LocalPlayer) or not IsNetworkOwner(LocalPlayer.Character.HumanoidRootPart) or LocalPlayer.Character:GetAttribute("Health") < 30) then
+					if not NearestNpc and Settings.AutoBank.Value == true then
 						SecureEnderChestItems()
 					end
 					
