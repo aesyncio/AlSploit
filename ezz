@@ -771,6 +771,7 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
+local CollectionServiceHannahExecution = CollectionService:GetTagged("HannahExecuteInteraction")
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceTreeOrb = CollectionService:GetTagged("treeOrb")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
@@ -794,6 +795,7 @@ local Animations = {
 
 local Bedwars = AlSploitApi.Bedwars
 
+local HannahPromptTriggerRemote = AlSploitApi.HannahPromptTriggerRemote
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
 local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
@@ -809,6 +811,24 @@ local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
+
+function FindNearestHannahExecution()
+	local NearestHannahExecutionDistance = math.huge
+	local NearestHannahExecution
+
+	for i, v in next, CollectionServiceHannahExecution do		
+		if v.PrimaryPart then
+			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < NearestHannahExecutionDistance then
+				NearestHannahExecutionDistance = Distance
+				NearestHannahExecution = v
+			end
+		end
+	end
+
+	return NearestHannahExecution, NearestHannahExecutionDistance
+end
 
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
@@ -1303,17 +1323,35 @@ function GetItem(Name)
 end
 
 function AutoKit()
+	local NearestHannahExecution = FindNearestHannahExecution()
 	local NearestTreeOrb = FindNearestTreeOrb()
 	
-	print(NearestTreeOrb)
-	
-	if IsAlive(LocalPlayer) and NearestTreeOrb then
-		if TreeOrbRemote:CallServer({treeOrbSecret = NearestTreeOrb:GetAttribute("TreeOrbSecret")}) then			
-			NearestTreeOrb:Destroy()
+	task.spawn(function()
+		if IsAlive(LocalPlayer) and NearestTreeOrb then
+			if TreeOrbRemote:CallServer({treeOrbSecret = NearestTreeOrb:GetAttribute("TreeOrbSecret")}) then			
+				NearestTreeOrb:Destroy()
 
-			CollectionService:RemoveTag(NearestTreeOrb, "treeOrb")
+				CollectionService:RemoveTag(NearestTreeOrb, "treeOrb")
+			end
 		end
-	end
+	end)
+	
+	task.spawn(function()
+		if IsAlive(LocalPlayer) and NearestHannahExecution then
+			if HannahPromptTriggerRemote:CallServer({user = LocalPlayer, victimEntity = NearestHannahExecution}) then
+				task.spawn(function()
+					local Icon = NearestHannahExecution:FindFirstChild("Hannah Execution Icon", true)
+					
+					Icon = NearestHannahExecution:FindFirstChild("Hannah Execution Icon", true)
+					
+					task.wait(0.1)
+					
+					NearestHannahExecution:Destroy()
+					CollectionService:RemoveTag(NearestHannahExecution, "HannahExecuteInteraction")
+				end)
+			end
+		end
+	end)
 end
 
 function GetBow()
