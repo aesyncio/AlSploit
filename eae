@@ -806,6 +806,7 @@ local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local GroundHitRemote = AlSploitApi.GroundHitRemote
+local SwordController = AlSploitApi.SworController
 local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local TreeOrbRemote = AlSploitApi.TreeOrbRemote
@@ -2342,8 +2343,16 @@ task.spawn(function()
 	local Scaffold = CreateToggle(BlatantWindow, "Scaffold", Settings.Scaffold.Value, function(Callback)
 		Settings.Scaffold.Value = Callback
 
-		task.spawn(function()
-			if Callback == true then
+		local ClickingTooFast = SwordController.isClickingTooFast
+
+		if Callback == true then
+			task.spawn(function()
+				SwordController.isClickingTooFast = function(self) 
+					self.lastSwing = tick()
+
+					return false 
+				end
+
 				repeat
 					task.wait()
 
@@ -2357,8 +2366,12 @@ task.spawn(function()
 						end				
 					end
 				until Callback == false
-			end
-		end)
+			end)
+		end
+
+		if Callback == false then
+			SwordController.isClickingTooFast = ClickingTooFast
+		end
 	end)
 end)
 
