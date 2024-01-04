@@ -2597,7 +2597,7 @@ task.spawn(function()
 				AntiVoidPart.Parent = game.Workspace
 				AntiVoidPart.Material = Enum.Material.Neon
 				AntiVoidPart.Name = "AntiVoidPart"
-				AntiVoidPart.Size = Vector3.new(5000, 1, 5000)
+				AntiVoidPart.Size = Vector3.new(99999, 1, 99999)
 				AntiVoidPart.Position = Vector3.new(0, 99999, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
