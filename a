@@ -1423,7 +1423,7 @@ task.spawn(function()
 
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
-									chargedAttack = {chargeRatio = 0.999},
+									chargedAttack = {chargeRatio = -1},
 									entityInstance = DiamondGuardian,
 									validate = {
 										raycast = {
@@ -2357,7 +2357,7 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
+						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 6.6) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
 						local Position = GetServerPosition(Vector)
 						local Block = GetBlock()
 
