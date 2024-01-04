@@ -25,7 +25,6 @@ AlSploit.Bedwars = {
 	CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,	
 }
 
-
 AlSploit.HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 AlSploit.ChestGiveItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]
