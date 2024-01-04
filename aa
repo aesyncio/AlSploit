@@ -873,7 +873,7 @@ end
 
 function FindPetrifiedPlayer()
 	for i, v in next, game.Workspace:GetChildren() do		
-		if game.Players:FindFirstChild(v.Name) and v:GetAttribute("PetrifyId") then
+		if v:GetAttribute("PetrifyId") then
 			return v
 		end
 	end
@@ -1358,9 +1358,11 @@ function AutoKit()
 	end)
 
 	task.spawn(function()
-		MinerRemote:SendToServer({
-			petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-		})
+		if FindPetrifiedPlayer then
+			MinerRemote:SendToServer({
+				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
+			})
+		end		
 	end)
 end
 
