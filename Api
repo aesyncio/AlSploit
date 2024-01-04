@@ -40,6 +40,7 @@ AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitFo
 AlSploit.PurchaseRemote = Client:Get("BedwarsPurchaseItem")
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 AlSploit.ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
+AlSploit.ShopItems = debug.getupvalue(debug.getupvalue(require(ReplicatedStorage.TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop.getShopItem, 1), 2)
 AlSploit.Shop = require(ReplicatedStorage.TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop
 
 AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
