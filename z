@@ -806,10 +806,29 @@ local GroundHitRemote = AlSploitApi.GroundHitRemote
 local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local TreeOrbRemote = AlSploitApi.TreeOrbRemote
+local MinerRemote = AlSploitApi.MinerRemote
 local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
+
+function FindNearestPetrifiedPlayer()
+	local PetrifiedPlayerDistance = math.huge
+	local PetrifiedPlayer
+
+	for i, v in next, Players do		
+		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team and v.Character:GetAttribute("PetrifyId") then
+			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < PetrifiedPlayerDistance then
+				PetrifiedPlayerDistance = Distance
+				PetrifiedPlayer = v				
+			end
+		end
+	end
+
+	return PetrifiedPlayer, PetrifiedPlayerDistance
+end
 
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
@@ -901,21 +920,21 @@ function TweenToNearestBed()
 end
 
 function FindNearestPlayer(MaxDistance)
-	local NearestDistance = MaxDistance or math.huge
+	local NearestPlayerDistance = MaxDistance or math.huge
 	local NearestPlayer
 
 	for i, v in next, Players do
 		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team then
 			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-			if Distance < NearestDistance then
-				NearestPlayer = v
-				NearestDistance = Distance
+			if Distance < NearestPlayerDistance then
+				NearestPlayerDistance = Distance
+				NearestPlayer = v				
 			end
 		end
 	end
 
-	return NearestPlayer, NearestDistance
+	return NearestPlayer, NearestPlayerDistance
 end
 
 function FpsBoostTextures()
@@ -952,8 +971,8 @@ function ShootProjectile(Item, Projectile)
 	end
 end
 
-function FindNearestBed(MaxDistance)
-	local MinDistance = MaxDistance or math.huge
+function FindNearestBed(MinDistance)
+	local MinDistance = MinDistance or math.huge
 	local NearestBed = nil
 
 	for i, v in next, (game.Workspace:GetDescendants()) do
@@ -1318,8 +1337,12 @@ function AutoKit()
 	
 	task.spawn(function()
 		if IsAlive(LocalPlayer) and NearestPlayer then
-			HannahPromptTriggerRemote:CallServer({victimEntity =  NearestPlayer.Character, ["user"] = LocalPlayer})
+			HannahPromptTriggerRemote:CallServer({victimEntity = NearestPlayer.Character, ["user"] = LocalPlayer})
 		end
+	end)
+	
+	task.spawn(function()
+		
 	end)
 end
 
@@ -1912,9 +1935,7 @@ task.spawn(function()
 	repeat		
 		task.wait()
 
-		local NearestPlayer = NearestPlayer
-
-		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestPlayer and not NearestPlayer.Character:FindFirstChildOfClass("ForceField") then	
+		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and IsAlive(NearestPlayer) and NearestPlayer and not NearestPlayer.Character:FindFirstChildOfClass("ForceField") then	
 			local BestBow = GetBow()
 
 			if BestBow and IsAlive(LocalPlayer) then
