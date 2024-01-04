@@ -771,7 +771,6 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
-local CollectionServiceHannahExecution = CollectionService:GetTagged("HannahExecuteInteraction")
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceTreeOrb = CollectionService:GetTagged("treeOrb")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
@@ -811,26 +810,6 @@ local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
-
-function FindNearestHannahExecution()
-	local NearestHannahExecutionDistance = math.huge
-	local NearestHannahExecution
-
-	for i, v in next, CollectionServiceHannahExecution do		
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-
-			if Distance < NearestHannahExecutionDistance then
-				NearestHannahExecutionDistance = Distance
-				NearestHannahExecution = v
-			end
-		end
-	end
-	
-	print(NearestHannahExecution)
-
-	return NearestHannahExecution, NearestHannahExecutionDistance
-end
 
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
@@ -1325,7 +1304,6 @@ function GetItem(Name)
 end
 
 function AutoKit()
-	local NearestHannahExecution = FindNearestHannahExecution()
 	local NearestTreeOrb = FindNearestTreeOrb()
 	
 	task.spawn(function()
@@ -1339,19 +1317,8 @@ function AutoKit()
 	end)
 	
 	task.spawn(function()
-		if IsAlive(LocalPlayer) and NearestHannahExecution then
-			if HannahPromptTriggerRemote:CallServer({user = LocalPlayer, victimEntity = NearestHannahExecution}) then
-				task.spawn(function()
-					local Icon = NearestHannahExecution:FindFirstChild("Hannah Execution Icon", true)
-					
-					Icon = NearestHannahExecution:FindFirstChild("Hannah Execution Icon", true)
-					
-					task.wait(0.1)
-					
-					NearestHannahExecution:Destroy()
-					CollectionService:RemoveTag(NearestHannahExecution, "HannahExecuteInteraction")
-				end)
-			end
+		if IsAlive(LocalPlayer) and NearestPlayer then
+			HannahPromptTriggerRemote:CallServer({victimEntity =  NearestPlayer.Character, ["user"] = LocalPlayer})
 		end
 	end)
 end
