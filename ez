@@ -1285,10 +1285,9 @@ function IsAlive(Player)
 	Player = Player or LocalPlayer
 
 	if not Player.Character then return false end
-	if not Player.Character:FindFirstChild("Head") then return false end
 	if not Player.Character:FindFirstChild("Humanoid") then return false end
 	if Player.Character:GetAttribute("Health") <= 0 then return false end
-	if not Player.Character:FindFirstChild("HumanoidRootPart") then return false end	
+	if not Player.Character.PrimaryPart then return false end	
 
 	return true
 end	
@@ -1305,6 +1304,8 @@ end
 
 function AutoKit()
 	local NearestTreeOrb = FindNearestTreeOrb()
+	
+	print(NearestTreeOrb)
 	
 	if IsAlive(LocalPlayer) and NearestTreeOrb then
 		if TreeOrbRemote:CallServer({treeOrbSecret = NearestTreeOrb:GetAttribute("TreeOrbSecret")}) then			
