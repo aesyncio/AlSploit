@@ -31,6 +31,7 @@ AlSploit.HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 AlSploit.ChestGiveItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]
 AlSploit.ChestGetItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]
+AlSploit.BlockPlacingRemote = game:GetService("ReplicatedStorage").rbxts_include.node_modules["@easy-games"]["block-engine"].node_modules["@rbxts"].net.out._NetManaged.PlaceBlock
 AlSploit.SendMessageRemote = ReplicatedStorage.DefaultChatSystemChatEvents:WaitForChild("SayMessageRequest")
 AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ProjectileFire")
 AlSploit.PlayAgainRemote = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events")
