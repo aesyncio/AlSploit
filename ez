@@ -1424,7 +1424,7 @@ task.spawn(function()
 
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
-									chargedAttack = {chargeRatio = 1},
+									chargedAttack = {chargeRatio = 0.999},
 									entityInstance = DiamondGuardian,
 									validate = {
 										raycast = {
