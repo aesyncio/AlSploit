@@ -1307,9 +1307,7 @@ function GetSpeed()
 end
 
 function GetBlock()
-	local ItemTable = debug.getupvalue(require(game.ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
-
-	for i, v in next, GetInventory(LocalPlayer) do
+	for i, v in next, GetInventory(LocalPlayer).items do
 		if ItemTable[v.itemType].block ~= nil then
 			return v.itemType
 		end
