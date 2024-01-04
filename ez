@@ -51,7 +51,7 @@ ContainerFrame.BackgroundTransparency = 1.000
 ContainerFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ContainerFrame.BorderSizePixel = 0
 ContainerFrame.Position = UDim2.new(0, 0, 0.0480132438, 0)
-ContainerFrame.Size = UDim2.new(1, 0, 0.98, 0)
+ContainerFrame.Size = UDim2.new(1, 0, 1, 0)
 ContainerFrame.Visible = false
 
 UIListLayoutContainerFrame.Parent = ContainerFrame
@@ -2356,7 +2356,7 @@ task.spawn(function()
 				repeat
 					task.wait()
 
-					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
+					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true and IsNetworkOwner(LocalPlayer) then
 						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
 						local Position = GetServerPosition(Vector)
 						local Block = GetBlock()
