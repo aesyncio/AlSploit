@@ -826,6 +826,8 @@ function FindNearestHannahExecution()
 			end
 		end
 	end
+	
+	print(NearestHannahExecution)
 
 	return NearestHannahExecution, NearestHannahExecutionDistance
 end
