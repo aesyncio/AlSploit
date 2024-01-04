@@ -289,7 +289,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, Callback)
 	local MiniToggle = Instance.new("TextButton")
 	local UIAspectRatioConstraint_6 = Instance.new("UIAspectRatioConstraint")
 	local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
-	
+
 	local Checker = {["Enabled"] = false}
 
 	function Checker:Toggle(Bool)
@@ -675,12 +675,12 @@ function CreateSettingsFile()
 	FirstTime = false
 
 	local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-	
+
 	if writefile and makefolder then
 		makefolder("AlSploitBedwars")
 		writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
 	end
-	
+
 	if not writefile or makefolder then
 		Settings = {
 			ChestStealer = {Value = true},
@@ -750,7 +750,7 @@ end)
 
 task.spawn(function()
 	DeleteUnwantedFiles()
-	
+
 	if readfile and isfile then
 		LoadSettings()
 	end
@@ -759,11 +759,11 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(1)
-		
+
 		if writefile then
 			SaveSettings()
 		end
-		
+
 	until not game
 end)
 
@@ -873,7 +873,7 @@ end
 
 function FindPetrifiedPlayer()
 	for i, v in next, game.Workspace:GetChildren() do		
-		if v:GetAttribute("PetrifyId") then
+		if game.Players:FindFirstChild(v.Name) and v:GetAttribute("PetrifyId") then
 			return v
 		end
 	end
@@ -1181,7 +1181,7 @@ function Invisible()
 			task.spawn(function()
 				repeat
 					task.wait()
-					
+
 					PlayerAnimation:Play(1 / 999999, 999999, 1 / 999999)
 				until Settings.Invisible.Value == false
 
@@ -1251,7 +1251,7 @@ end)
 
 function AutoBank()
 	local NearestNpc = FindNearestNpc(30)
-	
+
 	if NearestNpc and Settings.AutoBank.Value == true then
 		CollectEnderChestItems()
 	end
@@ -1340,7 +1340,7 @@ end
 function AutoKit()
 	local FindPetrifiedPlayer = FindPetrifiedPlayer()
 	local NearestTreeOrb = FindNearestTreeOrb()
-	
+
 	task.spawn(function()
 		if IsAlive(LocalPlayer) and NearestTreeOrb then
 			if TreeOrbRemote:CallServer({treeOrbSecret = NearestTreeOrb:GetAttribute("TreeOrbSecret")}) then			
@@ -1350,13 +1350,13 @@ function AutoKit()
 			end
 		end
 	end)
-	
+
 	task.spawn(function()
 		if IsAlive(LocalPlayer) and NearestPlayer then
 			HannahPromptTriggerRemote:CallServer({victimEntity = NearestPlayer.Character, ["user"] = LocalPlayer})
 		end
 	end)
-	
+
 	task.spawn(function()
 		MinerRemote:SendToServer({
 			petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
@@ -1734,20 +1734,20 @@ function InfFly()
 		until InfFlying == false
 
 		if not InfFlying or not IsAlive(LocalPlayer) then
-			
+
 			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
 			SetCamera(LocalPlayer.Character)
 
 			SpoofedCamera:Remove()
 			LocalPlayer.Character.HumanoidRootPart.Anchored = true
-			
+
 			task.wait(0.025)
-			
+
 			LocalPlayer.Character.HumanoidRootPart.Anchored = false
 			game.Workspace.Gravity = 50
-			
+
 			task.wait(1)
-			
+
 			game.Workspace.Gravity = 196.2
 		end
 	end
@@ -1769,7 +1769,7 @@ task.spawn(function()
 		task.spawn(function()
 			repeat
 				task.wait(0.5)
-				
+
 				if IsAlive(LocalPlayer) then				
 					NearestOre = FindNearestOre(30)
 					NearestBed = FindNearestBed(30)
@@ -1900,7 +1900,7 @@ task.spawn(function()
 					end
 
 					task.wait(0.001)
-					
+
 					ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
 				end
 			end
@@ -1961,10 +1961,10 @@ task.spawn(function()
 
 				if Settings.Aimbot.ToolCheck == false then
 					local Bow = GetItem(BestBow.itemType)
-					
+
 					if Bow and GetItem("arrow") then			
 						SwitchItem(BestBow.tool)
-						
+
 						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
 					end
 				end
@@ -1997,9 +1997,9 @@ end)
 
 task.spawn(function()
 	repeat task.wait() until GetMatchState() ~= 0
-	
+
 	task.wait(0.3)
-	
+
 	for i, v in next, Players do
 		if IsAlive(v) then
 			v.Character.Humanoid.HealthChanged:Connect(function(Health)
@@ -2008,27 +2008,27 @@ task.spawn(function()
 					local KillMessage = ""					
 
 					if Randomized == 0 then
-						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					if Randomized ~= 0 then
-						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					if Randomized == 2 then
-						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					if Randomized == 3 then
-						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					if Randomized == 4 then
-						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					if Randomized == 5 then
-						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
+						KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSploit on top"
 					end
 
 					local Args = {
@@ -2046,7 +2046,7 @@ task.spawn(function()
 				task.wait(0.3)
 
 				local v = game.Players:FindFirstChild(Character.Name) or v
-				
+
 				if IsAlive(v) then
 					v.Character.Humanoid.HealthChanged:Connect(function(Health)
 						if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
@@ -2054,27 +2054,27 @@ task.spawn(function()
 							local KillMessage = ""					
 
 							if Randomized == 0 then
-								KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "You are so bad u died. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							if Randomized ~= 0 then
-								KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "I could probably win without cheats. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							if Randomized == 2 then
-								KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "Clowns are the only ones we kill. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							if Randomized == 3 then
-								KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "Rats. Imagine dying in a block game. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							if Randomized == 4 then
-								KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							if Randomized == 5 then
-								KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSpoit on top"
+								KillMessage = "I ruined a good day for a good reason. L" .. v.Name .. " | AlSploit on top"
 							end
 
 							local Args = {
@@ -2085,9 +2085,9 @@ task.spawn(function()
 							SendMessageRemote:FireServer(unpack(Args))
 						end
 					end)
-				end				
-			end)			
-		end)	
+				end
+			end)
+		end)
 	end
 end)
 
@@ -2146,7 +2146,7 @@ end)
 task.spawn(function()
 	repeat
 		task.wait()
-		
+
 		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			if Settings.AutoKit.Value == true then
 				AutoKit()
@@ -2342,21 +2342,23 @@ task.spawn(function()
 	local Scaffold = CreateToggle(BlatantWindow, "Scaffold", Settings.Scaffold.Value, function(Callback)
 		Settings.Scaffold.Value = Callback
 
-		if Callback == true then
-			repeat
-				task.wait(0.1)
+		task.spawn(function()
+			if Callback == true then
+				repeat
+					task.wait(0.1)
 
-				if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-					local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
-					local Position = GetServerPosition(Vector)
-					local Block = GetBlock()
-					
-					if Block then
-						PlaceBlock(Position, Block)
-					end				
-				end
-			until Callback == false
-		end
+					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
+						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
+						local Position = GetServerPosition(Vector)
+						local Block = GetBlock()
+
+						if Block then
+							PlaceBlock(Position, Block)
+						end				
+					end
+				until Callback == false
+			end
+		end)		
 	end)
 end)
 
@@ -2418,7 +2420,7 @@ task.spawn(function()
 		if SpeedValue == false then
 			SpeedSlider = CreateSlider(BlatantWindow, "Speed", Settings.Speed.Speed, 23, 0, LayoutOrder + 1, function(Callback)
 				Settings.Speed.Speed = Callback
-				
+
 				print(Callback)
 			end)
 		end
@@ -2723,7 +2725,7 @@ task.spawn(function()
 
 						if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true and FindNearestPlayer() then
 							task.wait(0.25)
-							
+
 							TweenToNearestPlayer()
 						end
 					end)
@@ -2918,24 +2920,24 @@ end)
 task.spawn(function()
 	repeat 
 		task.wait(0.1)
-		
+
 		task.spawn(function()
 			Players = game.Players:GetPlayers()	
 		end)		
-		
+
 		task.spawn(function()
 			CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 			CollectionServiceBlocks = CollectionService:GetTagged("block")
 			CollectionServiceChest = CollectionService:GetTagged("chest")
 			CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
 		end)		
-		
+
 		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
 			end			
 		end)
-		
+
 		task.spawn(function()
 			FovController:setFOV(Settings.Fov.Fov)
 		end)		
