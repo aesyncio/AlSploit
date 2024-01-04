@@ -694,7 +694,7 @@ function CreateSettingsFile()
 			PlayAgain = {Value = true},
 			Invisible = {Value = false},
 			AimAssist = {Value = true},
-			Scaffold = {Value = true}
+			Scaffold = {Value = true},
 			KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false},
 			Velocity = {Value = true},	
 			AntiVoid = {Value = true, Transparency = 0.65},
