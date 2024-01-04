@@ -23,7 +23,6 @@ AlSploit.Bedwars = {
 	DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
 	KnockbackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
 	CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,	
-	PickupRemote = GetRemote(debug.getconstants(KnitClient.Controllers.ItemDropController.checkForPickup)),
 }
 
 
@@ -37,6 +36,7 @@ AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):Wait
 AlSploit.PlayAgainRemote = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events")
 AlSploit.EquipItemRemote = GetRemote(debug.getconstants(debug.getproto(require(ReplicatedStorage.TS.entity.entities["inventory-entity"]).InventoryEntity.equipItem, 3)))
 AlSploit.GroundHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("GroundHit")
+AlSploit.SwordController = KnitClient.Controllers.SwordController
 AlSploit.ProjectileMeta = require(ReplicatedStorage.TS.projectile["projectile-meta"]).ProjectileMeta
 AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
