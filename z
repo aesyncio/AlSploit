@@ -1423,7 +1423,7 @@ task.spawn(function()
 
 								KillauraRemote:FireServer({
 									weapon = Sword.tool,
-									chargedAttack = {chargeRatio = -math.huge},
+									chargedAttack = {chargeRatio = math.huge},
 									entityInstance = DiamondGuardian,
 									validate = {
 										raycast = {
