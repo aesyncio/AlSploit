@@ -51,7 +51,7 @@ ContainerFrame.BackgroundTransparency = 1.000
 ContainerFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ContainerFrame.BorderSizePixel = 0
 ContainerFrame.Position = UDim2.new(0, 0, 0.0480132438, 0)
-ContainerFrame.Size = UDim2.new(1, 0, 0.970330536, 0)
+ContainerFrame.Size = UDim2.new(1, 0, 0.98, 0)
 ContainerFrame.Visible = false
 
 UIListLayoutContainerFrame.Parent = ContainerFrame
