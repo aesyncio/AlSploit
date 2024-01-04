@@ -812,22 +812,22 @@ local ItemTable = AlSploitApi.ItemTable
 local ZephyrController = AlSploitApi.ZephyrController
 local FovController = AlSploitApi.FovController
 
-function FindNearestPetrifiedPlayer()
-	local PetrifiedPlayerDistance = math.huge
-	local PetrifiedPlayer
+function FindNearestDiamondGuardian()
+	local NearestDiamondGuardianDistance = math.huge
+	local NearestDiamondGuardian
 
-	for i, v in next, Players do		
-		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team and v.Character:GetAttribute("PetrifyId") then
-			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	for i, v in next, CollectionServiceDiamondGuardian do		
+		if v.PrimaryPart then
+			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-			if Distance < PetrifiedPlayerDistance then
-				PetrifiedPlayerDistance = Distance
-				PetrifiedPlayer = v				
+			if Distance < NearestDiamondGuardianDistance then
+				NearestDiamondGuardianDistance = Distance
+				NearestDiamondGuardian = v
 			end
 		end
 	end
 
-	return PetrifiedPlayer, PetrifiedPlayerDistance
+	return NearestDiamondGuardian, NearestDiamondGuardianDistance
 end
 
 function CollectEnderChestItems()
@@ -868,22 +868,12 @@ function TweenToNearestPlayer()
 	end
 end
 
-function FindNearestDiamondGuardian()
-	local NearestDiamondGuardianDistance = math.huge
-	local NearestDiamondGuardian
-	
-	for i, v in next, CollectionServiceDiamondGuardian do		
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-
-			if Distance < NearestDiamondGuardianDistance then
-				NearestDiamondGuardianDistance = Distance
-				NearestDiamondGuardian = v
-			end
+function FindPetrifiedPlayer()
+	for i, v in next, game.Workspace:GetChildren() do		
+		if v:GetAttribute("PetrifyId") then
+			return v
 		end
 	end
-	
-	return NearestDiamondGuardian, NearestDiamondGuardianDistance
 end
 
 function FindNearestTreeOrb()
@@ -1323,6 +1313,7 @@ function GetItem(Name)
 end
 
 function AutoKit()
+	local FindPetrifiedPlayer = FindPetrifiedPlayer()
 	local NearestTreeOrb = FindNearestTreeOrb()
 	
 	task.spawn(function()
@@ -1342,7 +1333,9 @@ function AutoKit()
 	end)
 	
 	task.spawn(function()
-		
+		MinerRemote:SendToServer({
+			petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
+		})
 	end)
 end
 
