@@ -2356,7 +2356,7 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
+						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.5) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
 						local Position = GetServerPosition(Vector)
 						local Block = GetBlock()
 
@@ -2647,7 +2647,7 @@ task.spawn(function()
 				AntiVoidPart.Position = Vector3.new(0, 99999, 0)
 				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
 				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
-				AntiVoidPart.CanCollide = true
+				AntiVoidPart.CanCollide = false
 				AntiVoidPart.Anchored = true
 
 				for i, v in pairs(CollectionServiceBlocks) do
@@ -2658,10 +2658,20 @@ task.spawn(function()
 						if LowestPosition < OldLowestPosition then
 							OldLowestPosition = LowestPosition
 
-							AntiVoidPart.Position = Vector3.new(0, LowestPosition + 4, 0)
+							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
 						end
 					end					
 				end
+
+				AntiVoidPart.Touched:Connect(function()
+					if IsAlive(LocalPlayer) and game.Workspace:FindFirstChild("AntiVoidPart") and LocalPlayer.Character.HumanoidRootPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
+						for i = 1, 3 do
+							if IsAlive(LocalPlayer) then
+								LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Velocity.X, 100, LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
+							end
+						end
+					end
+				end)
 			end
 		end)	
 
