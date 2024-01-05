@@ -2361,7 +2361,7 @@ task.spawn(function()
 						local Block = GetBlock()
 
 						if Block then
-							PlaceBlock(Position, Block)
+							PlaceBlock(LocalPlayer.Character.PrimaryPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 1, Block)
 						end				
 					end
 				until Callback == false
