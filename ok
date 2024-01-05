@@ -1025,7 +1025,7 @@ function FindNearestOre(MaxDistance)
 	return NearestOre
 end
 
-function TouchingGround()
+function TouchingGround(Y)
 	if IsAlive(LocalPlayer) then
 		local Parameters = RaycastParams.new()
 		Parameters.FilterType = Enum.RaycastFilterType.Include
@@ -1036,7 +1036,7 @@ function TouchingGround()
 		for x = 1, 1 do
 			local Origin = LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(x, 0, 0)
 
-			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
+			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, (Y and Y or -2.5), 0), Parameters)
 			if Raycast and Raycast.Instance then
 				IsTouchingFloor = true			
 			end
@@ -2355,7 +2355,7 @@ task.spawn(function()
 				repeat
 					task.wait()
 
-					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true and not TouchingGround() then
+					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true and not TouchingGround(-5) then
 						local ScaffoldCFrame = (LocalPlayer.Character.HumanoidRootPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 2) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
 						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
