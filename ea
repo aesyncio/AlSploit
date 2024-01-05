@@ -961,9 +961,9 @@ function ShootProjectile(Item, Projectile)
 			[1] = Item,
 			[2] = Projectile,
 			[3] = Projectile,
-			[4] = NearestPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 2, 0),
+			[4] = NearestPlayer.Character.HumanoidRootPart.Position,
 			[5] = NearestPlayer.Character.HumanoidRootPart.Position,
-			[6] = Vector3.new(0, -6, 0),
+			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {["drawDurationSeconds"] = 0.96, ["shotId"] = HttpService:GenerateGUID(false)},
 			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
