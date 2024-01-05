@@ -2658,7 +2658,7 @@ task.spawn(function()
 						if LowestPosition < OldLowestPosition then
 							OldLowestPosition = LowestPosition
 
-							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
+							AntiVoidPart.Position = Vector3.new(0, LowestPosition + 4, 0)
 						end
 					end					
 				end
