@@ -2356,8 +2356,9 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local Vector = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.5) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
-						local Position = GetServerPosition(Vector)
+						local ScaffoldCFrame = (LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.5)) + Vector3.new(0, -((LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
+						local Vector = GetServerPosition(ScaffoldCFrame) * 3
+						local Position = (Vector3.zero - Vector)
 						local Block = GetBlock()
 
 						if Block then
@@ -2367,7 +2368,7 @@ task.spawn(function()
 				until Callback == false
 			end)
 		end
-
+		
 		if Callback == false then
 			SwordController.isClickingTooFast = ClickingTooFast
 		end
