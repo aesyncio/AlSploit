@@ -2361,9 +2361,7 @@ task.spawn(function()
 						local Block = GetBlock()
 
 						if Block then
-							PlaceBlock(GetServerPosition((LocalPlayer.Character.PrimaryPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0, 4.5), 0), Block)
-							PlaceBlock(GetServerPosition((LocalPlayer.Character.PrimaryPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 2) - Vector3.new(0, 4.5), 0), Block)							
-							PlaceBlock(GetServerPosition((LocalPlayer.Character.PrimaryPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 3) - Vector3.new(0, 4.5), 0), Block)
+							PlaceBlock(Position, Block)
 						end				
 					end
 				until Callback == false
