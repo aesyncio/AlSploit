@@ -2356,13 +2356,13 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldCFrame = (LocalPlayer.Character.HumanoidRootPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector * 2) - Vector3.new(0, 4.5, 0)
+						local ScaffoldCFrame = (LocalPlayer.Character.HumanoidRootPart.CFrame + LocalPlayer.Character.PrimaryPart.CFrame.LookVector) + Vector3.new(0, -math.floor(LocalPlayer.Character.Humanoid.HipHeight * 3), 0)
 						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
 
 						if Block then
 							PlaceBlock(Position, Block)
-						end				
+						end
 					end
 				until Callback == false
 			end)
