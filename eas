@@ -2316,7 +2316,7 @@ task.spawn(function()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
 						local ScaffoldPosition = LocalPlayer.Character.HumanoidRootPart.Position + ((LocalPlayer.Character.Humanoid.MoveDirection.Unit))
-						ScaffoldPosition = Vector3.new(ScaffoldPosition.X, LocalPlayer.Character.HumanoidRootPart.Position.Y - 4, ScaffoldPosition.Z)
+						ScaffoldPosition = Vector3.new(ScaffoldPosition.X, (LocalPlayer.Character.HumanoidRootPart.Position.Y - 4) * 3, ScaffoldPosition.Z)
 
 						local Position = GetServerPosition(ScaffoldPosition)
 						local Block = GetBlock()
