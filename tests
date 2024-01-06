@@ -640,7 +640,7 @@ function CreateSettingsFile()
 		AutoBank = {Value = true},
 		HighJump = {Value = false},
 		PlayerTp = {Value = true},
-		AutoBuy = {Value = true}
+		AutoBuy = {Value = true},
 		AutoKit = {Value = true},
 		AutoBuy = {Value = true},
 		Sprint = {Value = true},
