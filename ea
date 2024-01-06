@@ -642,7 +642,6 @@ function CreateSettingsFile()
 		PlayerTp = {Value = true},
 		AutoBuy = {Value = true},
 		AutoKit = {Value = true},
-		AutoBuy = {Value = true},
 		Sprint = {Value = true},
 		NoFall = {Value = true},
 		Aimbot = {Value = true, ToolCheck = false},
@@ -2316,8 +2315,10 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
-						local Position = GetServerPosition(ScaffoldCFrame)
+						local ScaffoldPosition = LocalPlayer.Character.HumanoidRootPart.Position + ((LocalPlayer.Character.Humanoid.MoveDirection.Unit))
+						ScaffoldPosition = Vector3.new(ScaffoldPosition.X, LocalPlayer.Character.HumanoidRootPart.Position.Y - 4, ScaffoldPosition.Z)
+
+						local Position = GetServerPosition(ScaffoldPosition)
 						local Block = GetBlock()
 							
 						if Block then
