@@ -2310,19 +2310,21 @@ task.spawn(function()
 
 					return false 
 				end
+				
+				local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
+				
+				PlacementCPS.BLOCK_PLACE_CPS = 2000
 
 				repeat
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 4, 0)
+						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
 						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
-
+							
 						if Block then
 							PlaceBlock(Position, Block)
-							
-							task.wait(0.05)
 						end
 					end
 				until Callback == false
