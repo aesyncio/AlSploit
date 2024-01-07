@@ -2095,20 +2095,20 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if CustomAnimationsValue == false then
-			CustomAnimations = CreateMiniToggle(CombatTab, "CustomAnimations", Settings.KillAura.CustomAnimation, LayoutOrder + 1, function(Callback)
-				Settings.KillAura.CustomAnimation = Callback
+			CustomAnimations = CreateMiniToggle(CombatTab, "CustomAnimations", Settings.KillAura.CustomAnimation, LayoutOrder + 1, function(CallBack)
+				Settings.KillAura.CustomAnimation = CallBack
 			end)
 		end
 
 		if ToolCheckValue == false then
-			ToolCheck = CreateMiniToggle(CombatTab, "ToolCheck", Settings.KillAura.ToolCheck, LayoutOrder + 2, function(Callback)
-				Settings.KillAura.ToolCheck = Callback
+			ToolCheck = CreateMiniToggle(CombatTab, "ToolCheck", Settings.KillAura.ToolCheck, LayoutOrder + 2, function(CallBack)
+				Settings.KillAura.ToolCheck = CallBack
 			end)
 		end
 
 		if RangeValue == false then
-			Range = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, 20, LayoutOrder + 3, function(Callback)
-				Settings.KillAura.Range = Callback
+			Range = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, 20, LayoutOrder + 3, function(CallBack)
+				Settings.KillAura.Range = CallBack
 			end)
 		end
 
@@ -2205,22 +2205,22 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local DamageBoost = CreateToggle(BlatantTab, "DmgBoost", Settings.DamageBoost.Value, function(Callback)
-		Settings.DamageBoost.Value = Callback
+	local DamageBoost = CreateToggle(BlatantTab, "DmgBoost", Settings.DamageBoost.Value, function(CallBack)
+		Settings.DamageBoost.Value = CallBack
 	end)
 end)
 
 task.spawn(function()
-	local HighJump = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(Callback)
-		Settings.HighJump.Value = Callback
+	local HighJump = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
+		Settings.HighJump.Value = CallBack
 	end)
 end)
 
 task.spawn(function()
-	local Invisible = CreateToggle(BlatantTab, "Invisible", Settings.Invisible.Value, function(Callback)
-		Settings.Invisible.Value = Callback
+	local Invisible = CreateToggle(BlatantTab, "Invisible", Settings.Invisible.Value, function(CallBack)
+		Settings.Invisible.Value = CallBack
 
-		if Callback == true then
+		if CallBack == true then
 			Invisible()
 
 			LocalPlayer.CharacterAdded:Connect(function()
@@ -2235,12 +2235,12 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Scaffold = CreateToggle(BlatantTab, "Scaffold", Settings.Scaffold.Value, function(Callback)
-		Settings.Scaffold.Value = Callback
+	local Scaffold = CreateToggle(BlatantTab, "Scaffold", Settings.Scaffold.Value, function(CallBack)
+		Settings.Scaffold.Value = CallBack
 
 		local ClickingTooFast = SwordController.isClickingTooFast
 
-		if Callback == true then
+		if CallBack == true then
 			task.spawn(function()
 				SwordController.isClickingTooFast = function(self) 
 					self.lastSwing = tick()
@@ -2264,19 +2264,19 @@ task.spawn(function()
 							PlaceBlock(Position, Block)
 						end
 					end
-				until Callback == false
+				until CallBack == false
 			end)
 		end
 		
-		if Callback == false then
+		if CallBack == false then
 			SwordController.isClickingTooFast = ClickingTooFast
 		end
 	end)
 end) 
 
 task.spawn(function()
-	local AutoKit = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(Callback)
-		Settings.AutoKit.Value = Callback
+	local AutoKit = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
+		Settings.AutoKit.Value = CallBack
 	end)
 end)
 
@@ -2290,10 +2290,10 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if ToolCheckValue == false then
-			ToolCheck = CreateMiniToggle(BlatantTab, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 1, function(Callback)
-				Settings.Aimbot.ToolCheck = Callback
+			ToolCheck = CreateMiniToggle(BlatantTab, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 1, function(CallBack)
+				Settings.Aimbot.ToolCheck = CallBack
 
-				if Callback == false then
+				if CallBack == false then
 					local Sword = GetSword()
 
 					SwitchItem(Sword.itemType)
@@ -2330,8 +2330,8 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if SpeedValue == false then
-			SpeedSlider = CreateSlider(BlatantTab, "Speed", Settings.Speed.Speed, 23, LayoutOrder + 1, function(Callback)
-				Settings.Speed.Speed = Callback
+			SpeedSlider = CreateSlider(BlatantTab, "Speed", Settings.Speed.Speed, 23, LayoutOrder + 1, function(CallBack)
+				Settings.Speed.Speed = CallBack
 			end)
 		end
 
@@ -2365,8 +2365,8 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if SpeedValue == false then
-			Speed = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 1, function(Callback)
-				Settings.ChatSpammer.Speed = Callback
+			Speed = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 1, function(CallBack)
+				Settings.ChatSpammer.Speed = CallBack
 			end)
 		end
 
@@ -2466,11 +2466,11 @@ task.spawn(function()
 
 	DropDownButton.Activated:Connect(function()			
 		if FovValue == false then
-			Fov = CreateSlider(UtilityTab, "Fov", Settings.Fov.Fov, 130, LayoutOrder + 1, function(Callback)
-				Settings.Fov.Fov = Callback
+			Fov = CreateSlider(UtilityTab, "Fov", Settings.Fov.Fov, 130, LayoutOrder + 1, function(CallBack)
+				Settings.Fov.Fov = CallBack
 
 				if Settings.Fov.Value == true then
-					FovController:setFOV(Callback)	
+					FovController:setFOV(CallBack)	
 				end
 			end)
 		end
@@ -2587,11 +2587,11 @@ task.spawn(function()
 
 		DropDownButton.Activated:Connect(function()			
 			if AntiVoidValue == false then
-				Transparency = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency * 100, 100, LayoutOrder + 1, function(Callback)
-					Settings.AntiVoid.Transparency = Callback / 100
+				Transparency = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency * 100, 100, LayoutOrder + 1, function(CallBack)
+					Settings.AntiVoid.Transparency = CallBack / 100
 
 					if AntiVoidPart then
-						AntiVoidPart.Transparency = Callback / 100
+						AntiVoidPart.Transparency = CallBack / 100
 					end
 				end)
 			end
@@ -2699,14 +2699,14 @@ task.spawn(function()
 
 		DropDownButton.Activated:Connect(function()	
 			if BreakOresValue == false then
-				BreakOres = CreateMiniToggle(WorldTab, "BreakOres", Settings.Nuker.BreakOres, LayoutOrder + 1, function(Callback)
-					Settings.Nuker.BreakOres = Callback
+				BreakOres = CreateMiniToggle(WorldTab, "BreakOres", Settings.Nuker.BreakOres, LayoutOrder + 1, function(CallBack)
+					Settings.Nuker.BreakOres = CallBack
 				end)
 			end		
 
 			if RangeValue == false then
-				Range = CreateSlider(WorldTab, "Range", Settings.Nuker.Range, 30, LayoutOrder + 2, function(Callback)
-					Settings.Nuker.Range = Callback
+				Range = CreateSlider(WorldTab, "Range", Settings.Nuker.Range, 30, LayoutOrder + 2, function(CallBack)
+					Settings.Nuker.Range = CallBack
 				end)
 			end			
 
