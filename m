@@ -2301,18 +2301,26 @@ task.spawn(function()
 	local Scaffold = CreateToggle(BlatantWindow, "Scaffold", Settings.Scaffold.Value, function(Callback)
 		Settings.Scaffold.Value = Callback
 
+		local ClickingTooFast = SwordController.isClickingTooFast
+
 		if Callback == true then
 			task.spawn(function()
-				local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
+				SwordController.isClickingTooFast = function(self) 
+					self.lastSwing = tick()
+
+					return false 
+				end
 				
+				local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
+
 				PlacementCPS.BLOCK_PLACE_CPS = math.huge
 
 				repeat
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldPosition = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Position.X, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), LocalPlayer.Character.HumanoidRootPart.Position.Z)
-						local Position = GetServerPosition(ScaffoldPosition)
+						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
+						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
 							
 						if Block then
@@ -2321,6 +2329,10 @@ task.spawn(function()
 					end
 				until Callback == false
 			end)
+		end
+		
+		if Callback == false then
+			SwordController.isClickingTooFast = ClickingTooFast
 		end
 	end)
 end) 
