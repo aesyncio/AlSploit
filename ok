@@ -285,6 +285,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Position = UDim2.new(0, 0, 0.106666669, 0)
 	SliderFrame.Size = UDim2.new(0, 200, 0, 50)
+	SliderFrame.LayoutOrder = LayoutOrder
 
 	Slider.Name = "Slider"
 	Slider.Parent = SliderFrame
@@ -298,10 +299,10 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Slider
 	
-	UIStroke2.Parent = Slider
-	UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke2.Thickness = 3
-	UIStroke2.Color = Color3.new(0, 0, 0)
+	UIStroke.Parent = Slider
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Thickness = 3
+	UIStroke.Color = Color3.new(0, 0, 0)
 
 	Fill.Name = "Fill"
 	Fill.Parent = Slider
