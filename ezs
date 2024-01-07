@@ -152,6 +152,10 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local LayoutOrder = 0
 
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Rotation = 90
+	UIGradient.Parent = Toggle
+	
 	function Checker:Toggle(Bool)
 		Bool = Bool or (not Checker["Enabled"])
 		Checker["Enabled"] = Bool
@@ -197,10 +201,6 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	LayoutOrder = Toggle.LayoutOrder
 	DefaultLayoutOrder = LayoutOrder
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
-	UIGradient.Rotation = 90
-	UIGradient.Parent = Toggle
-
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 25)
 
@@ -223,6 +223,10 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 
 	local Checker = {["Enabled"] = false}
+	
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Rotation = 90
+	UIGradient.Parent = MiniToggle
 
 	function Checker:Toggle(Bool)
 		Bool = Bool or (not Checker["Enabled"])
@@ -265,10 +269,6 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	MiniToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 	MiniToggle.TextSize = 14.000
 	MiniToggle.LayoutOrder = LayoutOrder
-
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
-	UIGradient.Rotation = 90
-	UIGradient.Parent = MiniToggle
 
 	return MiniToggle
 end
@@ -2231,6 +2231,11 @@ task.spawn(function()
 	end)
 end)
 
+task.spawn(function()
+	local InfFly = CreateToggle(BlatantTab, "InfiteFly", false, function(CallBack)
+		InfFly()
+	end)
+end)
 
 task.spawn(function()
 	local Scaffold = CreateToggle(BlatantTab, "Scaffold", Settings.Scaffold.Value, function(CallBack)
