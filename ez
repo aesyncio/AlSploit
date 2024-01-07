@@ -699,12 +699,7 @@ local GroundHitRemote = AlSploitApi.GroundHitRemote
 local SwordController = AlSploitApi.SwordController
 local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
-
-local TreeOrbRemote
-
-if GetMatchState() ~= 0 then
-	local TreeOrbRemote = AlSploitApi.TreeOrbRemote
-end
+local TreeOrbRemote = AlSploitApi.TreeOrbRemote
 
 local MinerRemote = AlSploitApi.MinerRemote
 local ItemTable = AlSploitApi.ItemTable
@@ -1815,7 +1810,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Messages = {"Boom!", "Bam!", "Bop!", "Pow!"}
+	local Messages = {"AlSploit", "Best Client", ":D", "💀"}
 
 	debug.setupvalue(Bedwars.DamageIndicator, 10, {
 		Create = function(self, obj, ...)
@@ -1826,7 +1821,7 @@ task.spawn(function()
 					obj.Parent.Text = Message
 					obj.Parent.TextColor3 = Color3.fromHSV(tick() % 10 / 10, 2, 2)
 
-					task.spawn(function()						
+					task.spawn(function()
 						task.wait(0.75)
 
 						if Settings.Indicators.Value == true then
