@@ -421,57 +421,51 @@ local UtilityTab = CreateTab("Utility")
 local WorldTab = CreateTab("World")
 
 task.spawn(function()
-	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatTab, "KillAura", true, function(CallBack)
-		print(CallBack)
+	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatTab, "Killaura", true, function(CallBack)
+
 	end)
-	
-	task.spawn(function()
-		local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatTab, "Killaura", true, function(CallBack)
-			
-		end)
 
-		local CustomAnimationsValue = false
-		local ToolCheckValue = false
-		local RangeValue = false
+	local CustomAnimationsValue = false
+	local ToolCheckValue = false
+	local RangeValue = false
 
-		local CustomAnimations
-		local ToolCheck
-		local Range
+	local CustomAnimations
+	local ToolCheck
+	local Range
 
-		DropDownButton.Activated:Connect(function()			
-			if CustomAnimationsValue == false then
-				CustomAnimations = CreateMiniToggle(CombatTab, "CustomAnimations", true, LayoutOrder + 1, function(Callback)
-					
-				end)
-			end
+	DropDownButton.Activated:Connect(function()			
+		if CustomAnimationsValue == false then
+			CustomAnimations = CreateMiniToggle(CombatTab, "CustomAnimations", true, LayoutOrder + 1, function(Callback)
 
-			if ToolCheckValue == false then
-				ToolCheck = CreateMiniToggle(CombatTab, "ToolCheck", false, LayoutOrder + 2, function(Callback)
-					
-				end)
-			end
+			end)
+		end
 
-			if RangeValue == false then
-				Range = CreateSlider(CombatTab, "Range", 20, 20, LayoutOrder + 3, function(Callback)
-					
-				end)
-			end
+		if ToolCheckValue == false then
+			ToolCheck = CreateMiniToggle(CombatTab, "ToolCheck", false, LayoutOrder + 2, function(Callback)
 
-			if CustomAnimationsValue == true then					
-				CustomAnimations:Destroy()
-			end
+			end)
+		end
 
-			if ToolCheckValue == true then					
-				ToolCheck:Destroy()
-			end
+		if RangeValue == false then
+			Range = CreateSlider(CombatTab, "Range", 20, 20, LayoutOrder + 3, function(Callback)
 
-			if RangeValue == true then					
-				Range:Destroy()
-			end
+			end)
+		end
 
-			CustomAnimationsValue = not CustomAnimationsValue
-			ToolCheckValue = not ToolCheckValue
-			RangeValue = not RangeValue
-		end)
+		if CustomAnimationsValue == true then					
+			CustomAnimations:Destroy()
+		end
+
+		if ToolCheckValue == true then					
+			ToolCheck:Destroy()
+		end
+
+		if RangeValue == true then					
+			Range:Destroy()
+		end
+
+		CustomAnimationsValue = not CustomAnimationsValue
+		ToolCheckValue = not ToolCheckValue
+		RangeValue = not RangeValue
 	end)
 end)
