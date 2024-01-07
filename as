@@ -174,7 +174,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.BackgroundTransparency = 0.150
 	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle.BorderSizePixel = 0
-	Toggle.Size = UDim2.new(0, 200, 0, 40)
+	Toggle.Size = UDim2.new(0, 200, 0, 30)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
@@ -247,7 +247,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	MiniToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MiniToggle.BorderSizePixel = 0
 	MiniToggle.Position = UDim2.new(0, 0, 0.0533333346, 0)
-	MiniToggle.Size = UDim2.new(0, 200, 0, 30)
+	MiniToggle.Size = UDim2.new(0, 200, 0, 40)
 	MiniToggle.AutoButtonColor = false
 	MiniToggle.Font = Enum.Font.GothamBold
 	MiniToggle.Text = Name
@@ -289,8 +289,8 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 	Slider.Name = "Slider"
 	Slider.Parent = SliderFrame
-	Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Slider.BackgroundTransparency = 1.000
+	Slider.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Slider.BackgroundTransparency = 0
 	Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Slider.BorderSizePixel = 0
 	Slider.Position = UDim2.new(0.150000006, 0, 0.581818163, 0)
