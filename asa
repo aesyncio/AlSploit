@@ -199,7 +199,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	DropDownButton.BackgroundTransparency = 1.000
 	DropDownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	DropDownButton.BorderSizePixel = 0
-	DropDownButton.Position = UDim2.new(0.777142882, 0, 0.16785717, 0)
+	DropDownButton.Position = UDim2.new(0.777142882, 0, 0.068, 0)
 	DropDownButton.Rotation = 90.000
 	DropDownButton.Size = UDim2.new(0, 25, 0, 25)
 	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
@@ -247,7 +247,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	MiniToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MiniToggle.BorderSizePixel = 0
 	MiniToggle.Position = UDim2.new(0, 0, 0.0533333346, 0)
-	MiniToggle.Size = UDim2.new(0, 200, 0, 40)
+	MiniToggle.Size = UDim2.new(0, 200, 0, 30)
 	MiniToggle.AutoButtonColor = false
 	MiniToggle.Font = Enum.Font.GothamBold
 	MiniToggle.Text = Name
@@ -284,7 +284,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Position = UDim2.new(0, 0, 0.106666669, 0)
-	SliderFrame.Size = UDim2.new(0, 200, 0, 50)
+	SliderFrame.Size = UDim2.new(0, 200, 0, 55)
 	SliderFrame.LayoutOrder = LayoutOrder
 
 	Slider.Name = "Slider"
