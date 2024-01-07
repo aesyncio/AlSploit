@@ -174,7 +174,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.BackgroundTransparency = 0.150
 	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle.BorderSizePixel = 0
-	Toggle.Size = UDim2.new(0, 200, 0, 30)
+	Toggle.Size = UDim2.new(0, 200, 0, 32)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
@@ -266,12 +266,11 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	local SliderFrame = Instance.new("Frame")
 	local Slider = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
-	local UIStroke = Instance.new("UIStroke")
 	local Fill = Instance.new("Frame")
 	local UICorner2 = Instance.new("UICorner")
 	local UIGradient = Instance.new("UIGradient")
 	local Bar = Instance.new("TextButton")
-	local UIStroke2 = Instance.new("UIStroke")
+	local UIStroke = Instance.new("UIStroke")
 	local UICorner3 = Instance.new("UICorner")
 	local UIGradient2 = Instance.new("UIGradient")
 	local Title = Instance.new("TextLabel")
@@ -298,11 +297,6 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Slider
-	
-	UIStroke.Parent = Slider
-	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke.Thickness = 2
-	UIStroke.Color = Color3.new(0, 0, 0)
 
 	Fill.Name = "Fill"
 	Fill.Parent = Slider
@@ -330,10 +324,10 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	Bar.TextColor3 = Color3.fromRGB(0, 0, 0)
 	Bar.TextSize = 14.000
 	
-	UIStroke2.Parent = Bar
-	UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke2.Thickness = 2
-	UIStroke2.Color = Color3.new(0, 0, 0)
+	UIStroke.Parent = Bar
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Thickness = 2
+	UIStroke.Color = Color3.new(0, 0, 0)
 
 	UICorner3.CornerRadius = UDim.new(0, 12)
 	UICorner3.Parent = Bar
