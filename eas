@@ -2315,14 +2315,18 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
-						local Position = GetServerPosition(ScaffoldCFrame)
-						local Block = GetBlock()
-							
-						if Block then
-							PlaceBlock(Position, Block)
-							PlaceBlock(Position, Block)
-						end
+						
+						for i = 1, 2 do
+							print(i)
+							local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * (i * 3.3)) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
+							local Position = GetServerPosition(ScaffoldCFrame)
+							local Block = GetBlock()
+
+							if Block then
+								PlaceBlock(Position, Block)
+								PlaceBlock(Position, Block)
+							end
+						end						
 					end
 				until Callback == false
 			end)
