@@ -72,6 +72,7 @@ function CreateTab(Name)
 	local UICorner = Instance.new("UICorner")
 	local Title = Instance.new("TextLabel")
 	local UIGradient = Instance.new("UIGradient")
+	local CornerFix = Instance.new("Frame")
 	local ModulesContainer = Instance.new("Frame")
 	local UIListLayout = Instance.new("UIListLayout")
 
@@ -103,6 +104,14 @@ function CreateTab(Name)
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
+	
+	CornerFix.Name = "CornerFix"
+	CornerFix.Parent = Tab
+	CornerFix.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	CornerFix.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CornerFix.BorderSizePixel = 0
+	CornerFix.Position = UDim2.new(0, 0, 0.742857158, 0)
+	CornerFix.Size = UDim2.new(0, 200, 0, 9)
 
 	ModulesContainer.Name = "ModulesContainer"
 	ModulesContainer.Parent = Tab
