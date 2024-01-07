@@ -301,7 +301,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	
 	UIStroke.Parent = Slider
 	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke.Thickness = 3
+	UIStroke.Thickness = 2
 	UIStroke.Color = Color3.new(0, 0, 0)
 
 	Fill.Name = "Fill"
@@ -332,7 +332,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	
 	UIStroke2.Parent = Bar
 	UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	UIStroke2.Thickness = 3
+	UIStroke2.Thickness = 2
 	UIStroke2.Color = Color3.new(0, 0, 0)
 
 	UICorner3.CornerRadius = UDim.new(0, 12)
