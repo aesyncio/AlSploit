@@ -1,0 +1,200 @@
+local LocalPlayer = game.Players.LocalPlayer
+
+local LightingService = game:GetService("Lighting")
+
+local AlSploit = Instance.new("ScreenGui")
+local ContainerFrame = Instance.new("Frame")
+local UIListLayoutContainerFrame = Instance.new("UIListLayout")
+
+local DefaultLayoutOrder = 0
+
+AlSploit.Name = "AlSploit"
+AlSploit.Parent = LocalPlayer:WaitForChild("PlayerGui")
+AlSploit.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+AlSploit.ResetOnSpawn = false
+
+ContainerFrame.Name = "ContainerFrame"
+ContainerFrame.Parent = AlSploit
+ContainerFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ContainerFrame.BackgroundTransparency = 1.000
+ContainerFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ContainerFrame.BorderSizePixel = 0
+ContainerFrame.Position = UDim2.new(0, 0, 0.0480132438, 0)
+ContainerFrame.Size = UDim2.new(1, 0, 1, 0)
+ContainerFrame.Visible = false
+
+UIListLayoutContainerFrame.Parent = ContainerFrame
+UIListLayoutContainerFrame.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayoutContainerFrame.Padding = UDim.new(0, 50)
+UIListLayoutContainerFrame.FillDirection = Enum.FillDirection.Horizontal
+UIListLayoutContainerFrame.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local UIStroke = Instance.new("UIStroke")
+local UICorner = Instance.new("UICorner")
+local Open = Instance.new("ImageButton")
+
+UIStroke.Parent = Open
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke.Thickness = 2
+UIStroke.Color = Color3.new(0.635294, 0.313725, 1)
+
+Open.Name = "Open"
+Open.Parent = AlSploit
+Open.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Open.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Open.BorderSizePixel = 0
+Open.Position = UDim2.new(0.963096738, 0, 0.351765305, 0)
+Open.Size = UDim2.new(0.0329854637, 0, 0.0837961882, 0)
+Open.Image = "rbxassetid://15428841655"
+
+UICorner.CornerRadius = UDim.new(0, 6)
+UICorner.Parent = Open
+
+UIAspectRatioConstraint.Parent = Open
+UIAspectRatioConstraint.AspectRatio = 1
+
+local Blur = Instance.new("BlurEffect")
+
+Blur.Parent = LightingService
+Blur.Enabled = false
+Blur.Size = 16
+
+task.spawn(function()
+	Open.Activated:Connect(function()
+		ContainerFrame.Visible = not ContainerFrame.Visible
+		Blur.Enabled = not Blur.Enabled
+	end)
+end)
+
+function CreateTab(Name)
+	local Tab = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Title = Instance.new("TextLabel")
+	local UIGradient = Instance.new("UIGradient")
+	local ModulesContainer = Instance.new("Frame")
+	local UIListLayout = Instance.new("UIListLayout")
+
+	Tab.Name = "Tab"
+	Tab.Parent = ContainerFrame
+	Tab.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Tab.BorderSizePixel = 0
+	Tab.Position = UDim2.new(0.438499391, 0, 0, 0)
+	Tab.Size = UDim2.new(0, 200, 0, 35)
+
+	UICorner.CornerRadius = UDim.new(0, 12)
+	UICorner.Parent = Tab
+
+	Title.Name = "Title"
+	Title.Parent = Tab
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Title.BorderSizePixel = 0
+	Title.Position = UDim2.new(-0.00499999989, 0, 0, 0)
+	Title.Size = UDim2.new(0, 201, 0, 35)
+	Title.Font = Enum.Font.GothamBold
+	Title.Text = Name
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextSize = 22.000
+	Title.TextWrapped = true
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Rotation = 90
+	UIGradient.Parent = Title
+
+	ModulesContainer.Name = "ModulesContainer"
+	ModulesContainer.Parent = Tab
+	ModulesContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ModulesContainer.BackgroundTransparency = 1.000
+	ModulesContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ModulesContainer.BorderSizePixel = 0
+	ModulesContainer.Position = UDim2.new(0, 0, 1, 0)
+	ModulesContainer.Size = UDim2.new(0, 200, 0, 750)
+
+	UIListLayout.Parent = ModulesContainer
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	return ModulesContainer
+end
+
+function CreateToggle(Parent, Name, DefaultValue, Callback)
+	local Toggle = Instance.new("TextButton")
+	local UIGradient = Instance.new("UIGradient")
+	local UIPadding = Instance.new("UIPadding")
+	local DropDownButton = Instance.new("ImageButton")
+
+	local Checker = {["Enabled"] = false}
+
+	local LayoutOrder = 0
+
+	function Checker:Toggle(Bool)
+		Bool = Bool or (not Checker["Enabled"])
+		Checker["Enabled"] = Bool
+
+		if not Bool then
+			spawn(function()
+				Callback(false)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+			end)
+		else
+			spawn(function()
+				Callback(true)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+			end)
+		end
+	end
+
+	if DefaultValue == true then
+		Checker:Toggle()
+	end
+
+	task.spawn(function()
+		Toggle.Activated:Connect(function()
+			Checker:Toggle()	
+		end)
+	end)
+
+	Toggle.Name = "Toggle"
+	Toggle.Parent = Parent
+	Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle.BackgroundTransparency = 0.150
+	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle.BorderSizePixel = 0
+	Toggle.Size = UDim2.new(0, 200, 0, 40)
+	Toggle.AutoButtonColor = false
+	Toggle.Font = Enum.Font.GothamBold
+	Toggle.Text = Name
+	Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Toggle.TextSize = 16.000
+	Toggle.TextXAlignment = Enum.TextXAlignment.Left
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Rotation = 90
+	UIGradient.Parent = Toggle
+
+	UIPadding.Parent = Toggle
+	UIPadding.PaddingLeft = UDim.new(0, 25)
+
+	DropDownButton.Name = "DropDownButton"
+	DropDownButton.Parent = Toggle
+	DropDownButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	DropDownButton.BackgroundTransparency = 1.000
+	DropDownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	DropDownButton.BorderSizePixel = 0
+	DropDownButton.Position = UDim2.new(0.777142882, 0, 0.16785717, 0)
+	DropDownButton.Rotation = 90.000
+	DropDownButton.Size = UDim2.new(0, 25, 0, 25)
+	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
+end
+
+local CombatTab = CreateTab("Combat")
+local BlatantTab = CreateTab("Blatant")
+local UtilityTab = CreateTab("Utility")
+local WorldTab = CreateTab("World")
+
+local KillAura = CreateToggle(CombatTab, "KillAura", true, function(CallBack)
+	print(CallBack)
+end)
