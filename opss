@@ -266,10 +266,12 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	local SliderFrame = Instance.new("Frame")
 	local Slider = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
+	local UIStroke = Instance.new("UIStroke")
 	local Fill = Instance.new("Frame")
 	local UICorner2 = Instance.new("UICorner")
 	local UIGradient = Instance.new("UIGradient")
 	local Bar = Instance.new("TextButton")
+	local UIStroke2 = Instance.new("UIStroke")
 	local UICorner3 = Instance.new("UICorner")
 	local UIGradient2 = Instance.new("UIGradient")
 	local Title = Instance.new("TextLabel")
@@ -295,6 +297,11 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Slider
+	
+	UIStroke2.Parent = Slider
+	UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke2.Thickness = 3
+	UIStroke2.Color = Color3.new(0, 0, 0)
 
 	Fill.Name = "Fill"
 	Fill.Parent = Slider
@@ -321,6 +328,11 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	Bar.Text = ""
 	Bar.TextColor3 = Color3.fromRGB(0, 0, 0)
 	Bar.TextSize = 14.000
+	
+	UIStroke2.Parent = Bar
+	UIStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke2.Thickness = 3
+	UIStroke2.Color = Color3.new(0, 0, 0)
 
 	UICorner3.CornerRadius = UDim.new(0, 12)
 	UICorner3.Parent = Bar
@@ -409,10 +421,10 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 
 				CallBack(math.round(Percentage * MaximumValue + 1))
 			end
-		until not Slider
+		until not SliderFrame
 	end)
 	
-	return Slider
+	return SliderFrame
 end
 
 local CombatTab = CreateTab("Combat")
