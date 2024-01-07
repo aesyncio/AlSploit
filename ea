@@ -2318,13 +2318,10 @@ task.spawn(function()
 						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
 						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
-						
-						local ExpandPosition = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection.Unit)
-						local ExpandPosition2 = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection.Unit * 2)
 							
 						if Block then
-							PlaceBlock(Vector3.new(ExpandPosition.X, LocalPlayer.Character.HumanoidRootPart.Position.Y - 4, ExpandPosition.Z), Block)
-							PlaceBlock(Vector3.new(ExpandPosition2.X, LocalPlayer.Character.HumanoidRootPart.Position.Y - 4, ExpandPosition2.Z), Block)
+							PlaceBlock(Position, Block)
+							PlaceBlock(Position, Block)
 						end
 					end
 				until Callback == false
