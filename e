@@ -1060,6 +1060,34 @@ function PlaceBlock(Position, Block)
 	BlockPlacingRemote:InvokeServer({["blockType"] = Block, ["blockData"] = 0,["position"] = Position})
 end
 
+function ChestSteal()
+	for i, v in next, CollectionServiceChest do
+		if (LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
+			local Chest = v:FindFirstChild("ChestFolderValue")
+
+			Chest = Chest and Chest.Value or nil				
+
+			local Chestitems = Chest and Chest:GetChildren()
+
+			if #Chestitems > 1 then
+				ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer("BlockChest")
+
+				for i2, v2 in next, Chestitems do
+					if v2:IsA("Accessory") then
+						task.spawn(function()
+							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
+						end)
+					end
+				end
+
+				task.wait(0.001)
+
+				ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
+			end
+		end
+	end
+end
+
 function Invisible()
 	if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then 
 		local Animation = Instance.new("Animation")
@@ -1641,7 +1669,7 @@ function InfFly()
 
 			game.Workspace.Gravity = 50
 			LocalPlayer.Character.HumanoidRootPart.Anchored = false
-			
+
 			task.wait(1)
 
 			game.Workspace.Gravity = 196.2
@@ -1769,45 +1797,19 @@ task.spawn(function()
 				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.HumanoidRootPart.Position) 
 			end
 
-			LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + SpeedCFrame
+			if not Raycast then
+				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + SpeedCFrame
+			end			
 		end
 	end)
 end)
 
 task.spawn(function()	
-	local Steal = function()
-		for i, v in next, CollectionServiceChest do
-			if (LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
-				local Chest = v:FindFirstChild("ChestFolderValue")
-
-				Chest = Chest and Chest.Value or nil				
-
-				local Chestitems = Chest and Chest:GetChildren()
-
-				if #Chestitems > 1 then
-					ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer("BlockChest")
-
-					for i2, v2 in next, Chestitems do
-						if v2:IsA("Accessory") then
-							task.spawn(function()
-								ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
-							end)
-						end
-					end
-
-					task.wait(0.001)
-
-					ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
-				end
-			end
-		end
-	end	
-
 	repeat
 		task.wait(0.5)
 
 		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
-			Steal()
+			ChestSteal()
 		end
 	until not game
 end)
@@ -2081,6 +2083,22 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Velocity = CreateToggle(CombatTab, "Velocity", Settings.Velocity.Value, function(CallBack)
+		Settings.Velocity.Value = CallBack
+
+		if CallBack == true then
+			Bedwars.KnockbackTable.kbDirectionStrength = 0
+			Bedwars.KnockbackTable.kbUpwardStrength = 0	
+		end
+
+		if CallBack == false then
+			Bedwars.KnockbackTable.kbDirectionStrength = 100
+			Bedwars.KnockbackTable.kbUpwardStrength = 100	
+		end
+	end)
+end)
+
+task.spawn(function()
 	local KillAura, DropDownButton, LayoutOrder = CreateToggle(CombatTab, "Killaura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
@@ -2127,22 +2145,6 @@ task.spawn(function()
 		CustomAnimationsValue = not CustomAnimationsValue
 		ToolCheckValue = not ToolCheckValue
 		RangeValue = not RangeValue
-	end)
-end)
-
-task.spawn(function()
-	local Velocity = CreateToggle(CombatTab, "Velocity", Settings.Velocity.Value, function(CallBack)
-		Settings.Velocity.Value = CallBack
-
-		if CallBack == true then
-			Bedwars.KnockbackTable.kbDirectionStrength = 0
-			Bedwars.KnockbackTable.kbUpwardStrength = 0	
-		end
-
-		if CallBack == false then
-			Bedwars.KnockbackTable.kbDirectionStrength = 100
-			Bedwars.KnockbackTable.kbUpwardStrength = 100	
-		end
 	end)
 end)
 
@@ -2234,6 +2236,7 @@ task.spawn(function()
 	end)
 end)
 
+
 task.spawn(function()
 	local Scaffold = CreateToggle(BlatantTab, "Scaffold", Settings.Scaffold.Value, function(CallBack)
 		Settings.Scaffold.Value = CallBack
@@ -2247,7 +2250,7 @@ task.spawn(function()
 
 					return false 
 				end
-				
+
 				local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
 
 				PlacementCPS.BLOCK_PLACE_CPS = math.huge
@@ -2259,7 +2262,7 @@ task.spawn(function()
 						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
 						local Position = GetServerPosition(ScaffoldCFrame)
 						local Block = GetBlock()
-							
+
 						if Block then
 							PlaceBlock(Position, Block)
 						end
@@ -2267,7 +2270,7 @@ task.spawn(function()
 				until CallBack == false
 			end)
 		end
-		
+
 		if CallBack == false then
 			SwordController.isClickingTooFast = ClickingTooFast
 		end
@@ -2342,6 +2345,13 @@ task.spawn(function()
 		SpeedValue = not SpeedValue
 	end)	
 end)
+
+task.spawn(function()
+	local Fly = CreateToggle(BlatantTab, "Fly", false, function(CallBack)
+		Fly()
+	end)
+end)
+
 
 task.spawn(function()
 	local PlayAgain = CreateToggle(UtilityTab, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
@@ -2788,7 +2798,7 @@ task.spawn(function()
 
 		task.spawn(function()
 			repeat
-				task.wait()
+				task.wait(0.01)
 
 				if IsAlive(LocalPlayer) and IsMoving() and LocalPlayer.Character:FindFirstChild("Cape") and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Motor") then
 					local TweenInformation = TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
