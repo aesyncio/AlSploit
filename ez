@@ -544,7 +544,7 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitBedwarsRewrite"
+local SaveFileName = "AlSploitBedwarsRewrite1"
 
 local IsLoaded = false
 local Settings
@@ -559,6 +559,7 @@ end
 
 function CreateSettingsFile()
 	local Settings = {
+		NoPlacementCps = {Value = true},
 		ChestStealer = {Value = true},
 		InfiniteJump = {Value = true},
 		DamageBoost = {Value = true},
@@ -685,6 +686,7 @@ local Animations = {
 }
 
 local HannahPromptTriggerRemote = AlSploitApi.HannahPromptTriggerRemote
+local SetObservedChestRemote = AlSploitApi.SetObservedChestRemote
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
 local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
@@ -1086,19 +1088,19 @@ function ChestSteal()
 		local Chestitems = NearestChest and NearestChest:GetChildren()
 
 		if #Chestitems > 1 then
-			ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer("BlockChest")
+			SetObservedChestRemote:FireServer("BlockChest")
 
 			for i2, v2 in next, Chestitems do
 				if v2:IsA("Accessory") then
 					task.spawn(function()
-						ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
+						ChestGetItemRemote:InvokeServer(NearestChest.ChestFolderValue.Value, v2)
 					end)
 				end
 			end
 
 			task.wait(0.001)
 
-			ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
+			SetObservedChestRemote:FireServer(nil)
 		end
 	end	
 end
@@ -2374,7 +2376,21 @@ task.spawn(function()
 	end)
 end)
 
-
+task.spawn(function()
+	local NoPlacementCps = CreateToggle(UtilityTab, "NoPlacementCps", Settings.NoPlacementCps.Value, function(CallBack)
+		Settings.NoPlacementCps.Value = CallBack
+		
+		local OldCps = PlacementCPS.BLOCK_PLACE_CPS
+		
+		if CallBack == true then
+			PlacementCPS.BLOCK_PLACE_CPS = math.huge
+		end
+		
+		if CallBack == false then
+			PlacementCPS.BLOCK_PLACE_CPS = OldCps
+		end
+	end)
+end)
 
 task.spawn(function()
 	local PlayAgain = CreateToggle(UtilityTab, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
