@@ -684,27 +684,31 @@ local Animations = {
 	}
 }
 
-local Bedwars = AlSploitApi.Bedwars
-
 local HannahPromptTriggerRemote = AlSploitApi.HannahPromptTriggerRemote
 local ResetCharacterRemote = AlSploitApi.ResetCharacterRemote
 local ChestGiveItemRemote = AlSploitApi.ChestGiveItemRemote
 local ChestGetItemRemote = AlSploitApi.ChestGetItemRemote
 local BlockPlacingRemote = AlSploitApi.BlockPlacingRemote
+local ClientHandlerStore = AlSploitApi.ClientHandlerStore
 local SendMessageRemote = AlSploitApi.SendMessageRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
+local DamageIndicator = AlSploitApi.DamageIndicator
 local GroundHitRemote = AlSploitApi.GroundHitRemote
 local SwordController = AlSploitApi.SwordController
 local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
+local CombatConstant = AlSploitApi.CombatConstant
 local TreeOrbRemote = AlSploitApi.TreeOrbRemote
-
+local PlacementCPS = AlSploit.PlacementCPS
 local MinerRemote = AlSploitApi.MinerRemote
+
+local KnockBackTable = AlSploitApi.KnockBackTable
 local ItemTable = AlSploitApi.ItemTable
 
 local ZephyrController = AlSploitApi.ZephyrController
+local SprintController = AlSploitApi.SprintController
 local FovController = AlSploitApi.FovController
 
 function FindNearestDiamondGuardian()
@@ -844,6 +848,24 @@ function FpsBoostTextures()
 	end
 end
 
+function FindNearestChest()
+	local NearestChest = nil
+	local MinDistance = math.huge	
+
+	for i, v in next, CollectionServiceChest do
+		if v:FindFirstChild("ChestFolderValue") then
+			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < MinDistance then
+				NearestChest = v
+				MinDistance = Distance				
+			end
+		end
+	end
+
+	return NearestChest
+end
+
 function ShootProjectile(Item, Projectile)
 	local NearestPlayer = NearestPlayer
 
@@ -976,7 +998,7 @@ function SetCollisions(Value)
 end
 
 function GetMatchState()
-	return Bedwars.ClientHandlerStore:getState().Game.matchState
+	return ClientHandlerStore:getState().Game.matchState
 end
 
 function GetInventory(Player)
@@ -1028,7 +1050,7 @@ function HashFunction(Value)
 end
 
 function GetQueueType()
-	local State = Bedwars.ClientHandlerStore:getState()
+	local State = ClientHandlerStore:getState()
 
 	return State.Game.queueType or "bedwars_test"
 end
@@ -1056,31 +1078,29 @@ function PlaceBlock(Position, Block)
 end
 
 function ChestSteal()
-	for i, v in next, CollectionServiceChest do
-		if (LocalPlayer.Character.HumanoidRootPart.Position - v.Position).Magnitude <= 30 then
-			local Chest = v:FindFirstChild("ChestFolderValue")
+	local NearestChest = FindNearestChest()
 
-			Chest = Chest and Chest.Value or nil				
+	if NearestChest then
+		NearestChest = NearestChest and NearestChest.Value or nil				
 
-			local Chestitems = Chest and Chest:GetChildren()
+		local Chestitems = NearestChest and NearestChest:GetChildren()
 
-			if #Chestitems > 1 then
-				ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer("BlockChest")
+		if #Chestitems > 1 then
+			ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer("BlockChest")
 
-				for i2, v2 in next, Chestitems do
-					if v2:IsA("Accessory") then
-						task.spawn(function()
-							ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
-						end)
-					end
+			for i2, v2 in next, Chestitems do
+				if v2:IsA("Accessory") then
+					task.spawn(function()
+						ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/ChestGetItem"):InvokeServer(v.ChestFolderValue.Value, v2)
+					end)
 				end
-
-				task.wait(0.001)
-
-				ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
 			end
+
+			task.wait(0.001)
+
+			ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest"):FireServer(nil)
 		end
-	end
+	end	
 end
 
 function Invisible()
@@ -1814,7 +1834,7 @@ end)
 task.spawn(function()
 	local Messages = {"AlSploit", "Best Client", ":D", "💀"}
 
-	debug.setupvalue(Bedwars.DamageIndicator, 10, {
+	debug.setupvalue(DamageIndicator, 10, {
 		Create = function(self, obj, ...)
 			task.spawn(function()				
 				if Settings.Indicators.Value == true then
@@ -2084,13 +2104,13 @@ task.spawn(function()
 		Settings.Velocity.Value = CallBack
 
 		if CallBack == true then
-			Bedwars.KnockbackTable.kbDirectionStrength = 0
-			Bedwars.KnockbackTable.kbUpwardStrength = 0	
+			KnockBackTable.kbDirectionStrength = 0
+			KnockBackTable.kbUpwardStrength = 0	
 		end
 
 		if CallBack == false then
-			Bedwars.KnockbackTable.kbDirectionStrength = 100
-			Bedwars.KnockbackTable.kbUpwardStrength = 100	
+			KnockBackTable.kbDirectionStrength = 100
+			KnockBackTable.kbUpwardStrength = 100	
 		end
 	end)
 end)
@@ -2153,31 +2173,31 @@ task.spawn(function()
 
 		if CallBack == true then
 
-			OldSprintFunction = Bedwars.SprintController.stopSprinting
+			OldSprintFunction = SprintController.stopSprinting
 
-			Bedwars.SprintController.stopSprinting = function(...)
+			SprintController.stopSprinting = function(...)
 				local Call = OldSprintFunction(...)
 
-				Bedwars.SprintController:startSprinting()
+				SprintController:startSprinting()
 
 				return Call
 			end
 
 			task.spawn(function()
-				Bedwars.SprintController:startSprinting()
+				SprintController:startSprinting()
 			end)
 
 			LocalPlayer.CharacterAdded:Connect(function(Character)
-				Bedwars.SprintController:stopSprinting()
+				SprintController:stopSprinting()
 			end)
 		end
 
 		if CallBack == false then
-			Bedwars.SprintController.stopSprinting = OldSprintFunction
-			Bedwars.SprintController:stopSprinting()
+			SprintController.stopSprinting = OldSprintFunction
+			SprintController:stopSprinting()
 		end
 
-		Bedwars.SprintController:setSpeed(20)
+		SprintController:setSpeed(20)
 	end)
 end)
 
@@ -2185,14 +2205,14 @@ task.spawn(function()
 	local Reach = CreateToggle(CombatTab, "Reach", Settings.Reach.Value, function(CallBack)
 		Settings.Reach.Value = CallBack
 
-		local OldReach = Bedwars.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
+		local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
 
 		if CallBack == true then
-			Bedwars.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
 		end
 
 		if CallBack == false then
-			Bedwars.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
 		end
 	end)
 end)
@@ -2246,10 +2266,6 @@ task.spawn(function()
 
 					return false 
 				end
-
-				local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
-
-				PlacementCPS.BLOCK_PLACE_CPS = math.huge
 
 				repeat
 					task.wait()
@@ -2357,6 +2373,7 @@ task.spawn(function()
 		end)	
 	end)
 end)
+
 
 
 task.spawn(function()
@@ -2473,7 +2490,7 @@ task.spawn(function()
 		end
 
 		if CallBack == false then
-			FovController:setFOV(Bedwars.ClientHandlerStore:getState().Settings.fov)
+			FovController:setFOV(ClientHandlerStore:getState().Settings.fov)
 		end
 	end)
 
@@ -2861,7 +2878,7 @@ task.spawn(function()
 		task.spawn(function()
 			if IsAlive(LocalPlayer) then
 				NearestPlayer, NearestPlayerDistance = FindNearestPlayer()
-			end			
+			end
 		end)
 
 		task.spawn(function()
