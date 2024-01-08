@@ -1,5 +1,3 @@
-print("1")
-
 local AlSploit = {}
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -60,7 +58,5 @@ AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
 AlSploit.FovController = KnitClient.Controllers.FovController
  
 AlSploit.TweenNumbers = {BedTp = 0.76, PlayerTp = 0.82}
-
-print("2")
 
 return AlSploit
