@@ -1105,7 +1105,7 @@ function ChestSteal()
 			for i2, v2 in next, Chestitems do
 				if v2:IsA("Accessory") then
 					task.spawn(function()
-						ChestGetItemRemote:InvokeServer(NearestChest.ChestFolderValue.Value, v2)
+						ChestGetItemRemote:InvokeServer(NearestChest.Value, v2)
 					end)
 				end
 			end
