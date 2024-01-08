@@ -1877,7 +1877,7 @@ task.spawn(function()
 		if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and IsAlive(NearestPlayer) and NearestPlayer and not NearestPlayer.Character:FindFirstChildOfClass("ForceField") then	
 			local BestBow = GetBow()
 
-			if BestBow and IsAlive(LocalPlayer) then
+			if BestBow and IsAlive(LocalPlayer) and NearestPlayerDistance > 18 then
 				if Settings.Aimbot.ToolCheck == true then
 					if GetItem(BestBow.itemType) and GetItem("arrow") then
 						local Bow = GetItem(BestBow.itemType)
