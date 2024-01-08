@@ -17,14 +17,6 @@ function GetRemote(Remote)
 	return ""
 end
 
-AlSploit.Bedwars = {
-	ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore,
-	SprintController = KnitClient.Controllers.SprintController,
-	DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
-	KnockbackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1),
-	CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant,	
-}
-
 function GetMatchState()
 	return AlSploit.Bedwars.ClientHandlerStore:getState().Game.matchState
 end
@@ -34,17 +26,19 @@ AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):
 AlSploit.ChestGiveItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]
 AlSploit.ChestGetItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGetItem"]
 AlSploit.BlockPlacingRemote = game:GetService("ReplicatedStorage").rbxts_include.node_modules["@easy-games"]["block-engine"].node_modules["@rbxts"].net.out._NetManaged.PlaceBlock
+AlSploit.ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore
 AlSploit.SendMessageRemote = ReplicatedStorage.DefaultChatSystemChatEvents:WaitForChild("SayMessageRequest")
 AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ProjectileFire")
 AlSploit.PlayAgainRemote = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events")
 AlSploit.EquipItemRemote = GetRemote(debug.getconstants(debug.getproto(require(ReplicatedStorage.TS.entity.entities["inventory-entity"]).InventoryEntity.equipItem, 3)))
 AlSploit.GroundHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("GroundHit")
+AlSploit.DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator
 AlSploit.SwordController = KnitClient.Controllers.SwordController
 AlSploit.ProjectileMeta = require(ReplicatedStorage.TS.projectile["projectile-meta"]).ProjectileMeta
 AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
-AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
-
+AlSploit.CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant
 AlSploit.TreeOrbRemote = 0
+AlSploit.PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
 AlSploit.MinerRemote = 0
 
 if GetMatchState() ~= 0 then
@@ -52,9 +46,11 @@ if GetMatchState() ~= 0 then
 	AlSploit.MinerRemote = Client:Get(GetRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.MinerController.onKitEnabled, 1))))
 end
 
+AlSploit.KnockBackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 AlSploit.ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
 AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
+AlSploit.SprintController = KnitClient.Controllers.SprintController
 AlSploit.FovController = KnitClient.Controllers.FovController
  
 AlSploit.TweenNumbers = {BedTp = 0.76, PlayerTp = 0.82}
