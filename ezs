@@ -544,15 +544,38 @@ function CreateOutline(Player)
 	end
 end
 
-local SaveFileName = "AlSploitBedwarsRewrite1"
+task.spawn(function()
+	if not isfile then
+		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
+	end
 
-local IsLoaded = false
+	if not readfile then
+		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
+	end
+
+	if not makefolder then
+		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
+	end
+
+	if not writefile then
+		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
+	end
+
+	if not deletefile then
+		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
+	end
+end)
+
+local SaveFileName = "AlSploitBedwarsRewrite1"
+local SaveFilePath = ""
+
+local FirstTime
 local Settings
 
 function DeleteUnwantedFiles()
 	for i = 1, 1000 do
-		if isfile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i) and not SaveFileName:find(i) then
-			deletefile("AlSploitBedwars/" .. "AlSploitPublicUpdate" .. i)
+		if isfile("AlSploitBedwars/" .. "AlSploitBedwarsRewrite" .. i) and not SaveFileName:find(i) then
+			deletefile("AlSploitBedwars/" .. "AlSploitBedwarsRewrite" .. i)
 		end
 	end	
 end
@@ -592,37 +615,37 @@ function CreateSettingsFile()
 		Fov = {Value = false, Fov = 100}
 	}
 
-	FirstTime = false
-
 	local JsonEncodeSettings = HttpService:JSONEncode(Settings)
-
-	if writefile and makefolder then
-		makefolder("AlSploitBedwars")
-		writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
-	end
+	
+	makefolder("AlSploitBedwars")
+		
+	SaveFilePath = "AlSploitBedwars/"
+		
+	writefile(SaveFilePath .. SaveFileName, JsonEncodeSettings)
+		
+	FirstTime = false
 end
 
 function CheckFirstTime()
-	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
+	if isfile("AlSploitBedwars/" .. SaveFileName) then
 		return false
 	end
-	if readfile and isfile and not isfile("AlSploitBedwars/" .. SaveFileName) then
+	
+	if not isfile("AlSploitBedwars/" .. SaveFileName) then
 		return true
 	end
 end
 
 function SaveSettings()	
-	if not FirstTime then
-		local JsonEncodeSettings = HttpService:JSONEncode(Settings)
+	local JsonEncodeSettings = HttpService:JSONEncode(Settings)
 
-		if writefile then
-			writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
-		end
+	if writefile then
+		writefile("AlSploitBedwars/" .. SaveFileName, JsonEncodeSettings)
 	end
 end
 
 function LoadSettings()
-	if readfile and isfile and isfile("AlSploitBedwars/" .. SaveFileName) then
+	if isfile("AlSploitBedwars/" .. SaveFileName) then
 		Settings = HttpService:JSONDecode(readfile("AlSploitBedwars/" .. SaveFileName))
 	end
 end
@@ -636,29 +659,18 @@ end)
 task.spawn(function()
 	DeleteUnwantedFiles()
 
-	if readfile and isfile then
-		LoadSettings()
-	end
+	LoadSettings()
 end)
 
 task.spawn(function()
 	repeat
 		task.wait(1)
 
-		if writefile then
-			SaveSettings()
-		end
-
+		SaveSettings()
 	until not game
 end)
 
 task.wait(2)
-
-task.spawn(function()
-	if not isfile("AlSploitBedwars/" .. SaveFileName) then
-		LocalPlayer:Kick("Your executor does not support AlSploit. Consider using Delta or Fluxus.")
-	end
-end)
 
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
@@ -2278,7 +2290,9 @@ task.spawn(function()
 						local Block = GetBlock()
 
 						if Block then
-							PlaceBlock(Position, Block)
+							task.spawn(function()
+								PlaceBlock(Position, Block)
+							end)							
 						end
 					end
 				until CallBack == false
