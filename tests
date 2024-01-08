@@ -152,7 +152,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local LayoutOrder = 0
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Toggle
 	
@@ -2232,12 +2232,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local InfFly = CreateToggle(BlatantTab, "InfiteFly", false, function(CallBack)
-		InfFly()
-	end)
-end)
-
-task.spawn(function()
 	local Scaffold = CreateToggle(BlatantTab, "Scaffold", Settings.Scaffold.Value, function(CallBack)
 		Settings.Scaffold.Value = CallBack
 
@@ -2276,6 +2270,12 @@ task.spawn(function()
 		end
 	end)
 end) 
+
+task.spawn(function()
+	local InfFly = CreateToggle(BlatantTab, "InfiteFly", false, function(CallBack)
+		InfFly()
+	end)
+end)
 
 task.spawn(function()
 	local AutoKit = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
@@ -2360,12 +2360,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoBank = CreateToggle(UtilityTab, "AutoBank", Settings.AutoBank.Value, function(CallBack)
-		Settings.AutoBank.Value = CallBack
-	end)
-end)
-
-task.spawn(function()
 	local ChatSpammer, DropDownButton, LayoutOrder = CreateToggle(UtilityTab, "ChatSpam", Settings.ChatSpammer.Value, function(CallBack)
 		Settings.ChatSpammer.Value = CallBack
 	end)
@@ -2391,6 +2385,12 @@ end)
 task.spawn(function()
 	local AutoToxic = CreateToggle(UtilityTab, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
 		Settings.AutoToxic.Value = CallBack
+	end)
+end)
+
+task.spawn(function()
+	local AutoBank = CreateToggle(UtilityTab, "AutoBank", Settings.AutoBank.Value, function(CallBack)
+		Settings.AutoBank.Value = CallBack
 	end)
 end)
 
