@@ -1,3 +1,5 @@
+print("1")
+
 local AlSploit = {}
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -44,8 +46,8 @@ AlSploit.ProjectileMeta = require(ReplicatedStorage.TS.projectile["projectile-me
 AlSploit.KillauraRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 AlSploit.BedwarsSwords = require(ReplicatedStorage.TS.games.bedwars["bedwars-swords"]).BedwarsMelees
 
-AlSploit.TreeOrbRemote = nil
-AlSploit.MinerRemote = nil
+AlSploit.TreeOrbRemote = 0
+AlSploit.MinerRemote = 0
 
 if GetMatchState() ~= 0 then
 	AlSploit.TreeOrbRemote = Client:Get(GetRemote(debug.getconstants(debug.getproto(debug.getproto(KnitClient.Controllers.BigmanController.KnitStart, 1), 2))))
@@ -58,5 +60,7 @@ AlSploit.ZephyrController = KnitClient.Controllers.WindWalkerController
 AlSploit.FovController = KnitClient.Controllers.FovController
  
 AlSploit.TweenNumbers = {BedTp = 0.76, PlayerTp = 0.82}
+
+print("2")
 
 return AlSploit
