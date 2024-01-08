@@ -17,10 +17,6 @@ function GetRemote(Remote)
 	return ""
 end
 
-function GetMatchState()
-	return AlSploit.Bedwars.ClientHandlerStore:getState().Game.matchState
-end
-
 AlSploit.HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 AlSploit.ChestGiveItemRemote = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged["Inventory/ChestGiveItem"]
@@ -40,6 +36,10 @@ AlSploit.CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]
 AlSploit.TreeOrbRemote = 0
 AlSploit.PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
 AlSploit.MinerRemote = 0
+
+function GetMatchState()
+	return AlSploit.ClientHandlerStore:getState().Game.matchState
+end
 
 if GetMatchState() ~= 0 then
 	AlSploit.TreeOrbRemote = Client:Get(GetRemote(debug.getconstants(debug.getproto(debug.getproto(KnitClient.Controllers.BigmanController.KnitStart, 1), 2))))
