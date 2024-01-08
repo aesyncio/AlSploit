@@ -701,7 +701,7 @@ local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local CombatConstant = AlSploitApi.CombatConstant
 local TreeOrbRemote = AlSploitApi.TreeOrbRemote
-local PlacementCPS = AlSploit.PlacementCPS
+local PlacementCPS = AlSploitApi.PlacementCPS
 local MinerRemote = AlSploitApi.MinerRemote
 
 local KnockBackTable = AlSploitApi.KnockBackTable
@@ -732,7 +732,7 @@ end
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
 
-	for i, v in pairs(EnderChest:GetChildren()) do
+	for i, v in next, EnderChest:GetChildren() do
 		if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
 			ChestGetItemRemote:InvokeServer(EnderChest, v)
 		end
@@ -744,7 +744,7 @@ function SecureEnderChestItems()
 	local Inventory = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name)
 
 	if Inventory then
-		for i, v in pairs(Inventory:GetChildren()) do
+		for i, v in next, Inventory:GetChildren() do
 			if v:IsA("Accessory") and (v.Name == "emerald" or v.Name == "iron" or v.Name == "diamond" or v.Name == "gold") then
 				ChestGiveItemRemote:InvokeServer(EnderChest, v)
 			end
@@ -2581,7 +2581,7 @@ task.spawn(function()
 				AntiVoidPart.CanCollide = false
 				AntiVoidPart.Anchored = true
 
-				for i, v in pairs(CollectionServiceBlocks) do
+				for i, v in next, CollectionServiceBlocks do
 					local NewRay = game.Workspace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), Blockraycast)
 
 					if NewRay then
