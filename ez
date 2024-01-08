@@ -224,7 +224,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 
 	local Checker = {["Enabled"] = false}
 	
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = MiniToggle
 
@@ -2273,7 +2273,9 @@ end)
 
 task.spawn(function()
 	local InfFly = CreateToggle(BlatantTab, "InfiteFly", false, function(CallBack)
-		InfFly()
+		task.spawn(function()
+			InfFly()
+		end)	
 	end)
 end)
 
@@ -2348,7 +2350,9 @@ end)
 
 task.spawn(function()
 	local Fly = CreateToggle(BlatantTab, "Fly", false, function(CallBack)
-		Fly()
+		task.spawn(function()
+			Fly()
+		end)	
 	end)
 end)
 
