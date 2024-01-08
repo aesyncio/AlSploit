@@ -1,4 +1,8 @@
+print("q")
+
 local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
+
+print("w")
 
 local LocalPlayer = game.Players.LocalPlayer
 
@@ -2867,3 +2871,5 @@ task.spawn(function()
 		end)		
 	until not game
 end)
+
+print("e")
