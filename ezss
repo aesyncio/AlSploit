@@ -1791,7 +1791,7 @@ task.spawn(function()
 			if Raycast then
 				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.HumanoidRootPart.Position) 
 				
-				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + SpeedCFrame
+				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame - SpeedCFrame
 			end
 
 			if not Raycast then
@@ -2865,7 +2865,9 @@ task.spawn(function()
 		end)
 
 		task.spawn(function()
-			FovController:setFOV(Settings.Fov.Fov)
-		end)		
+			if Settings.Fov.Value == true then
+				FovController:setFOV(Settings.Fov.Fov)
+			end
+		end)
 	until not game
 end)
