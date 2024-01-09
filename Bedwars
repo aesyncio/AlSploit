@@ -32,7 +32,7 @@ ContainerFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ContainerFrame.BackgroundTransparency = 1.000
 ContainerFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ContainerFrame.BorderSizePixel = 0
-ContainerFrame.Position = UDim2.new(0, 0, 0.0480132438, 0)
+ContainerFrame.Position = UDim2.new(0, 0, 0, 0)
 ContainerFrame.Size = UDim2.new(1, 0, 1, 0)
 ContainerFrame.Visible = false
 
@@ -106,7 +106,7 @@ function CreateTab(Name)
 	Title.BackgroundTransparency = 1.000
 	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Title.BorderSizePixel = 0
-	Title.Position = UDim2.new(-0.00499999989, 0, 0, 0)
+	Title.Position = UDim2.new(-0.005, 0, 0, 0)
 	Title.Size = UDim2.new(0, 201, 0, 35)
 	Title.Font = Enum.Font.GothamBold
 	Title.Text = Name
@@ -124,7 +124,7 @@ function CreateTab(Name)
 	CornerFix.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CornerFix.BorderSizePixel = 0
 	CornerFix.Position = UDim2.new(0, 0, 0.742857158, 0)
-	CornerFix.Size = UDim2.new(0, 200, 0, 9)
+	CornerFix.Size = UDim2.new(1, 0, 0, 9)
 
 	ModulesContainer.Name = "ModulesContainer"
 	ModulesContainer.Parent = Tab
@@ -133,7 +133,7 @@ function CreateTab(Name)
 	ModulesContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ModulesContainer.BorderSizePixel = 0
 	ModulesContainer.Position = UDim2.new(0, 0, 1, 0)
-	ModulesContainer.Size = UDim2.new(0, 200, 0, 750)
+	ModulesContainer.Size = UDim2.new(1, 0, 0, 750)
 
 	UIListLayout.Parent = ModulesContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -189,7 +189,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.BackgroundTransparency = 0.150
 	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle.BorderSizePixel = 0
-	Toggle.Size = UDim2.new(0, 200, 0, 32)
+	Toggle.Size = UDim2.new(1, 0, 0, 32)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
@@ -262,7 +262,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	MiniToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MiniToggle.BorderSizePixel = 0
 	MiniToggle.Position = UDim2.new(0, 0, 0.0533333346, 0)
-	MiniToggle.Size = UDim2.new(0, 200, 0, 30)
+	MiniToggle.Size = UDim2.new(1, 0, 0, 30)
 	MiniToggle.AutoButtonColor = false
 	MiniToggle.Font = Enum.Font.GothamBold
 	MiniToggle.Text = Name
@@ -294,7 +294,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Position = UDim2.new(0, 0, 0.106666669, 0)
-	SliderFrame.Size = UDim2.new(0, 200, 0, 55)
+	SliderFrame.Size = UDim2.new(1, 0, 0, 55)
 	SliderFrame.LayoutOrder = LayoutOrder
 
 	Slider.Name = "Slider"
