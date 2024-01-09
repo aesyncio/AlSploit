@@ -95,7 +95,7 @@ function CreateTab(Name)
 	Tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Tab.BorderSizePixel = 0
 	Tab.Position = UDim2.new(0.438499391, 0, 0, 0)
-	Tab.Size = UDim2.new(0.127, 0, 0.06, 0)
+	Tab.Size = UDim2.new(1, 0, 0, 35)
 
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Tab
@@ -124,7 +124,7 @@ function CreateTab(Name)
 	CornerFix.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CornerFix.BorderSizePixel = 0
 	CornerFix.Position = UDim2.new(0, 0, 0.742857158, 0)
-	CornerFix.Size = UDim2.new(1, 0, 0.257, 0)
+	CornerFix.Size = UDim2.new(1, 0, 0, 9)
 
 	ModulesContainer.Name = "ModulesContainer"
 	ModulesContainer.Parent = Tab
@@ -133,7 +133,7 @@ function CreateTab(Name)
 	ModulesContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ModulesContainer.BorderSizePixel = 0
 	ModulesContainer.Position = UDim2.new(0, 0, 1, 0)
-	ModulesContainer.Size = UDim2.new(1, 0, 21.429, 0)
+	ModulesContainer.Size = UDim2.new(1, 0, 0, 750)
 
 	UIListLayout.Parent = ModulesContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -189,7 +189,7 @@ function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.BackgroundTransparency = 0.150
 	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle.BorderSizePixel = 0
-	Toggle.Size = UDim2.new(1, 0, 0.04, 0)
+	Toggle.Size = UDim2.new(1, 0, 0, 32)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
@@ -262,7 +262,7 @@ function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBack)
 	MiniToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MiniToggle.BorderSizePixel = 0
 	MiniToggle.Position = UDim2.new(0, 0, 0.0533333346, 0)
-	MiniToggle.Size = UDim2.new(1, 0, 0.04, 0)
+	MiniToggle.Size = UDim2.new(1, 0, 0, 30)
 	MiniToggle.AutoButtonColor = false
 	MiniToggle.Font = Enum.Font.GothamBold
 	MiniToggle.Text = Name
@@ -294,7 +294,7 @@ function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, Cal
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Position = UDim2.new(0, 0, 0.106666669, 0)
-	SliderFrame.Size = UDim2.new(1, 0, 0.073, 0)
+	SliderFrame.Size = UDim2.new(1, 0, 0, 55)
 	SliderFrame.LayoutOrder = LayoutOrder
 
 	Slider.Name = "Slider"
