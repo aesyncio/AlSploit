@@ -1573,7 +1573,7 @@ function Fly()
 			FlyBodyVelocity = Instance.new("BodyVelocity")
 			FlyBodyVelocity.MaxForce = Vector3.new(0, 9e9, 0)
 			FlyBodyVelocity.Name = "FlyBodyVelocity"
-			FlyBodyVelocity.Parent = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")	
+			FlyBodyVelocity.Parent = LocalPlayer.Character.HumanoidRootPart
 
 			FlyGroundTime = tick()
 
@@ -1601,7 +1601,6 @@ function Fly()
 							FlyTeleportPosition = LocalPlayer.Character.HumanoidRootPart.Position.Y
 
 							local Args = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-
 							Args[2] = Raycast.Position.Y + 1 + LocalPlayer.Character.Humanoid.HipHeight
 
 							LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args))
@@ -1609,17 +1608,13 @@ function Fly()
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
-								Args = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-								Args[2] = FlyTeleportPosition
-
-								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args))
-
+								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new((LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, FlyTeleportPosition, 0) - Vector3.new(0, LocalPlayer.Character.HumanoidRootPart.Position.Y, 0)))
+								
 								FlyGroundTime = tick()
 							end		
 						end
 					end
 				end
-
 			until not game
 		end)
 	end
@@ -2285,14 +2280,16 @@ task.spawn(function()
 					task.wait()
 
 					if IsAlive(LocalPlayer) and Settings.Scaffold.Value == true then
-						local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * 3.3) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
-						local Position = GetServerPosition(ScaffoldCFrame)
-						local Block = GetBlock()
+						for i = 1, 2 do
+							local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * (i * 3.3)) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
+							local Position = GetServerPosition(ScaffoldCFrame)
+							local Block = GetBlock()
 
-						if Block then
-							task.spawn(function()
-								PlaceBlock(Position, Block)
-							end)							
+							if Block then
+								task.spawn(function()
+									PlaceBlock(Position, Block)
+								end)
+							end
 						end
 					end
 				until CallBack == false
