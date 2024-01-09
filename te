@@ -1601,7 +1601,6 @@ function Fly()
 							FlyTeleportPosition = LocalPlayer.Character.HumanoidRootPart.Position.Y
 
 							local Args = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-
 							Args[2] = Raycast.Position.Y + 1 + LocalPlayer.Character.Humanoid.HipHeight
 
 							LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args))
@@ -1609,11 +1608,8 @@ function Fly()
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
-								Args = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-								Args[2] = FlyTeleportPosition
-
-								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args))
-
+								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, FlyTeleportPosition, 0))
+								
 								FlyGroundTime = tick()
 							end		
 						end
