@@ -95,7 +95,7 @@ function CreateTab(Name)
 	Tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Tab.BorderSizePixel = 0
 	Tab.Position = UDim2.new(0.438499391, 0, 0, 0)
-	Tab.Size = UDim2.new(1, 0, 0, 35)
+	Tab.Size = UDim2.new(0, 200, 0, 35)
 
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Tab
