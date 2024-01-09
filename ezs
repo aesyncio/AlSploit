@@ -1608,13 +1608,10 @@ function Fly()
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
-								local Args2 = {LocalPlayer.Character.HumanoidRootPart.CFrame:GetComponents()}
-								Args2[2] = FlyTeleportPosition
-
-								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(unpack(Args2))
+								LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, FlyTeleportPosition / 2, 0))
 								
 								FlyGroundTime = tick()
-							end
+							end		
 						end
 					end
 				end
