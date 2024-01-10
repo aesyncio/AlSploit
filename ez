@@ -101,9 +101,10 @@ task.spawn(function()
 		
 		if IsAlive(LocalPlayer) then
 			local NearestEntity = FindNearestEntity()
-			local Sword = GetSword()
-
+			
 			print(NearestEntity)
+			
+			local Sword = GetSword()
 
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
