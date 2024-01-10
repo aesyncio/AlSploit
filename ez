@@ -2,6 +2,8 @@ local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/A
 
 local LocalPlayer = game.Players.LocalPlayer
 
+local Players = game:GetService("Players")
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
@@ -13,13 +15,13 @@ local function FindNearestEntity(MinimumDistance)
 	local MinimumDistance = MinimumDistance or math.huge
 	local NearestEntity = nil
 	
-	for i, v in next, game.Workspace:GetDescendants() do
-		if v.PrimaryPart then
-			local Distance = (LocalPlayer.Character.PrimaryPart - v.PrimaryPart).Magnitude
+	for i, v in next, Players:GetPlayers() do
+		if v.Character.PrimaryPart then
+			local Distance = (LocalPlayer.Character.PrimaryPart - v.Character.PrimaryPart).Magnitude
 			
 			if Distance < MinimumDistance then
 				MinimumDistance = Distance
-				NearestEntity = v
+				NearestEntity = v.Character
 			end
 		end
 	end
