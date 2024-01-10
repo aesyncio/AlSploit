@@ -7,8 +7,22 @@ local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForCh
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-MetaGame"]).getItemMetaGame, 1)
 
-local function FindNearestEntity()
+local function FindNearestEntity(MinimumDistance)
+	local MinimumDistance = MinimumDistance or math.huge
+	local NearestEntity = nil
 	
+	for i, v in next, game.Workspace:GetDescendants() do
+		if v.PrimaryPart then
+			local Distance = (LocalPlayer.Character.PrimaryPart - v.PrimaryPart).Magnitude
+			
+			if Distance < MinimumDistance then
+				MinimumDistance = Distance
+				NearestEntity = v
+			end
+		end
+	end
+	
+	repeat NearestEntity
 end
 
 local function HashFunction(Value)
