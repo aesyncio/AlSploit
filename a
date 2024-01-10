@@ -16,7 +16,7 @@ local function FindNearestEntity(MinimumDistance)
 	local NearestEntity = nil
 	
 	for i, v in next, Players:GetPlayers() do
-		if v.Team ~= LocalPlayer.Team and v.Character.PrimaryPart then
+		if v.Character.PrimaryPart then
 			local Distance = (LocalPlayer.Character.PrimaryPart.Position - v.Character.PrimaryPart.Position).Magnitude
 			
 			if Distance < MinimumDistance then
@@ -90,6 +90,8 @@ task.spawn(function()
 		
 		local NearestEntity = FindNearestEntity()
 		local Sword = GetSword()
+		
+		print(NearestEntity)
 		
 		if NearestEntity and Sword then
 			SwordHit(NearestEntity, Sword)
