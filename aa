@@ -64,6 +64,8 @@ local function SwordHit(Entity, Weapon)
 	local LocalPlayerPrimaryPart = LocalPlayer.Character.PrimaryPart
 	local EntityPrimaryPart = Entity.PrimaryPart
 
+	print(EntityPrimaryPart.Name)
+	
 	local SelfPosition = LocalPlayerPrimaryPart.Position + (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)
 
 	SwordHitRemote:FireServer({
