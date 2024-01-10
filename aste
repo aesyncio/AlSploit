@@ -16,7 +16,7 @@ local function FindNearestEntity(MinimumDistance)
 	local NearestEntity = nil
 	
 	for i, v in next, Players:GetPlayers() do
-		if v.Character.PrimaryPart then
+		if v.Team ~= LocalPlayer.Team and v.Character.PrimaryPart then
 			local Distance = (LocalPlayer.Character.PrimaryPart.Position - v.Character.PrimaryPart.Position).Magnitude
 			
 			if Distance < MinimumDistance then
