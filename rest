@@ -22,7 +22,7 @@ local function FindNearestEntity(MinimumDistance)
 		end
 	end
 	
-	repeat NearestEntity
+	return NearestEntity, MinimumDistance
 end
 
 local function HashFunction(Value)
