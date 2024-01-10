@@ -1,3 +1,5 @@
+local AlSploitApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Api"))()
+
 local LocalPlayer = game.Players.LocalPlayer
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -5,7 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
-local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-Meta"]).getItemMeta, 1)
+local ItemTable = AlSploitApi.ItemTable
 
 local function FindNearestEntity(MinimumDistance)
 	local MinimumDistance = MinimumDistance or math.huge
