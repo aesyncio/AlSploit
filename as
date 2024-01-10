@@ -16,8 +16,8 @@ local function FindNearestEntity(MinimumDistance)
 	local NearestEntity = nil
 	
 	for i, v in next, Players:GetPlayers() do
-		if v.Character.PrimaryPart then
-			local Distance = (LocalPlayer.Character.PrimaryPart.Position - v.Character.PrimaryPart.Position).Magnitude
+		if v.Character and v.Character.HumanoidRootPart then
+			local Distance = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
 			
 			if Distance < MinimumDistance then
 				MinimumDistance = Distance
@@ -61,12 +61,12 @@ local function GetSword()
 end
 
 local function SwordHit(Entity, Weapon)
-	local LocalPlayerPrimaryPart = LocalPlayer.Character.PrimaryPart
-	local EntityPrimaryPart = Entity.PrimaryPart
+	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
+	local EntityHumanoidRootPart = Entity.HumanoidRootPart
 
-	print(EntityPrimaryPart.Name)
+	print(EntityHumanoidRootPart.Name)
 	
-	local SelfPosition = LocalPlayerPrimaryPart.Position + (20 > 14 and (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+	local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
@@ -74,11 +74,11 @@ local function SwordHit(Entity, Weapon)
 		entityInstance = Entity,
 		validate = {
 			raycast = {
-				cameraPosition = HashFunction(LocalPlayerPrimaryPart.Position), 
-				cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
+				cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+				cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityHumanoidRootPart.Position).lookVector)
 			},
 			
-			targetPosition = HashFunction(EntityPrimaryPart.Position),
+			targetPosition = HashFunction(EntityHumanoidRootPart.Position),
 			selfPosition = HashFunction(SelfPosition)
 		}
 	})
