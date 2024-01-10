@@ -66,8 +66,7 @@ local function SwordHit(Entity, Weapon)
 
 	print(EntityPrimaryPart.Name)
 	
-	local SelfPosition = LocalPlayerPrimaryPart.Position + (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector *
-		(LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)
+	local SelfPosition = LocalPlayerPrimaryPart.Position + (20 > 14 and (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
