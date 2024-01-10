@@ -90,7 +90,7 @@ task.spawn(function()
 		local Sword = GetSword()
 		
 		if NearestEntity and Sword then
-			SwordHit()
+			SwordHit(NearestEntity, Sword)
 		end		
 	until not game
 end)
