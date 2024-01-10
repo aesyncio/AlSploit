@@ -16,7 +16,7 @@ local function FindNearestEntity(MinimumDistance)
 	local NearestEntity = nil
 	
 	for i, v in next, Players:GetPlayers() do
-		if v.Character and v.Character.HumanoidRootPart then
+		if IsAlive(v) then
 			local Distance = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
 			
 			if Distance < MinimumDistance then
@@ -84,17 +84,30 @@ local function SwordHit(Entity, Weapon)
 	})
 end
 
+function IsAlive(Player)
+	Player = Player or LocalPlayer
+
+	if not Player.Character then return false end
+	if not Player.Character:FindFirstChild("Humanoid") then return false end
+	if Player.Character:GetAttribute("Health") <= 0 then return false end
+	if not Player.Character.PrimaryPart then return false end	
+
+	return true
+end	
+
 task.spawn(function()
 	repeat
 		task.wait()
 		
-		local NearestEntity = FindNearestEntity()
-		local Sword = GetSword()
-		
-		print(NearestEntity)
-		
-		if NearestEntity and Sword then
-			SwordHit(NearestEntity, Sword)
-		end		
+		if IsAlive(LocalPlayer) then
+			local NearestEntity = FindNearestEntity()
+			local Sword = GetSword()
+
+			print(NearestEntity)
+
+			if NearestEntity and Sword then
+				SwordHit(NearestEntity, Sword)
+			end	
+		end	
 	until not game
 end)
