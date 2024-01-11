@@ -65,7 +65,6 @@ function FindNearestEntity(MaxDistance)
 	
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("DiamondGuardian") do
-			print("1")
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
@@ -117,9 +116,7 @@ function FindNearestEntity(MaxDistance)
 		end
 	end)
 
-	if NearestEntity then
-		print("2")
-		
+	if NearestEntity then	
 		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 	end
 	
@@ -199,8 +196,16 @@ task.spawn(function()
 			
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
-				print("3")
 			end	
 		end	
 	until not game
+end)
+
+task.spawn(function()
+	local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
+
+	CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
+	
+	KnockBackTable.kbDirectionStrength = 0
+	KnockBackTable.kbUpwardStrength = 0	
 end)
