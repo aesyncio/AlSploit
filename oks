@@ -64,7 +64,7 @@ local function SwordHit(Entity, Weapon)
 	local LocalPlayerPrimaryPart = LocalPlayer.Character.PrimaryPart
 	local EntityPrimaryPart = Entity.Character.PrimaryPart
 	
-	local SelfPosition = LocalPlayerPrimaryPart.Position + (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14))
+	local SelfPosition = LocalPlayerPrimaryPart.Position + (20 > 14 and LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14) or Vector3.zero)
 
 	print("niggers")
 
