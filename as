@@ -121,7 +121,7 @@ function FindNearestEntity(MaxDistance)
 				end
 			end
 		end
-	end)	
+	end)
 
 	return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 end
@@ -195,6 +195,8 @@ task.spawn(function()
 		if IsAlive(LocalPlayer) then
 			local NearestEntity = FindNearestEntity()
 			local Sword = GetSword()
+			
+			print(NearestEntity.Name)
 
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
