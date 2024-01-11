@@ -21,7 +21,7 @@ function FindNearestPlayer(MaxDistance)
 
 			if Distance < NearestPlayerDistance then
 				NearestPlayerDistance = Distance
-				NearestPlayer = v				
+				NearestPlayer = v
 			end
 		end
 	end
@@ -100,6 +100,8 @@ task.spawn(function()
 		if IsAlive(LocalPlayer) then
 			local NearestEntity = FindNearestPlayer()
 			local Sword = GetSword()
+
+			print(Sword)
 
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
