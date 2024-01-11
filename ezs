@@ -120,7 +120,11 @@ function FindNearestEntity(MaxDistance)
 		end
 	end)
 
-	return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
+	if NearestEntity then
+		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
+	end
+	
+	return nil
 end
 
 local function HashFunction(Value)
