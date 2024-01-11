@@ -64,11 +64,12 @@ local CollectionServiceMonster = CollectionService:GetTagged("Monster")
 
 function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
-	local NearestEntity
+	local NearestEntity = nil
 	local IsNotAPlayer = true
 	
 	task.spawn(function()
 		for i, v in next, CollectionServiceDiamondGuardian do
+			print("1")
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
@@ -121,6 +122,8 @@ function FindNearestEntity(MaxDistance)
 	end)
 
 	if NearestEntity then
+		print("2")
+		
 		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 	end
 	
@@ -200,6 +203,7 @@ task.spawn(function()
 			
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
+				print("3")
 			end	
 		end	
 	until not game
