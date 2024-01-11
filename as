@@ -58,17 +58,13 @@ local FovController = KnitClient.Controllers.FovController
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
-local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
-local CollectionServiceGolemBoss = CollectionService:GetTagged("GolemBoss")
-local CollectionServiceMonster = CollectionService:GetTagged("Monster")
-
 function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
 	local NearestEntity = nil
 	local IsNotAPlayer = true
 	
 	task.spawn(function()
-		for i, v in next, CollectionServiceDiamondGuardian do
+		for i, v in next, CollectionService:GetTagged("DiamondGuardian") do
 			print("1")
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
@@ -82,7 +78,7 @@ function FindNearestEntity(MaxDistance)
 	end)
 	
 	task.spawn(function()
-		for i, v in next, CollectionServiceGolemBoss do
+		for i, v in next, CollectionService:GetTagged("GolemBoss") do
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart .Position).Magnitude
 
@@ -95,7 +91,7 @@ function FindNearestEntity(MaxDistance)
 	end)	
 	
 	task.spawn(function()
-		for i, v in next, CollectionServiceMonster do
+		for i, v in next, CollectionService:GetTagged("Monster") do
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart .Position).Magnitude
 
