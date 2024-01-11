@@ -59,10 +59,13 @@ local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
+local CollectionServiceGolemBoss = CollectionService:GetTagged("GolemBoss")
+local CollectionServiceMonster = CollectionService:GetTagged("Monster")
 
 function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
 	local NearestEntity
+	local IsNotAPlayer = false
 	
 	for i, v in next, CollectionServiceDiamondGuardian do
 		if v.PrimaryPart then
@@ -71,6 +74,31 @@ function FindNearestEntity(MaxDistance)
 			if Distance < NearestEntityDistance then
 				NearestEntityDistance = Distance
 				NearestEntity = v
+				IsNotAPlayer = true
+			end
+		end
+	end
+	
+	for i, v in next, CollectionServiceGolemBoss do
+		if v.PrimaryPart then
+			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < NearestEntityDistance then
+				NearestEntityDistance = Distance
+				NearestEntity = v
+				IsNotAPlayer = true
+			end
+		end
+	end
+	
+	for i, v in next, CollectionServiceMonster do
+		if v.PrimaryPart then
+			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < NearestEntityDistance then
+				NearestEntityDistance = Distance
+				NearestEntity = v
+				IsNotAPlayer = true
 			end
 		end
 	end
@@ -82,11 +110,12 @@ function FindNearestEntity(MaxDistance)
 			if Distance < NearestEntityDistance then
 				NearestEntityDistance = Distance
 				NearestEntity= v
+				IsNotAPlayer = false
 			end
 		end
 	end
 
-	return NearestEntity.Character, NearestEntity
+	return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 end
 
 local function HashFunction(Value)
@@ -125,8 +154,6 @@ local function SwordHit(Entity, Weapon)
 	local EntityPrimaryPart = Entity.PrimaryPart
 	
 	local SelfPosition = LocalPlayerPrimaryPart.Position + (20 > 14 and (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
-	
-	print("niggers")
 
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
