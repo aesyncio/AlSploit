@@ -67,53 +67,61 @@ function FindNearestEntity(MaxDistance)
 	local NearestEntity
 	local IsNotAPlayer = false
 	
-	for i, v in next, CollectionServiceDiamondGuardian do
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	task.spawn(function()
+		for i, v in next, CollectionServiceDiamondGuardian do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-			if Distance < NearestEntityDistance then
-				NearestEntityDistance = Distance
-				NearestEntity = v
-				IsNotAPlayer = true
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+					IsNotAPlayer = true
+				end
 			end
 		end
-	end
+	end)
 	
-	for i, v in next, CollectionServiceGolemBoss do
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	task.spawn(function()
+		for i, v in next, CollectionServiceGolemBoss do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-			if Distance < NearestEntityDistance then
-				NearestEntityDistance = Distance
-				NearestEntity = v
-				IsNotAPlayer = true
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+					IsNotAPlayer = true
+				end
 			end
 		end
-	end
+	end)	
 	
-	for i, v in next, CollectionServiceMonster do
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+	task.spawn(function()
+		for i, v in next, CollectionServiceMonster do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-			if Distance < NearestEntityDistance then
-				NearestEntityDistance = Distance
-				NearestEntity = v
-				IsNotAPlayer = true
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+					IsNotAPlayer = true
+				end
 			end
 		end
-	end
+	end)
+	
+	task.spawn(function()
+		for i, v in next, PlayerService:GetPlayers() do
+			if IsAlive(v) and v.Team ~= LocalPlayer.Team then
+				local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-	for i, v in next, PlayerService:GetPlayers() do
-		if IsAlive(v) and v.Team ~= LocalPlayer.Team then
-			local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
-
-			if Distance < NearestEntityDistance then
-				NearestEntityDistance = Distance
-				NearestEntity= v
-				IsNotAPlayer = false
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity= v
+					IsNotAPlayer = false
+				end
 			end
 		end
-	end
+	end)	
 
 	return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 end
@@ -154,7 +162,6 @@ local function SwordHit(Entity, Weapon)
 	local EntityPrimaryPart = Entity.PrimaryPart
 	
 	local SelfPosition = LocalPlayerPrimaryPart.Position + (20 > 14 and (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
-
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
 		chargedAttack = {chargeRatio = 0},
