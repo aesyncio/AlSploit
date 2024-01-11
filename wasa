@@ -66,16 +66,17 @@ local function SwordHit(Entity, Weapon)
 	
 	local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
 
+	print("niggers")
+
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
-		chargedAttack = {chargeRatio = 0},
-		entityInstance = Entity,
+		chargedAttack = {chargeRatio = 0.8},
+		entityInstance = Entity.Character,
 		validate = {
 			raycast = {
 				cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
 				cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityHumanoidRootPart.Position).lookVector)
 			},
-			
 			targetPosition = HashFunction(EntityHumanoidRootPart.Position),
 			selfPosition = HashFunction(SelfPosition)
 		}
