@@ -11,22 +11,22 @@ local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForCh
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 local ItemTable = AlSploitApi.ItemTable
 
-function FindNearestPlayer(MaxDistance)
-	local NearestPlayerDistance = MaxDistance or math.huge
-	local NearestPlayer
+function FindNearestEntity(MaxDistance)
+	local NearestEntityDistance = MaxDistance or math.huge
+	local NearestEntity
 
 	for i, v in next, Players:GetPlayers() do
-		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team then
-			local Distance = (v.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+		if IsAlive(v) and v.Team ~= LocalPlayer.Team then
+			local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-			if Distance < NearestPlayerDistance then
-				NearestPlayerDistance = Distance
-				NearestPlayer = v
+			if Distance < NearestEntityDistance then
+				NearestEntityDistance = Distance
+				NearestEntity= v
 			end
 		end
 	end
 
-	return NearestPlayer, NearestPlayerDistance
+	return NearestEntity, NearestEntity
 end
 
 local function HashFunction(Value)
@@ -61,23 +61,23 @@ local function GetSword()
 end
 
 local function SwordHit(Entity, Weapon)
-	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
-	local EntityHumanoidRootPart = Entity.Character.HumanoidRootPart
+	local LocalPlayerPrimaryPart = LocalPlayer.Character.PrimaryPart
+	local EntityPrimaryPart = Entity.Character.PrimaryPart
 	
-	local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+	local SelfPosition = LocalPlayerPrimaryPart.Position + (LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerPrimaryPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerPrimaryPart.Position - EntityPrimaryPart.Position).Magnitude - 14))
 
 	print("niggers")
 
 	SwordHitRemote:FireServer({
 		weapon = Weapon.tool,
-		chargedAttack = {chargeRatio = 0.8},
+		chargedAttack = {chargeRatio = 0},
 		entityInstance = Entity.Character,
 		validate = {
 			raycast = {
-				cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-				cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityHumanoidRootPart.Position).lookVector)
+				cameraPosition = HashFunction(LocalPlayerPrimaryPart.Position), 
+				cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
 			},
-			targetPosition = HashFunction(EntityHumanoidRootPart.Position),
+			targetPosition = HashFunction(EntityPrimaryPart.Position),
 			selfPosition = HashFunction(SelfPosition)
 		}
 	})
@@ -99,10 +99,8 @@ task.spawn(function()
 		task.wait()
 		
 		if IsAlive(LocalPlayer) then
-			local NearestEntity = FindNearestPlayer()
+			local NearestEntity = FindNearestEntity()
 			local Sword = GetSword()
-
-			print(Sword)
 
 			if NearestEntity and Sword then
 				SwordHit(NearestEntity, Sword)
