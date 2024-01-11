@@ -65,7 +65,7 @@ local CollectionServiceMonster = CollectionService:GetTagged("Monster")
 function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
 	local NearestEntity
-	local IsNotAPlayer = false
+	local IsNotAPlayer = true
 	
 	task.spawn(function()
 		for i, v in next, CollectionServiceDiamondGuardian do
@@ -75,7 +75,6 @@ function FindNearestEntity(MaxDistance)
 				if Distance < NearestEntityDistance and Distance <= 18 then
 					NearestEntityDistance = Distance
 					NearestEntity = v
-					IsNotAPlayer = true
 				end
 			end
 		end
@@ -89,7 +88,6 @@ function FindNearestEntity(MaxDistance)
 				if Distance < NearestEntityDistance and Distance <= 18 then
 					NearestEntityDistance = Distance
 					NearestEntity = v
-					IsNotAPlayer = true
 				end
 			end
 		end
@@ -103,7 +101,6 @@ function FindNearestEntity(MaxDistance)
 				if Distance < NearestEntityDistance and Distance <= 18 then
 					NearestEntityDistance = Distance
 					NearestEntity = v
-					IsNotAPlayer = true
 				end
 			end
 		end
