@@ -79,7 +79,7 @@ function FindNearestEntity(MaxDistance)
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("GolemBoss") do
 			if v.PrimaryPart then
-				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart .Position).Magnitude
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 				if Distance < NearestEntityDistance and Distance <= 18 then
 					NearestEntityDistance = Distance
@@ -92,7 +92,7 @@ function FindNearestEntity(MaxDistance)
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("Monster") do
 			if v.PrimaryPart then
-				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart .Position).Magnitude
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 				if Distance < NearestEntityDistance and Distance <= 18 then
 					NearestEntityDistance = Distance
