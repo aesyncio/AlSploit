@@ -566,7 +566,7 @@ task.spawn(function()
 	end
 end)
 
-local SaveFileName = "AlSploitBedwarsRewrite1"
+local SaveFileName = "AlSploitBedwarsRewrite2"
 local SaveFilePath = ""
 
 local FirstTime
@@ -587,6 +587,7 @@ function CreateSettingsFile()
 		InfiniteJump = {Value = true},
 		DamageBoost = {Value = true},
 		ChatSpammer = {Value = false, Speed = 50},
+		AcDisabler = {Value = true},
 		FpsBooster = {Value = false},
 		Indicators = {Value = true},
 		AutoToxic = {Value = false},
@@ -688,6 +689,7 @@ local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
+local AnticheatDisabled = false
 local ZephyrOrb = 0
 
 local Animations = {
@@ -706,6 +708,7 @@ local BlockPlacingRemote = AlSploitApi.BlockPlacingRemote
 local ClientHandlerStore = AlSploitApi.ClientHandlerStore
 local SendMessageRemote = AlSploitApi.SendMessageRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
+local ElkSummonRemote = AlSploitApi.ElkSummonRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local DamageIndicator = AlSploitApi.DamageIndicator
@@ -838,6 +841,71 @@ function FindNearestPlayer(MaxDistance)
 	end
 
 	return NearestPlayer, NearestPlayerDistance
+end
+
+function FindNearestEntity(MaxDistance)
+	local NearestEntityDistance = MaxDistance or math.huge
+	local NearestEntity = nil
+	local IsNotAPlayer = true
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("DiamondGuardian") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end
+		end
+	end)
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("GolemBoss") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end
+		end
+	end)	
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("Monster") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end
+		end
+	end)
+
+	task.spawn(function()
+		for i, v in next, Players do
+			if IsAlive(v) and v.Team ~= LocalPlayer.Team then
+				local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance then
+					NearestEntityDistance = Distance
+					NearestEntity= v
+					IsNotAPlayer = false
+				end
+			end
+		end
+	end)
+
+	if NearestEntity then	
+		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
+	end
+
+	return nil
 end
 
 function GetServerPosition(Position)
@@ -999,7 +1067,7 @@ function SetCollisions(Value)
 
 	if Value == false then
 		for i, v in next, (LocalPlayer.Character:GetDescendants()) do
-			if v:IsA("BasePart") and v ~= LocalPlayer.Character.PrimaryPart and v.CanCollide then
+			if v:IsA("BasePart") and v ~= LocalPlayer.Character.HumanoidRootPart and v.CanCollide then
 				v.CanCollide = false
 				v.CanTouch = false
 			end
@@ -1253,6 +1321,10 @@ function GetSpeed()
 		if DamageBoost == true then
 			Speed = Speed + 18
 		end
+		
+		if AnticheatDisabled == true then
+			Speed = Speed + 13
+		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
 	end
@@ -1338,167 +1410,63 @@ function GetBow()
 end
 
 task.spawn(function()
-	local function KillAuraHitMobs()	
-		if IsAlive(LocalPlayer) and Settings.KillAura.Value == true then
-			local DiamondGuardian, DiamondGuardianDistance = FindNearestDiamondGuardian()
-
-			if DiamondGuardian and DiamondGuardianDistance < Settings.KillAura.Range then
-				if GetMatchState() ~= 0 and DiamondGuardian and DiamondGuardian.PrimaryPart then
-					local LocalPlayerCharacter = LocalPlayer.Character
-					local EnemyCharacter = DiamondGuardian
-
-					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
-					local EnemyHumanoidRootPart = EnemyCharacter.PrimaryPart
-
-					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-
-					if Magnitude <= Settings.KillAura.Range then
-						local Sword = GetSword()
-
-						if Sword then
-							task.spawn(function()
-								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
-									KillAuraAnimationCooldown = false
-
-									for i, v in next, Animations["Slow"] do
-										TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-										task.wait(v.Time - 0.01)
-									end
-
-									KillAuraAnimationCooldown = true
-								end
-							end)		
-
-							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-
-							if Settings.KillAura.ToolCheck == false then
-								SwitchItem(Sword.tool)
-
-								KillauraRemote:FireServer({
-									weapon = Sword.tool,
-									chargedAttack = {chargeRatio = 0.8},
-									entityInstance = DiamondGuardian,
-									validate = {
-										raycast = {
-											cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-											cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-										},
-										targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-										selfPosition = HashFunction(SelfPosition)
-									}
-								})
-							end
-
-							if Settings.KillAura.ToolCheck == true then
-								if GetItem(Sword.itemType) then
-									KillauraRemote:FireServer({
-										weapon = Sword.tool,
-										chargedAttack = {chargeRatio = 0.8},
-										entityInstance = DiamondGuardian,
-										validate = {
-											raycast = {
-												cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-												cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-											},
-											targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-											selfPosition = HashFunction(SelfPosition)
-										}
-									})
-								end
-							end
-						end
-					end
-				end
+	local function SwordHit(Entity, Weapon)
+		local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
+		local EntityHumanoidRootPart = Entity.HumanoidRootPart
+		
+		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+		
+		task.spawn(function()
+			if Settings.KillAura.ToolCheck == false then
+				SwitchItem(Weapon.tool)
 			end
-		end
-	end
+		end)
+		
+		task.spawn(function()
+			if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
+				KillAuraAnimationCooldown = false
 
-	local function KillAuraHit()	
-		for i, v in next, Players do
-			if IsAlive(v) and Settings.KillAura.Value == true and v.Team ~= LocalPlayer.Team then
-				if GetMatchState() ~= 0 and IsAlive(LocalPlayer) then
-					local LocalPlayerCharacter = LocalPlayer.Character
-					local EnemyCharacter = v.Character
-
-					local LocalPlayerHumanoidRootPart = LocalPlayerCharacter.HumanoidRootPart 
-					local EnemyHumanoidRootPart = EnemyCharacter.HumanoidRootPart 
-
-					local Magnitude = (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude
-
-					if Magnitude <= Settings.KillAura.Range then
-						local Sword = GetSword()
-
-						if Sword then
-							task.spawn(function()
-								if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
-									KillAuraAnimationCooldown = false
-
-									for i, v in next, Animations["Slow"] do
-										TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-										task.wait(v.Time - 0.01)
-									end
-
-									KillAuraAnimationCooldown = true
-								end
-							end)		
-
-							local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EnemyHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EnemyHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
-
-							if Settings.KillAura.ToolCheck == false then
-								SwitchItem(Sword.tool)
-
-								KillauraRemote:FireServer({
-									weapon = Sword.tool,
-									chargedAttack = {chargeRatio = 0},
-									entityInstance = v.Character,
-									validate = {
-										raycast = {
-											cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-											cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-										},
-										targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-										selfPosition = HashFunction(SelfPosition)
-									}
-								})
-							end
-
-							if Settings.KillAura.ToolCheck == true then
-								if GetItem(Sword.itemType) then
-									KillauraRemote:FireServer({
-										weapon = Sword.tool,
-										chargedAttack = {chargeRatio = 0},
-										entityInstance = v.Character,
-										validate = {
-											raycast = {
-												cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-												cursorDirection = HashFunction(CFrame.new(SelfPosition, EnemyHumanoidRootPart.Position).lookVector)
-											},
-											targetPosition = HashFunction(EnemyHumanoidRootPart.Position),
-											selfPosition = HashFunction(SelfPosition)
-										}
-									})
-								end
-							end
-						end
-					end
+				for i, v in next, Animations.Slow do
+					TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+					
+					task.wait(v.Time - 0.01)
 				end
+
+				KillAuraAnimationCooldown = true
 			end
-		end
+		end)
+
+		task.spawn(function()
+			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+			
+			KillauraRemote:FireServer({
+				weapon = Weapon.tool,
+				chargedAttack = {chargeRatio = 0},
+				entityInstance = Entity,
+				validate = {
+					raycast = {
+						cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+						cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityHumanoidRootPart.Position).lookVector)
+					},
+					targetPosition = HashFunction(EntityHumanoidRootPart.Position),
+					selfPosition = HashFunction(SelfPosition)
+				}
+			})
+		end)	
 	end
 
 	task.spawn(function()
 		repeat
 			task.wait()
+			
+			if Settings.KillAura.Value == true and IsAlive(LocalPlayer) then
+				local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
+				local Sword = GetSword()
 
-			task.spawn(KillAuraHit)
-		until not game
-	end)
-
-	task.spawn(function()
-		repeat
-			task.wait(0.1)
-
-			task.spawn(KillAuraHitMobs)
+				if NearestEntity and Sword then
+					SwordHit(NearestEntity, Sword)
+				end
+			end			
 		until not game
 	end)
 end)
@@ -1674,16 +1642,16 @@ function InfFly()
 
 		SetCamera(SpoofedCamera)
 
-		LocalPlayer.Character.PrimaryPart.CFrame += Vector3.new(0, 1000000, 0)
+		LocalPlayer.Character.HumanoidRootPart.CFrame += Vector3.new(0, 1000000, 0)
 		SpoofedCamera.Position = Vector3.new(SpoofedCamera.Position.X, StartLevel, SpoofedCamera.Position.Z)
 
 		repeat task.wait()
-			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (InfFlyUp and 1 or 0) + (InfFlyDown and -1 or 0), LocalPlayer.Character.PrimaryPart.Position.Z)
+			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.HumanoidRootPart.Position.X, SpoofedCamera.Position.Y + (InfFlyUp and 1 or 0) + (InfFlyDown and -1 or 0), LocalPlayer.Character.HumanoidRootPart.Position.Z)
 			StartLevel = SpoofedCamera.Position.Y	
 		until InfFlying == false
 
 		if not InfFlying or not IsAlive(LocalPlayer) then
-			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
+			LocalPlayer.Character.HumanoidRootPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
 			SetCamera(LocalPlayer.Character)
 
 			SpoofedCamera:Remove()
@@ -1720,7 +1688,7 @@ task.spawn(function()
 
 				if IsAlive(LocalPlayer) then				
 					NearestOre = FindNearestOre(30)
-					NearestBed = FindNearestBed(30)
+					NearestBed = FindNearestBed(Settings.Nuker.Range)
 				end				
 			until not game
 		end)
@@ -1828,16 +1796,6 @@ task.spawn(function()
 			end			
 		end
 	end)
-end)
-
-task.spawn(function()	
-	repeat
-		task.wait(0.5)
-
-		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
-			ChestSteal()
-		end
-	until not game
 end)
 
 task.spawn(function()
@@ -2075,9 +2033,13 @@ task.spawn(function()
 			if Settings.AutoKit.Value == true then
 				AutoKit()
 			end
+			
+			if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
+				ChestSteal()
+			end
 
 			AutoBank()
-		end			
+		end	
 	until not game
 end)
 
@@ -2225,6 +2187,45 @@ task.spawn(function()
 		end
 	end)
 end)
+
+task.spawn(function()
+	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisabler.Value, function(CallBack)
+		Settings.AcDisabler.Value = CallBack
+		
+		task.spawn(function()
+			if CallBack == true then
+				local Args = {
+					[1] = "elk_summon"
+				}
+
+				ElkSummonRemote:FireServer(unpack(Args))
+
+				AnticheatDisabled = true
+
+				task.spawn(function()
+					LocalPlayer.CharacterAdded:Connect(function()
+						task.wait(0.3)
+						
+						if CallBack == true then
+							local Args = {
+								[1] = "elk_summon"
+							}
+
+							ElkSummonRemote:FireServer(unpack(Args))
+
+							AnticheatDisabled = true
+						end
+					end)
+				end)
+			end
+		end)		
+		
+		if CallBack == false then
+			AnticheatDisabled = false
+		end
+	end)
+end)
+
 
 task.spawn(function()
 	local ChestStealer = CreateToggle(BlatantTab, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
@@ -2885,6 +2886,8 @@ task.spawn(function()
 	C1 = ViewModel.RightHand.RightWrist.C1
 
 	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+	
+	setfpscap(240)
 end)
 
 task.spawn(function()
