@@ -1323,7 +1323,7 @@ function GetSpeed()
 		end
 		
 		if AnticheatDisabled == true then
-			Speed = Speed + 10
+			Speed = Speed + 15
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
@@ -2192,29 +2192,31 @@ task.spawn(function()
 	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisablerValue, function(CallBack)
 		Settings.AcDisabler.Value = CallBack
 		
-		if CallBack == true then
-			local Args = {
-				[1] = "elk_summon"
-			}
+		task.spawn(function()
+			if CallBack == true then
+				local Args = {
+					[1] = "elk_summon"
+				}
 
-			ElkSummonRemote:FireServer(unpack(Args))
-			
-			AnticheatDisabled = true
-			
-			task.spawn(function()
-				LocalPlayer.CharacterAdded:Connect(function()
-					if CallBack == true then
-						local Args = {
-							[1] = "elk_summon"
-						}
+				ElkSummonRemote:FireServer(unpack(Args))
 
-						ElkSummonRemote:FireServer(unpack(Args))
-						
-						AnticheatDisabled = true
-					end
+				AnticheatDisabled = true
+
+				task.spawn(function()
+					LocalPlayer.CharacterAdded:Connect(function()
+						if CallBack == true then
+							local Args = {
+								[1] = "elk_summon"
+							}
+
+							ElkSummonRemote:FireServer(unpack(Args))
+
+							AnticheatDisabled = true
+						end
+					end)
 				end)
-			end)
-		end
+			end
+		end)		
 		
 		if CallBack == false then
 			AnticheatDisabled = false
