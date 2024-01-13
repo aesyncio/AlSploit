@@ -1323,7 +1323,7 @@ function GetSpeed()
 		end
 		
 		if AnticheatDisabled == true then
-			Speed = Speed + 15
+			Speed = Speed + 14
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
@@ -2884,6 +2884,8 @@ task.spawn(function()
 	C1 = ViewModel.RightHand.RightWrist.C1
 
 	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+	
+	setfpscap(240)
 end)
 
 task.spawn(function()
