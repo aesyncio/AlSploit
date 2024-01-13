@@ -1323,7 +1323,7 @@ function GetSpeed()
 		end
 		
 		if AnticheatDisabled == true then
-			Speed = Speed + 14
+			Speed = Speed + 13
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
@@ -2189,7 +2189,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisablerValue, function(CallBack)
+	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisabler.Value, function(CallBack)
 		Settings.AcDisabler.Value = CallBack
 		
 		task.spawn(function()
