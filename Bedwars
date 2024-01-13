@@ -2201,28 +2201,28 @@ task.spawn(function()
 				ElkSummonRemote:FireServer(unpack(Args))
 
 				AnticheatDisabled = true
-
-				task.spawn(function()
-					LocalPlayer.CharacterAdded:Connect(function()
-						task.wait(0.3)
-						
-						if CallBack == true then
-							local Args = {
-								[1] = "elk_summon"
-							}
-
-							ElkSummonRemote:FireServer(unpack(Args))
-
-							AnticheatDisabled = true
-						end
-					end)
-				end)
 			end
 		end)		
 		
 		if CallBack == false then
 			AnticheatDisabled = false
 		end
+	end)
+	
+	task.spawn(function()
+		LocalPlayer.CharacterAdded:Connect(function()
+			task.wait(0.3)
+
+			if Settings.AcDisabler.Value == true then
+				local Args = {
+					[1] = "elk_summon"
+				}
+
+				ElkSummonRemote:FireServer(unpack(Args))
+
+				AnticheatDisabled = true
+			end
+		end)
 	end)
 end)
 
