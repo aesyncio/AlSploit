@@ -26,6 +26,7 @@ AlSploit.BlockPlacingRemote = game:GetService("ReplicatedStorage").rbxts_include
 AlSploit.ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore
 AlSploit.SendMessageRemote = ReplicatedStorage.DefaultChatSystemChatEvents:WaitForChild("SayMessageRequest")
 AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ProjectileFire")
+AlSploit.ElkSummonRemote = game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"):WaitForChild("useAbility"):FireServer(unpack(args))
 AlSploit.PlayAgainRemote = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events")
 AlSploit.EquipItemRemote = GetRemote(debug.getconstants(debug.getproto(require(ReplicatedStorage.TS.entity.entities["inventory-entity"]).InventoryEntity.equipItem, 3)))
 AlSploit.GroundHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("GroundHit")
