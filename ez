@@ -566,7 +566,7 @@ task.spawn(function()
 	end
 end)
 
-local SaveFileName = "AlSploitBedwarsRewrite1"
+local SaveFileName = "AlSploitBedwarsRewrite2"
 local SaveFilePath = ""
 
 local FirstTime
@@ -587,6 +587,7 @@ function CreateSettingsFile()
 		InfiniteJump = {Value = true},
 		DamageBoost = {Value = true},
 		ChatSpammer = {Value = false, Speed = 50},
+		AcDisabler = {Value = true},
 		FpsBooster = {Value = false},
 		Indicators = {Value = true},
 		AutoToxic = {Value = false},
@@ -688,6 +689,7 @@ local KillAuraAnimationCooldown = true
 local JumpCooldown = false
 local AntiVoidPart = nil
 local DamageBoost = false
+local AnticheatDisabled = false
 local ZephyrOrb = 0
 
 local Animations = {
@@ -706,6 +708,7 @@ local BlockPlacingRemote = AlSploitApi.BlockPlacingRemote
 local ClientHandlerStore = AlSploitApi.ClientHandlerStore
 local SendMessageRemote = AlSploitApi.SendMessageRemote
 local ProjectileRemote = AlSploitApi.ProjectileRemote
+local ElkSummonRemote = AlSploitApi.ElkSummonRemote
 local PlayAgainRemote = AlSploitApi.PlayAgainRemote
 local EquipItemRemote = AlSploitApi.EquipItemRemote
 local DamageIndicator = AlSploitApi.DamageIndicator
@@ -1318,6 +1321,10 @@ function GetSpeed()
 		if DamageBoost == true then
 			Speed = Speed + 18
 		end
+		
+		if AnticheatDisabled == true then
+			Speed = Speed + 10
+		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
 	end
@@ -1791,16 +1798,6 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()	
-	repeat
-		task.wait(0.5)
-
-		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
-			ChestSteal()
-		end
-	until not game
-end)
-
 task.spawn(function()
 	local Messages = {"AlSploit", "Best Client", ":D", "💀"}
 
@@ -2036,9 +2033,13 @@ task.spawn(function()
 			if Settings.AutoKit.Value == true then
 				AutoKit()
 			end
+			
+			if IsAlive(LocalPlayer) and GetMatchState() ~= 0 and Settings.ChestStealer.Value == true then
+				ChestSteal()
+			end
 
 			AutoBank()
-		end			
+		end	
 	until not game
 end)
 
@@ -2186,6 +2187,41 @@ task.spawn(function()
 		end
 	end)
 end)
+
+task.spawn(function()
+	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisablerValue, function(CallBack)
+		Settings.AcDisabler.Value = CallBack
+		
+		if CallBack == true then
+			local Args = {
+				[1] = "elk_summon"
+			}
+
+			ElkSummonRemote:FireServer(unpack(Args))
+			
+			AnticheatDisabled = true
+			
+			task.spawn(function()
+				LocalPlayer.CharacterAdded:Connect(function()
+					if CallBack == true then
+						local Args = {
+							[1] = "elk_summon"
+						}
+
+						ElkSummonRemote:FireServer(unpack(Args))
+						
+						AnticheatDisabled = true
+					end
+				end)
+			end)
+		end
+		
+		if CallBack == false then
+			AnticheatDisabled = false
+		end
+	end)
+end)
+
 
 task.spawn(function()
 	local ChestStealer = CreateToggle(BlatantTab, "ChestSteal", Settings.ChestStealer.Value, function(CallBack)
