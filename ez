@@ -678,7 +678,6 @@ local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
 local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
-local CollectionServiceTreeOrb = CollectionService:GetTagged("treeOrb")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local CollectionServiceChest = CollectionService:GetTagged("chest")
 local CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
@@ -717,7 +716,6 @@ local SwordController = AlSploitApi.SwordController
 local ProjectileMeta = AlSploitApi.ProjectileMeta
 local KillauraRemote = AlSploitApi.KillauraRemote
 local CombatConstant = AlSploitApi.CombatConstant
-local TreeOrbRemote = AlSploitApi.TreeOrbRemote
 local PlacementCPS = AlSploitApi.PlacementCPS
 local MinerRemote = AlSploitApi.MinerRemote
 
@@ -790,24 +788,6 @@ function FindPetrifiedPlayer()
 			return v
 		end
 	end
-end
-
-function FindNearestTreeOrb()
-	local NearestTreeOrbDistance = math.huge
-	local NearestTreeOrb
-
-	for i, v in next, CollectionServiceTreeOrb do		
-		if v:FindFirstChild("Spirit") then
-			local Distance = (v.Spirit.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-
-			if Distance < NearestTreeOrbDistance then
-				NearestTreeOrbDistance = Distance
-				NearestTreeOrb = v
-			end
-		end
-	end
-
-	return NearestTreeOrb, NearestTreeOrbDistance
 end
 
 function TweenToNearestBed()
@@ -1363,17 +1343,6 @@ end
 
 function AutoKit()
 	local FindPetrifiedPlayer = FindPetrifiedPlayer()
-	local NearestTreeOrb = FindNearestTreeOrb()
-
-	task.spawn(function()
-		if IsAlive(LocalPlayer) and NearestTreeOrb and GetMatchState() ~= 0 then
-			if TreeOrbRemote:CallServer({treeOrbSecret = NearestTreeOrb:GetAttribute("TreeOrbSecret")}) then			
-				NearestTreeOrb:Destroy()
-
-				CollectionService:RemoveTag(NearestTreeOrb, "treeOrb")
-			end
-		end
-	end)
 
 	task.spawn(function()
 		if IsAlive(LocalPlayer) and NearestPlayer then
@@ -2059,6 +2028,35 @@ task.spawn(function()
 	end)
 end)
 
+task.spawn(function()
+	repeat
+		task.wait()
+		
+		if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
+			local ElkPrimaryPart = LocalPlayer.Character:FindFirstChild("elk").PrimaryPart
+			
+			if ElkPrimaryPart then
+				ElkPrimaryPart:Destroy()
+			end
+			
+			task.spawn(function()
+				local Args = {
+					[1] = "elk_summon"
+				}
+
+				ElkSummonRemote:FireServer(unpack(Args))
+
+				AnticheatDisabled = true
+			end)			
+		end
+
+		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) then
+			AnticheatDisabled = false
+		end
+		
+	until not game	
+end)
+
 local CombatTab = CreateTab("Combat")
 local BlatantTab = CreateTab("Blatant")
 local UtilityTab = CreateTab("Utility")
@@ -2191,26 +2189,6 @@ end)
 task.spawn(function()
 	local AcDisabler = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisabler.Value, function(CallBack)
 		Settings.AcDisabler.Value = CallBack
-		
-		if CallBack == true then
-			task.spawn(function()
-				repeat
-					task.wait()
-					
-					local Args = {
-						[1] = "elk_summon"
-					}
-					
-					AnticheatDisabled = true
-
-					ElkSummonRemote:FireServer(unpack(Args))
-				until Settings.AcDisabler.Value == false
-			end)
-		end
-		
-		if CallBack == false then
-			AnticheatDisabled = false
-		end
 	end)
 end)
 
