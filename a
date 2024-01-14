@@ -2030,13 +2030,14 @@ end)
 
 task.spawn(function()
 	repeat
-		task.wait()
+		task.wait(0.1)
 		
 		if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
-			local ElkPrimaryPart = LocalPlayer.Character:FindFirstChild("elk")
+			local Elk = LocalPlayer.Character:FindFirstChild("elk")
 			
-			if ElkPrimaryPart then
-				ElkPrimaryPart.PrimaryPart:Destroy()
+			if Elk then
+				Elk:FindFirstChild("body_mesh"):Destroy()
+				Elk.PrimaryPart:Destroy()
 			end
 			
 			task.spawn(function()
@@ -2050,7 +2051,7 @@ task.spawn(function()
 			end)			
 		end
 
-		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) then
+		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
 			AnticheatDisabled = false
 		end
 		
