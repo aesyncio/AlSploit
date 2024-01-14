@@ -2029,12 +2029,15 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local HipHeight = 1.99999
+	
 	repeat
 		task.wait(0.1)
 		
 		if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
 			local Elk = LocalPlayer.Character:FindFirstChild("elk")
 			
+			LocalPlayer.Character.Humanoid.HipHeight = HipHeight
 			AnticheatDisabled = true
 			
 			if Elk and Elk:FindFirstChild("body_mesh") then
