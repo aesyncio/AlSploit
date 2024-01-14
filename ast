@@ -2035,7 +2035,9 @@ task.spawn(function()
 		if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
 			local Elk = LocalPlayer.Character:FindFirstChild("elk")
 			
-			if Elk then
+			AnticheatDisabled = true
+			
+			if Elk and Elk:FindFirstChild("body_mesh") then
 				Elk:FindFirstChild("body_mesh"):Destroy()
 				Elk.PrimaryPart:Destroy()
 			end
@@ -2046,8 +2048,6 @@ task.spawn(function()
 				}
 
 				ElkSummonRemote:FireServer(unpack(Args))
-
-				AnticheatDisabled = true
 			end)
 		end
 
