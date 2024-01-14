@@ -2195,7 +2195,7 @@ task.spawn(function()
 		if CallBack == true then
 			task.spawn(function()
 				repeat
-					task.wait(0.05)
+					task.wait()
 					
 					local Args = {
 						[1] = "elk_summon"
@@ -2204,7 +2204,7 @@ task.spawn(function()
 					AnticheatDisabled = true
 
 					ElkSummonRemote:FireServer(unpack(Args))
-				until CallBack == false
+				until Settings.AcDisabler.Value == false
 			end)
 		end
 		
