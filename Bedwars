@@ -677,7 +677,6 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
-local CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 local CollectionServiceBlocks = CollectionService:GetTagged("block")
 local CollectionServiceChest = CollectionService:GetTagged("chest")
 local CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
@@ -725,24 +724,6 @@ local ItemTable = AlSploitApi.ItemTable
 local ZephyrController = AlSploitApi.ZephyrController
 local SprintController = AlSploitApi.SprintController
 local FovController = AlSploitApi.FovController
-
-function FindNearestDiamondGuardian()
-	local NearestDiamondGuardianDistance = math.huge
-	local NearestDiamondGuardian
-
-	for i, v in next, CollectionServiceDiamondGuardian do		
-		if v.PrimaryPart then
-			local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-
-			if Distance < NearestDiamondGuardianDistance then
-				NearestDiamondGuardianDistance = Distance
-				NearestDiamondGuardian = v
-			end
-		end
-	end
-
-	return NearestDiamondGuardian, NearestDiamondGuardianDistance
-end
 
 function CollectEnderChestItems()
 	local EnderChest = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name .. "_personal")
@@ -1381,9 +1362,9 @@ end
 task.spawn(function()
 	local function SwordHit(Entity, Weapon)
 		local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
-		local EntityHumanoidRootPart = Entity.HumanoidRootPart
+		local EntityPrimaryPart = Entity.PrimaryPart
 		
-		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 		
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
@@ -1406,7 +1387,7 @@ task.spawn(function()
 		end)
 
 		task.spawn(function()
-			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityHumanoidRootPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityHumanoidRootPart.Position).Magnitude - 14)) or Vector3.zero)
+			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 			
 			KillauraRemote:FireServer({
 				weapon = Weapon.tool,
@@ -1415,9 +1396,9 @@ task.spawn(function()
 				validate = {
 					raycast = {
 						cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-						cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityHumanoidRootPart.Position).lookVector)
+						cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
 					},
-					targetPosition = HashFunction(EntityHumanoidRootPart.Position),
+					targetPosition = HashFunction(EntityPrimaryPart.Position),
 					selfPosition = HashFunction(SelfPosition)
 				}
 			})
@@ -2868,7 +2849,6 @@ task.spawn(function()
 		end)		
 
 		task.spawn(function()
-			CollectionServiceDiamondGuardian = CollectionService:GetTagged("DiamondGuardian")
 			CollectionServiceBlocks = CollectionService:GetTagged("block")
 			CollectionServiceChest = CollectionService:GetTagged("chest")
 			CollectionServiceNps = CollectionService:GetTagged("BedwarsItemShop")
