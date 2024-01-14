@@ -2048,13 +2048,13 @@ task.spawn(function()
 				ElkSummonRemote:FireServer(unpack(Args))
 
 				AnticheatDisabled = true
-			end)			
+			end)
 		end
 
 		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
 			AnticheatDisabled = false
 		end
-		
+	
 	until not game	
 end)
 
@@ -2853,7 +2853,7 @@ task.spawn(function()
 
 	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
 	
-	setfpscap(240)
+	setfpscap(360)
 end)
 
 task.spawn(function()
