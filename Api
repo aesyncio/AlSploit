@@ -7,16 +7,6 @@ local LocalPlayer = game.Players.LocalPlayer
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
-function GetRemote(Remote)
-	for i, v in next, (Remote) do
-		if v == "Client" then
-			return Remote[i + 1]
-		end
-	end
-
-	return ""
-end
-
 AlSploit.HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 AlSploit.SetObservedChestRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged:FindFirstChild("Inventory/SetObservedChest")
 AlSploit.ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
@@ -28,7 +18,7 @@ AlSploit.SendMessageRemote = ReplicatedStorage.DefaultChatSystemChatEvents:WaitF
 AlSploit.ProjectileRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ProjectileFire")
 AlSploit.ElkSummonRemote = game:GetService("ReplicatedStorage"):WaitForChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"):WaitForChild("useAbility")
 AlSploit.PlayAgainRemote = ReplicatedStorage:FindFirstChild("events-@easy-games/lobby:shared/event/lobby-events@getEvents.Events")
-AlSploit.EquipItemRemote = GetRemote(debug.getconstants(debug.getproto(require(ReplicatedStorage.TS.entity.entities["inventory-entity"]).InventoryEntity.equipItem, 3)))
+AlSploit.EquipItemRemote =  game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.SetInvItem
 AlSploit.GroundHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("GroundHit")
 AlSploit.DamageIndicator = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator
 AlSploit.SwordController = KnitClient.Controllers.SwordController
@@ -44,8 +34,7 @@ function GetMatchState()
 end
 
 if GetMatchState() ~= 0 then
-	AlSploit.TreeOrbRemote = Client:Get(GetRemote(debug.getconstants(debug.getproto(debug.getproto(KnitClient.Controllers.BigmanController.KnitStart, 1), 2))))
-	AlSploit.MinerRemote = Client:Get(GetRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.MinerController.onKitEnabled, 1))))
+	AlSploit.MinerRemote = game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DestroyPetrifiedPlayer
 end
 
 AlSploit.KnockBackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
