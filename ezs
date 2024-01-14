@@ -2033,10 +2033,10 @@ task.spawn(function()
 		task.wait()
 		
 		if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
-			local ElkPrimaryPart = LocalPlayer.Character:FindFirstChild("elk").PrimaryPart
+			local ElkPrimaryPart = LocalPlayer.Character:FindFirstChild("elk")
 			
 			if ElkPrimaryPart then
-				ElkPrimaryPart:Destroy()
+				ElkPrimaryPart.PrimaryPart:Destroy()
 			end
 			
 			task.spawn(function()
