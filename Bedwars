@@ -1099,7 +1099,7 @@ function GetQueueType()
 end
 
 function KillHumanoid(Time)
-	task.wait(Time)
+	local Time = Time or 0
 
 	if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Bed") then
 		if LocalPlayer.leaderstats.Bed.Value == "✅" then
@@ -1284,7 +1284,7 @@ function GetSpeed()
 		end
 		
 		if AnticheatDisabled == true then
-			Speed = Speed + 13
+			Speed = Speed + 12
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
@@ -2783,7 +2783,7 @@ task.spawn(function()
 
 		if CallBack == false then
 			if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape") then
-				LocalPlayer.Character:FindFirstChild("Cape"):Destroy()
+				LocalPlayer.Character.Cape:Destroy()
 			end
 		end
 
@@ -2803,14 +2803,14 @@ task.spawn(function()
 
 				if IsAlive(LocalPlayer) and IsMoving() and LocalPlayer.Character:FindFirstChild("Cape") and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Motor") then
 					local TweenInformation = TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
-					local CapeTween = TweenService:Create(LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Motor"), TweenInformation, {CurrentAngle = -0.6})
+					local CapeTween = TweenService:Create(LocalPlayer.Character.Cape.Motor, TweenInformation, {CurrentAngle = -0.6})
 
 					CapeTween:Play()
 				end
 
 				if IsAlive(LocalPlayer) and not IsMoving() and LocalPlayer.Character:FindFirstChild("Cape") and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Motor") then
 					local TweenInformation = TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
-					local CapeTween = TweenService:Create(LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Motor"), TweenInformation, {CurrentAngle = -0.2})
+					local CapeTween = TweenService:Create(LocalPlayer.Character.Cape.Motor, TweenInformation, {CurrentAngle = -0.2})
 
 					CapeTween:Play()
 				end
