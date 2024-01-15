@@ -221,14 +221,13 @@ task.spawn(function()
 				KillAuraAnimationCooldown = false
 
 				for i, v in next, Animations.KillAura do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-					
-					AnimationTween:Play()
+					TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+
 					task.wait(v.Time - 0.01)
 				end
+
+				KillAuraAnimationCooldown = true
 			end
-			
-			KillAuraAnimationCooldown = true
 		end)
 
 		task.spawn(function()
