@@ -283,3 +283,15 @@ task.spawn(function()
 		end
 	until not game
 end)
+
+task.spawn(function()
+	if Settings.AimAssist.Value == true then
+		local NearestEntity = FindNearestEntity(18)
+
+		if IsAlive(LocalPlayer) and Settings.AimAssist.Value == true then
+			local LookVector = (NearestEntity.Character.HumanoidRootPart.Position - Camera.CFrame.Position).unit
+
+			Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
+		end
+	end
+end)
