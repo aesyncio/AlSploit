@@ -2,6 +2,7 @@ local LocalPlayer = game.Players.LocalPlayer
 
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 local LightingService = game:GetService("Lighting")
 local PlayerService = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -148,12 +149,14 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local function CallBackToggle(Value)
 		if Value == true then
 			CallBack(true)
+			
 			CallBackValue = true
 			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 		end
 		
 		if Value == false then
 			CallBack(false)
+			
 			CallBackValue = false
 			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 		end
@@ -203,7 +206,56 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end)
 	end)
 	
-	return Toggle, DropDownButton, LayoutOrder
+	return Toggle, DropDownButton, LayoutOrder, UIGradient
+end
+
+local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
+	local KeyBind = Instance.new("TextButton")
+	local UIGradient = Instance.new("UIGradient")
+
+	local function CallBackToggle(Value)
+		CallBack(Value)
+	end
+
+	KeyBind.Name = "KeyBind"
+	KeyBind.Parent = Parent
+	KeyBind.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	KeyBind.BackgroundTransparency = 0.150
+	KeyBind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	KeyBind.BorderSizePixel = 0
+	KeyBind.Position = UDim2.new(0, 0, 0.0765417367, 0)
+	KeyBind.Size = UDim2.new(0.99999994, 0, 0.0353890099, 0)
+	KeyBind.AutoButtonColor = false
+	KeyBind.Font = Enum.Font.GothamBold
+	KeyBind.Text = DefaultValue
+	KeyBind.TextColor3 = Color3.fromRGB(255, 255, 255)
+	KeyBind.TextSize = 14.000
+	KeyBind.LayoutOrder = LayoutOrder
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Rotation = 90
+	UIGradient.Parent = KeyBind
+	
+	task.spawn(function()
+		local Value = false
+		
+		KeyBind.Activated:Connect(function()
+			Value = true
+			KeyBind.Text = "..."
+		end)
+		
+		UserInputService.InputBegan:Connect(function(Input)
+			if Value == true and not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode then
+					KeyBind.Text = tostring(Input.KeyCode)
+					CallBackToggle(Input.KeyCode)
+					Value = false
+				end
+			end
+		end)
+	end)
+	
+	return KeyBind
 end
 
 local Camera = WorkSpace.CurrentCamera
@@ -252,38 +304,38 @@ local Animations = {
 }
 
 local Settings = {
-	NoPlacementCps = {Value = true},
-	ChestStealer = {Value = true},
-	InfiniteJump = {Value = true},
+	NoPlacementCps = {Value = true, KeyBind = "..."},
+	ChestStealer = {Value = true, KeyBind = "..."},
+	InfiniteJump = {Value = true, KeyBind = "..."},
 	DamageBoost = {Value = true},
-	ChatSpammer = {Value = false, Speed = 50},
-	AcDisabler = {Value = true},
-	FpsBooster = {Value = false},
-	Indicators = {Value = true},
-	AutoToxic = {Value = false},
-	GalaxySky = {Value = true},
-	PlayAgain = {Value = true},
-	Invisible = {Value = false},
-	AimAssist = {Value = true},
-	Scaffold = {Value = false},
-	KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false},
-	Velocity = {Value = true},	
-	AntiVoid = {Value = true, Transparency = 0.65},
-	AutoBank = {Value = true},
-	HighJump = {Value = false},
-	PlayerTp = {Value = true},
-	AutoKit = {Value = true},
-	AutoBuy = {Value = true},
-	Sprint = {Value = true},
-	NoFall = {Value = true},
-	Aimbot = {Value = true, ToolCheck = false},
-	Speed = {Value = true, Speed = 23},
-	Reach = {Value = true},
-	Nuker = {Value = true, Range = 30, BreakOres = true},
-	BedTp = {Value = true},
-	Cape = {Value = true},
-	Esp = {Value = true},
-	Fov = {Value = false, Fov = 100}
+	ChatSpammer = {Value = false, Speed = 50, KeyBind = "..."},
+	AcDisabler = {Value = true, KeyBind = "..."},
+	FpsBooster = {Value = false, KeyBind = "..."},
+	Indicators = {Value = true, KeyBind = "..."},
+	AutoToxic = {Value = false, KeyBind = "..."},
+	GalaxySky = {Value = true, KeyBind = "..."},
+	PlayAgain = {Value = true, KeyBind = "..."},
+	Invisible = {Value = false, KeyBind = "..."},
+	AimAssist = {Value = true, KeyBind = "..."},
+	Scaffold = {Value = false, KeyBind = "..."},
+	KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, KeyBind = "..."},
+	Velocity = {Value = true, KeyBind = "..."},	
+	AntiVoid = {Value = true, Transparency = 0.65, KeyBind = "..."},
+	AutoBank = {Value = true, KeyBind = "..."},
+	HighJump = {Value = false, KeyBind = "..."},
+	PlayerTp = {Value = true, KeyBind = "..."},
+	AutoKit = {Value = true, KeyBind = "..."},
+	AutoBuy = {Value = true, KeyBind = "..."},
+	Sprint = {Value = true, KeyBind = "..."},
+	NoFall = {Value = true, KeyBind = "..."},
+	Aimbot = {Value = true, KeyBind = "...", ToolCheck = false},
+	Speed = {Value = true, Speed = 23, KeyBind = "..."},
+	Reach = {Value = true, KeyBind = "..."},
+	Nuker = {Value = true, Range = 30, BreakOres = true, KeyBind = "..."},
+	BedTp = {Value = true, KeyBind = "..."},
+	Cape = {Value = true, KeyBind = "..."},
+	Esp = {Value = true, KeyBind = "..."},
+	Fov = {Value = false, Fov = 100, KeyBind = "..."}
 }
 
 local function FindNearestEntity(MaxDistance)
@@ -501,8 +553,43 @@ local UtilityTab = CreateTab("Utility")
 local BlatantTab = CreateTab("Blatant")
 local WorldTab = CreateTab("World")
 
-local KillAura = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
-	Settings.KillAura.Value = CallBack
+task.spawn(function()
+	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
+		Settings.KillAura.Value = CallBack
+	end)
 	
-	print(CallBack)
+	local KillAuraKeyBindValue = false
+	local KillAuraKeyBind
+	
+	task.spawn(function()
+		DropDownButton.Activated:Connect(function()
+			KillAuraKeyBindValue = not KillAuraKeyBindValue
+		
+			if KillAuraKeyBindValue == true then
+				KillAuraKeyBind = CreateKeyBind(CombatTab, Settings.KillAura.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.KillAura.KeyBind = CallBack
+					
+					UserInputService.InputBegan:Connect(function(Input)
+						if not UserInputService:GetFocusedTextBox() then
+							if Input.KeyCode == CallBack then
+								Settings.KillAura.Value = not Settings.KillAura.Value
+								
+								if Settings.KillAura.Value == true then
+									UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+								end
+								
+								if Settings.KillAura.Value == false then
+									UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+								end
+							end
+						end
+					end)
+				end)
+			end
+			
+			if KillAuraKeyBindValue == false then
+				KillAuraKeyBind:Destroy()
+			end
+		end)	
+	end)
 end)
