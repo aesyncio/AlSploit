@@ -34,7 +34,7 @@ UIListLayoutContainerFrame.Padding = UDim.new(0, 50)
 UIListLayoutContainerFrame.FillDirection = Enum.FillDirection.Horizontal
 UIListLayoutContainerFrame.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local UIAspectRatioConstraintOpen = Instance.new("UIAspectRatioConstraint")
 local UIStroke = Instance.new("UIStroke")
 local UICorner = Instance.new("UICorner")
 local Open = Instance.new("ImageButton")
@@ -56,8 +56,8 @@ Open.Image = "rbxassetid://15428841655"
 UICorner.CornerRadius = UDim.new(0, 6)
 UICorner.Parent = Open
 
-UIAspectRatioConstraint.Parent = Open
-UIAspectRatioConstraint.AspectRatio = 1
+UIAspectRatioConstrainOpen.Parent = Open
+UIAspectRatioConstraintOpen.AspectRatio = 1
 
 local Blur = Instance.new("BlurEffect")
 
