@@ -137,7 +137,7 @@ local function CreateTab(Name)
 	Title.Font = Enum.Font.GothamBold
 	Title.Text = Name
 	Title.TextColor3 = Color3.new(255, 255, 255)
-	Title.TextSize = 22.000
+	Title.TextSize = 20.000
 	Title.TextWrapped = true
 	
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
@@ -209,13 +209,13 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	DropDownButton.BackgroundTransparency = 1.000
 	DropDownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	DropDownButton.BorderSizePixel = 0
-	DropDownButton.Position = UDim2.new(0.75405407, 0, 0.38384679, 0)
+	DropDownButton.Position = UDim2.new(0.8, 0, 0.175, 0)
 	DropDownButton.Rotation = 90.000
 	DropDownButton.Size = UDim2.new(0.213373959, 0, 0.642935038, 0)
 	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
 
 	UIAspectRatioConstraint_2.Parent = DropDownButton
-	UIAspectRatioConstraint_2.AspectRatio = 0.859
+	UIAspectRatioConstraint_2.AspectRatio = 0.935
 	
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
