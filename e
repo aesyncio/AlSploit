@@ -247,7 +247,7 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 		UserInputService.InputBegan:Connect(function(Input)
 			if Value == true and not UserInputService:GetFocusedTextBox() then
 				if Input.KeyCode then
-					KeyBind.Text = tostring(Input.KeyCode)
+					KeyBind.Text = Input.KeyCode.Name
 					CallBackToggle(Input.KeyCode)
 					Value = false
 				end
@@ -571,7 +571,7 @@ task.spawn(function()
 					
 					UserInputService.InputBegan:Connect(function(Input)
 						if not UserInputService:GetFocusedTextBox() then
-							if Input.KeyCode == CallBack then
+							if Input.KeyCode == Settings.KillAura.KeyBind  then
 								Settings.KillAura.Value = not Settings.KillAura.Value
 								
 								if Settings.KillAura.Value == true then
