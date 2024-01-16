@@ -103,11 +103,11 @@ function CreateTab(Name)
 	CornerFix.BackgroundColor3 = Color3.new(0, 0, 0)
 	CornerFix.BorderColor3 = Color3.new(0, 0, 0)
 	CornerFix.BorderSizePixel = 0
-	CornerFix.Position = UDim2.new(0, 0, 0.737519681, 0)
-	CornerFix.Size = UDim2.new(1, 0, 0.257142872, 0)
+	CornerFix.Position = UDim2.new(0, 0, 0.371, 0)
+	CornerFix.Size = UDim2.new(1, 0, 0.629, 0)
 	
 	UIAspectRatioConstraint_2.Parent = CornerFix
-	UIAspectRatioConstraint_2.AspectRatio = 19.212
+	UIAspectRatioConstraint_2.AspectRatio = 7.848
 
 	ModulesContainer.Name = "ModulesContainer"
 	ModulesContainer.Parent = Tab
@@ -435,3 +435,6 @@ task.spawn(function()
 end)
 
 local CombatTab = CreateTab("Combat")
+local UtilityTab = CreateTab("Utility")
+local BlatantTab = CreateTab("Blatant")
+local WorldTab = CreateTab("World")
