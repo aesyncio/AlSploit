@@ -181,7 +181,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.BackgroundTransparency = 0.150
 	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Toggle.BorderSizePixel = 0
-	Toggle.Size = UDim2.new(0.99999994, 0, 0.0469164699, 0)
+	Toggle.Size = UDim2.new(1, 0, 0.0469164699, 0)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
@@ -201,7 +201,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	UIGradient.Parent = Toggle
 
 	UIAspectRatioConstraint.Parent = Toggle
-	UIAspectRatioConstraint.AspectRatio = 4.914
+	UIAspectRatioConstraint.AspectRatio = 4.905
 
 	DropDownButton.Name = "DropDownButton"
 	DropDownButton.Parent = Toggle
