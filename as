@@ -87,7 +87,7 @@ local function CreateTab(Name)
 	Tab.BorderColor3 = Color3.new(0, 0, 0)
 	Tab.BorderSizePixel = 0
 	Tab.Position = UDim2.new(0.434123844, 0, 0, 0)
-	Tab.Size = UDim2.new(0.131752312, 0, 0.049, 0)
+	Tab.Size = UDim2.new(0.142, 0, 0.049, 0)
 	
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Tab
@@ -128,7 +128,7 @@ local function CreateTab(Name)
 	Title.TextSize = 17
 	Title.TextWrapped = true
 	
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.843137, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
 	
@@ -149,7 +149,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		if Value == true then
 			CallBack(true)
 			CallBackValue = true
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 		end
 		
 		if Value == false then
@@ -163,15 +163,15 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
-	Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle.BackgroundColor3 = Color3.new(0, 0, 0)
 	Toggle.BackgroundTransparency = 0.150
-	Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Toggle.BorderColor3 = Color3.new(0, 0, 0)
 	Toggle.BorderSizePixel = 0
 	Toggle.Size = UDim2.new(1, 0, 0.0469164699, 0)
 	Toggle.AutoButtonColor = false
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
-	Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Toggle.TextColor3 = Color3.new(255, 255, 255)
 	Toggle.TextSize = 12.000
 	Toggle.TextXAlignment = Enum.TextXAlignment.Left
 	Toggle.LayoutOrder = DefaultLayoutOrder + 5
@@ -182,15 +182,15 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 15)
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Toggle
 
 	DropDownButton.Name = "DropDownButton"
 	DropDownButton.Parent = Toggle
-	DropDownButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	DropDownButton.BackgroundColor3 = Color3.new(255, 255, 255)
 	DropDownButton.BackgroundTransparency = 1.000
-	DropDownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	DropDownButton.BorderColor3 = Color3.new(0, 0, 0)
 	DropDownButton.BorderSizePixel = 0
 	DropDownButton.Position = UDim2.new(0.835, 0, 0.163, 0)
 	DropDownButton.Rotation = 90.000
@@ -206,7 +206,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	return Toggle, DropDownButton, LayoutOrder
 end
 
-local Camera = game:GetService("Workspace").CurrentCamera
+local Camera = WorkSpace.CurrentCamera
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
