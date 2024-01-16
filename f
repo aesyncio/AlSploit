@@ -144,7 +144,7 @@ local function CreateTab(Name)
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
 	
-	return ContainerFrame
+	return ModulesContainer
 end
 
 local function CreateToggle(Parent, Name, DefaultValue, CallBack)
