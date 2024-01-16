@@ -125,7 +125,7 @@ local function CreateTab(Name)
 	Title.Font = Enum.Font.GothamBold
 	Title.Text = Name
 	Title.TextColor3 = Color3.new(255, 255, 255)
-	Title.TextSize = 15.000
+	Title.TextSize = 17
 	Title.TextWrapped = true
 	
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
@@ -172,7 +172,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	Toggle.Font = Enum.Font.GothamBold
 	Toggle.Text = Name
 	Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle.TextSize = 11.000
+	Toggle.TextSize = 12.000
 	Toggle.TextXAlignment = Enum.TextXAlignment.Left
 	Toggle.LayoutOrder = DefaultLayoutOrder + 5
 
@@ -199,7 +199,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			CallBack(not CallBackValue)
+			CallBackToggle(not CallBackValue)
 		end)
 	end)
 	
