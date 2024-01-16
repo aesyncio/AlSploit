@@ -42,7 +42,7 @@ local Open = Instance.new("ImageButton")
 UIStroke.Parent = Open
 UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 UIStroke.Thickness = 2
-UIStroke.Color = Color3.new(170, 85, 255)
+UIStroke.Color = Color3.new(0.635294, 0.313725, 1)
 
 Open.Name = "Open"
 Open.Parent = AlSploit
@@ -139,7 +139,7 @@ function CreateTab(Name)
 	Title.TextSize = 22.000
 	Title.TextWrapped = true
 	
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.new(215, 175, 255))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
 end
