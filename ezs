@@ -87,7 +87,7 @@ local function CreateTab(Name)
 	Tab.BorderColor3 = Color3.new(0, 0, 0)
 	Tab.BorderSizePixel = 0
 	Tab.Position = UDim2.new(0.434123844, 0, 0, 0)
-	Tab.Size = UDim2.new(0.131752312, 0, 0.0506670922, 0)
+	Tab.Size = UDim2.new(0.131752312, 0, 0.049, 0)
 	
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Tab
@@ -192,9 +192,9 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	DropDownButton.BackgroundTransparency = 1.000
 	DropDownButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	DropDownButton.BorderSizePixel = 0
-	DropDownButton.Position = UDim2.new(0.8, 0, 0.175, 0)
+	DropDownButton.Position = UDim2.new(0.835, 0, 0.163, 0)
 	DropDownButton.Rotation = 90.000
-	DropDownButton.Size = UDim2.new(0.213373959, 0, 0.642935038, 0)
+	DropDownButton.Size = UDim2.new(0.132, 0, 0.668, 0)
 	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
 
 	task.spawn(function()
