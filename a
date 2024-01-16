@@ -156,7 +156,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	
 	local LayoutOrder = 0
 	
-	function CallBack(Value)
+	local function CallBackToggle(Value)
 		if Value == true then
 			CallBack(true)
 			CallBackValue = true
@@ -170,7 +170,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end
 	end
 	
-	CallBack(not CallBackValue)
+	CallBackToggle(not CallBackValue)
 
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
