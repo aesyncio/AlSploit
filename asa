@@ -123,7 +123,8 @@ local function CreateTab(Name)
 	
 	UIListLayout.Parent = ModulesContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.FillDirection = Enum.FillDirection.Vertical
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder	
 
 	Title.Name = "Title"
 	Title.Parent = Tab
