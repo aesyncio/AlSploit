@@ -56,7 +56,7 @@ Open.Image = "rbxassetid://15428841655"
 UICorner.CornerRadius = UDim.new(0, 6)
 UICorner.Parent = Open
 
-UIAspectRatioConstrainOpen.Parent = Open
+UIAspectRatioConstraintOpen.Parent = Open
 UIAspectRatioConstraintOpen.AspectRatio = 1
 
 local Blur = Instance.new("BlurEffect")
