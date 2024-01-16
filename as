@@ -142,6 +142,8 @@ local function CreateTab(Name)
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
+	
+	return ContainerFrame
 end
 
 local function CreateToggle(Parent, Name, DefaultValue, CallBack)
@@ -506,7 +508,7 @@ task.spawn(function()
 	if Settings.AimAssist.Value == true then
 		local NearestEntity = FindNearestEntity(18)
 
-		if IsAlive(LocalPlayer) and Settings.AimAssist.Value == true then
+		if IsAlive(LocalPlayer) and Settings.AimAssist.Value == true and NearestEntity then
 			local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
 
 			Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
