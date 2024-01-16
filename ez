@@ -248,7 +248,7 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 			if Value == true and not UserInputService:GetFocusedTextBox() then
 				if Input.KeyCode then
 					KeyBind.Text = Input.KeyCode.Name
-					CallBackToggle(Input.KeyCode)
+					CallBackToggle(Input.KeyCode.Name)
 					Value = false
 				end
 			end
@@ -568,22 +568,22 @@ task.spawn(function()
 			if KillAuraKeyBindValue == true then
 				KillAuraKeyBind = CreateKeyBind(CombatTab, Settings.KillAura.KeyBind, LayoutOrder + 1, function(CallBack)
 					Settings.KillAura.KeyBind = CallBack
-					
-					UserInputService.InputBegan:Connect(function(Input)
-						if not UserInputService:GetFocusedTextBox() then
-							if Input.KeyCode == Settings.KillAura.KeyBind  then
-								Settings.KillAura.Value = not Settings.KillAura.Value
-								
-								if Settings.KillAura.Value == true then
-									UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-								end
-								
-								if Settings.KillAura.Value == false then
-									UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-								end
+				end)
+				
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.KillAura.KeyBind then
+							Settings.KillAura.Value = not Settings.KillAura.Value
+
+							if Settings.KillAura.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.KillAura.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
-					end)
+					end
 				end)
 			end
 			
