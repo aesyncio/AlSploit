@@ -229,7 +229,7 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 	KeyBind.Font = Enum.Font.GothamBold
 	KeyBind.Text = "KeyBind: " .. DefaultValue
 	KeyBind.TextColor3 = Color3.new(255, 255, 255)
-	KeyBind.TextSize = 14.000
+	KeyBind.TextSize = 11.000
 	KeyBind.LayoutOrder = LayoutOrder
 
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
@@ -322,6 +322,160 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	end)
 	
 	return MiniToggle
+end
+
+local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrder, CallBack)
+	local Slider = Instance.new("Frame")
+	local SliderFrame = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Bar = Instance.new("TextButton")
+	local UICorner_2 = Instance.new("UICorner")
+	local UIGradient = Instance.new("UIGradient")
+	local Title = Instance.new("TextLabel")
+	local UIGradient_2 = Instance.new("UIGradient")
+	local Fill = Instance.new("Frame")
+	local UICorner_3 = Instance.new("UICorner")
+	local UIGradient_3 = Instance.new("UIGradient")
+
+	Slider.Name = "Slider"
+	Slider.Parent = game.StarterGui.AlSploit.ContainerFrame.Tab.ModulesContainer
+	Slider.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Slider.BackgroundTransparency = 0.150
+	Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Slider.BorderSizePixel = 0
+	Slider.Position = UDim2.new(0, 0, 0.116778016, 0)
+	Slider.Size = UDim2.new(0.99999994, 0, 0.0687298849, 0)
+
+	SliderFrame.Name = "SliderFrame"
+	SliderFrame.Parent = Slider
+	SliderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderFrame.BackgroundTransparency = 1.000
+	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderFrame.BorderSizePixel = 0
+	SliderFrame.Position = UDim2.new(0.150000006, 0, 0.581818163, 0)
+	SliderFrame.Size = UDim2.new(0.699999988, 0, 0.145454541, 0)
+
+	UICorner.CornerRadius = UDim.new(0, 12)
+	UICorner.Parent = SliderFrame
+
+	Bar.Name = "Bar"
+	Bar.Parent = SliderFrame
+	Bar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Bar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Bar.BorderSizePixel = 0
+	Bar.Position = UDim2.new(0.142857149, 0, -1.36341882, 0)
+	Bar.Size = UDim2.new(0.0571428575, 0, 3.5, 0)
+	Bar.ZIndex = 2
+	Bar.AutoButtonColor = false
+	Bar.Font = Enum.Font.SourceSans
+	Bar.Text = ""
+	Bar.TextColor3 = Color3.fromRGB(0, 0, 0)
+	Bar.TextSize = 14.000
+
+	UICorner_2.CornerRadius = UDim.new(0, 12)
+	UICorner_2.Parent = Bar
+
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(195, 135, 255))}
+	UIGradient.Parent = Bar
+
+	Title.Name = "Title"
+	Title.Parent = SliderFrame
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Title.BorderSizePixel = 0
+	Title.Position = UDim2.new(0.321428567, 0, -3.7615819, 0)
+	Title.Size = UDim2.new(0.357142866, 0, 2.5, 0)
+	Title.Font = Enum.Font.GothamBold
+	Title.Text = "Range: 18"
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextSize = 14.000
+
+	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+	UIGradient_2.Rotation = 90
+	UIGradient_2.Parent = Title
+
+	Fill.Name = "Fill"
+	Fill.Parent = SliderFrame
+	Fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Fill.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Fill.BorderSizePixel = 0
+	Fill.Size = UDim2.new(1, 0, 1, 0)
+
+	UICorner_3.CornerRadius = UDim.new(0, 12)
+	UICorner_3.Parent = Fill
+
+	UIGradient_3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(195, 135, 255))}
+	UIGradient_3.Parent = Fill
+	
+	local Debounce = true
+
+	local function Snap(Number, Factor)
+		if Factor == 0 then
+			return Number
+		else
+			return math.floor(Number / Factor + 0.5) * Factor
+		end
+	end
+
+	task.spawn(function()
+		Bar.MouseButton1Down:Connect(function()
+			Debounce = false
+		end)
+
+		UserInputService.InputEnded:connect(function(Input)
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+				Debounce = true
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local BarPosition = Bar.Position
+
+		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+		local PositionTween = TweenService:Create(Bar, TweenInformation, {Position = UDim2.new(DefaultValue / MaximumValue - 0.05, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
+
+		PositionTween:Play()
+
+		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+		local SizeTween = TweenService:Create(Fill, TweenInformation, {Size = UDim2.new(DefaultValue / MaximumValue, 0, 1, 0)})
+
+		SizeTween:Play()
+	end)
+
+	task.spawn(function()
+		repeat
+			task.wait()
+
+			if Debounce == false then
+				local MousePosition = UserInputService:GetMouseLocation().X
+				local BarPosition = Bar.Position
+				local FrameSize = Slider.AbsoluteSize.X
+				local FramePosition = Slider.AbsolutePosition.X
+
+				local Position = Snap((MousePosition - FramePosition) / FrameSize, 0.01)
+
+				local Percentage = math.clamp(Position, 0, 1)
+
+				local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+				local PositionTween = TweenService:Create(Bar, TweenInformation, {Position = UDim2.new(Percentage, 0, BarPosition.Y.Scale, BarPosition.Y.Offset)})
+
+				PositionTween:Play()
+
+				local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+				local SizeTween = TweenService:Create(Fill, TweenInformation, {Size = UDim2.new(Percentage, 0, 1, 0)})
+
+				SizeTween:Play()
+
+				Title.Text = Name .. ": " .. math.round(Percentage * MaximumValue)
+
+				CallBack(math.round(Percentage * MaximumValue))
+			end
+		until not Slider
+	end)
+
+	return Slider
 end
 
 local Camera = WorkSpace.CurrentCamera
@@ -669,6 +823,25 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateMiniToggle(CombatTab, "CustomAnimation", Settings.KillAura.CustomAnimation, LayoutOrder + 2, function(CallBack)
 					Settings.KillAura.CustomAnimation = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, LayoutOrder + 3, function(CallBack)
+					Settings.KillAura.Range = CallBack
 				end)
 			end
 
