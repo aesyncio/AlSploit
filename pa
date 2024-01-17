@@ -500,10 +500,10 @@ local function CreateNotification(Duration, Message)
 	local UIListLayout = Instance.new("UIListLayout")
 	local Notification = Instance.new("Frame")
 	local UIStroke = Instance.new("UIStroke")
+	local UIGradient = Instance.new("UIGradient")
 	local UICorner = Instance.new("UICorner")
 	local Text = Instance.new("TextLabel")
 	
-
 	UIListLayout.Parent = NotificationContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -522,7 +522,10 @@ local function CreateNotification(Duration, Message)
 	UIStroke.Parent = Notification
 	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke.Thickness = 2
-	UIStroke.Color = Color3.new(0, 0, 0)
+	UIStroke.Color = Color3.new(0, 0, 0, 0)
+	
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+	UIGradient.Parent = UIStroke
 
 	UICorner.Parent = Notification
 	UICorner.CornerRadius = UDim.new(0, 6)
@@ -538,7 +541,7 @@ local function CreateNotification(Duration, Message)
 	Text.Font = Enum.Font.GothamBold
 	Text.Text = Message
 	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Text.TextSize = 12.000
+	Text.TextSize = 8.00
 	
 	task.spawn(function()
 		local NotificationSize = UDim2.new(0.999167681, 0, 0.103658535, 0)
