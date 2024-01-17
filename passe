@@ -38,9 +38,9 @@ UIListLayoutContainerFrame.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 NotificationContainer.Name = "NotificationContainer"
 NotificationContainer.Parent = AlSploit
-NotificationContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NotificationContainer.BackgroundColor3 = Color3.new(255, 255, 255)
 NotificationContainer.BackgroundTransparency = 1.000
-NotificationContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+NotificationContainer.BorderColor3 = Color3.new(0, 0, 0)
 NotificationContainer.BorderSizePixel = 0
 NotificationContainer.Position = UDim2.new(0.842737675, 0, 0, 0)
 NotificationContainer.Size = UDim2.new(0.157002911, 0, 0.980487823, 0)
@@ -512,9 +512,9 @@ local function CreateNotification(Duration, Message)
 
 	Notification.Name = "Notification"
 	Notification.Parent = NotificationContainer
-	Notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Notification.BackgroundColor3 = Color3.new(0, 0, 0)
 	Notification.BackgroundTransparency = 0.150
-	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Notification.BorderColor3 = Color3.new(0, 0, 0)
 	Notification.BorderSizePixel = 0
 	Notification.Position = UDim2.new(0.226286799, 0, 0, 0)
 	Notification.Size = UDim2.new(0, 0, 0, 0)
@@ -522,7 +522,7 @@ local function CreateNotification(Duration, Message)
 	UIStroke.Parent = Notification
 	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke.Thickness = 2
-	UIStroke.Color = Color3.new(0, 0, 0, 0)
+	UIStroke.Color = Color3.new(1, 1, 1)
 	
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Parent = UIStroke
@@ -532,15 +532,15 @@ local function CreateNotification(Duration, Message)
 
 	Text.Name = "Text"
 	Text.Parent = Notification
-	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundColor3 = Color3.new(255, 255, 255)
 	Text.BackgroundTransparency = 1.000
-	Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Text.BorderColor3 = Color3.new(0, 0, 0)
 	Text.BorderSizePixel = 0
 	Text.Position = UDim2.new(-0.00263573672, 0, 0, 0)
 	Text.Size = UDim2.new(0.999999881, 0, 1.0000006, 0)
 	Text.Font = Enum.Font.GothamBold
 	Text.Text = Message
-	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Text.TextColor3 = Color3.new(255, 255, 255)
 	Text.TextSize = 8.00
 	
 	task.spawn(function()
