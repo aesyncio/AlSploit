@@ -297,7 +297,7 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	CallBackToggle(not CallBackValue)
 
 	MiniToggle.Name = "MiniToggle"
-	MiniToggle.Parent = game.StarterGui.AlSploit.ContainerFrame.Tab.ModulesContainer
+	MiniToggle.Parent = Parent
 	MiniToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	MiniToggle.BackgroundTransparency = 0.150
 	MiniToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
