@@ -237,34 +237,32 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 	UIGradient.Parent = KeyBind
 	
 	task.spawn(function()
-		local InputFound = false
+		local InputValue = false
 		local Value = false
 		
 		KeyBind.Activated:Connect(function()
-			InputFound = false
-			Value = true
-			KeyBind.Text = "..."
+			if Value == false then
+				InputValue = true	
+				KeyBind.Text = "..."
+			end
 			
-			task.spawn(function()
-				task.wait(2)
-
-				if not InputFound then
-					KeyBind.Text = "KeyBind: " .. "..."
-					CallBackToggle("...")
-					Value = false
-				end
-			end)
+			if Value == true and InputValue == true then
+				KeyBind.Text = "KeyBind: " .. "..."
+				InputValue = false
+				CallBackToggle("...")
+			end
+			
+			Value = not Value
 		end)
 		
 		task.spawn(function()
 			UserInputService.InputBegan:Connect(function(Input)
-				if Value == true and not UserInputService:GetFocusedTextBox() then
+				if InputValue == true and not UserInputService:GetFocusedTextBox() then
 					if Input.KeyCode and Input.UserInputType == Enum.UserInputType.Keyboard then
 						KeyBind.Text = "KeyBind: " .. Input.KeyCode.Name
 						
 						CallBackToggle(Input.KeyCode.Name)
-						InputFound = true
-						Value = false
+						InputValue = false
 					end
 				end
 			end)
