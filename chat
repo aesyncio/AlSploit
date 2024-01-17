@@ -695,7 +695,7 @@ local function FindNearestEntity(MaxDistance)
 	
 	task.spawn(function()
 		for i, v in next, PlayerService:GetPlayers() do
-			if IsAlive(v) and v.Team ~= LocalPlayer.Team then
+			if IsAlive(v) and v ~= LocalPlayer and v.Team ~= LocalPlayer.Team then
 				local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 				if Distance < NearestEntityDistance and Distance <= Settings.KillAura.Range then
@@ -828,10 +828,138 @@ task.spawn(function()
 	end)
 end)
 
+task.spawn(function()
+	repeat
+		task.wait()
+
+		local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
+
+		if IsAlive(LocalPlayer) and NearestEntity then
+			local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
+
+			Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
+		end
+	until not game
+end)
+
 local CombatTab = CreateTab("Combat")
 local UtilityTab = CreateTab("Utility")
 local BlatantTab = CreateTab("Blatant")
 local WorldTab = CreateTab("World")
+
+task.spawn(function()
+	local NoKnockBack, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "NoKnockBack", Settings.NoKnockBack.Value, function(CallBack)
+		Settings.NoKnockBack.Value = CallBack
+
+		local OldKnockBackDirection = KnockBackTable.kbDirectionStrength
+		local OldKnockBackUp = KnockBackTable.kbUpwardStrength
+
+		if Settings.NoKnockBack.Value == true then
+			KnockBackTable.kbDirectionStrength = 0
+			KnockBackTable.kbUpwardStrength = 0	
+		end
+
+		if Settings.NoKnockBack.Value == false then
+			KnockBackTable.kbDirectionStrength = OldKnockBackDirection
+			KnockBackTable.kbUpwardStrength = OldKnockBackUp
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(CombatTab, Settings.NoKnockBack.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.NoKnockBack.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.NoKnockBack.KeyBind then
+							Settings.NoKnockBack.Value = not Settings.NoKnockBack.Value
+
+							if Settings.NoKnockBack.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.NoKnockBack.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AimAssist, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "AimAssist", Settings.AimAssist.Value, function(CallBack)
+		Settings.AimAssist.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(CombatTab, "Range", Settings.AimAssist.Range, 18, LayoutOrder + 1, function(CallBack)
+					Settings.AimAssist.Range = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(CombatTab, Settings.AimAssist.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AimAssist.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AimAssist.KeyBind then
+							Settings.AimAssist.Value = not Settings.AimAssist.Value
+
+							if Settings.AimAssist.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AimAssist.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
 
 task.spawn(function()
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
@@ -962,132 +1090,3 @@ task.spawn(function()
 		end)
 	end)
 end)
-
-task.spawn(function()
-	local NoKnockBack, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "NoKnockBack", Settings.NoKnockBack.Value, function(CallBack)
-		Settings.NoKnockBack.Value = CallBack
-
-		local OldKnockBackDirection = KnockBackTable.kbDirectionStrength
-		local OldKnockBackUp = KnockBackTable.kbUpwardStrength
-
-		if Settings.NoKnockBack.Value == true then
-			KnockBackTable.kbDirectionStrength = 0
-			KnockBackTable.kbUpwardStrength = 0	
-		end
-
-		if Settings.NoKnockBack.Value == false then
-			KnockBackTable.kbDirectionStrength = OldKnockBackDirection
-			KnockBackTable.kbUpwardStrength = OldKnockBackUp
-		end
-	end)
-	
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(CombatTab, Settings.NoKnockBack.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.NoKnockBack.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.NoKnockBack.KeyBind then
-							Settings.NoKnockBack.Value = not Settings.NoKnockBack.Value
-
-							if Settings.NoKnockBack.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.NoKnockBack.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local AimAssist, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "AimAssist", Settings.AimAssist.Value, function(CallBack)
-		Settings.AimAssist.Value = CallBack
-
-		task.spawn(function()
-			repeat
-				task.wait()
-				
-				local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
-
-				if IsAlive(LocalPlayer) and NearestEntity then
-					local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
-
-					Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
-				end
-			until Settings.AimAssist.Value == false
-		end)
-	end)
-	
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateSlider(CombatTab, "Range", Settings.AimAssist.Range, 18, LayoutOrder + 1, function(CallBack)
-					Settings.AimAssist.Range = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(CombatTab, Settings.AimAssist.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AimAssist.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.AimAssist.KeyBind then
-							Settings.AimAssist.Value = not Settings.AimAssist.Value
-
-							if Settings.AimAssist.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.AimAssist.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
