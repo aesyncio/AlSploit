@@ -618,6 +618,7 @@ local Settings = {
 	NoPlacementCps = {Value = true, KeyBind = "..."},
 	ChestStealer = {Value = true, KeyBind = "..."},
 	InfiniteJump = {Value = true, KeyBind = "..."},
+	NoKnockBack = {Value = true, KeyBind = "..."},	
 	DamageBoost = {Value = true},
 	ChatSpammer = {Value = false, Speed = 50, KeyBind = "..."},
 	AcDisabler = {Value = true, KeyBind = "..."},
@@ -627,10 +628,9 @@ local Settings = {
 	GalaxySky = {Value = true, KeyBind = "..."},
 	PlayAgain = {Value = true, KeyBind = "..."},
 	Invisible = {Value = false, KeyBind = "..."},
-	AimAssist = {Value = true, KeyBind = "..."},
+	AimAssist = {Value = true, Range = 18, KeyBind = "..."},
 	Scaffold = {Value = false, KeyBind = "..."},
 	KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, KeyBind = "..."},
-	Velocity = {Value = true, KeyBind = "..."},	
 	AntiVoid = {Value = true, Transparency = 0.65, KeyBind = "..."},
 	AutoBank = {Value = true, KeyBind = "..."},
 	HighJump = {Value = false, KeyBind = "..."},
@@ -828,37 +828,6 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()
-	local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
-
-	CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
-	
-	KnockBackTable.kbDirectionStrength = 0
-	KnockBackTable.kbUpwardStrength = 0	
-end)
-
-task.spawn(function()
-	repeat
-		task.wait(0.5)
-
-		if Settings.NoFall.Value == true then
-			GroundHitRemote:FireServer()
-		end
-	until not game
-end)
-
-task.spawn(function()
-	if Settings.AimAssist.Value == true then
-		local NearestEntity = FindNearestEntity(18)
-
-		if IsAlive(LocalPlayer) and Settings.AimAssist.Value == true and NearestEntity then
-			local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
-
-			Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
-		end
-	end
-end)
-
 local CombatTab = CreateTab("Combat")
 local UtilityTab = CreateTab("Utility")
 local BlatantTab = CreateTab("Blatant")
@@ -867,8 +836,6 @@ local WorldTab = CreateTab("World")
 task.spawn(function()
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
-		
-		CreateNotification(5, "This module has been toggled!")
 	end)
 	
 	task.spawn(function()
@@ -944,3 +911,76 @@ task.spawn(function()
 		end)
 	end)
 end)
+
+task.spawn(function()
+	local Reach = CreateToggle(CombatTab, "Reach", Settings.Reach.Value, function(CallBack)
+		Settings.Reach.Value = CallBack
+		
+		local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
+		
+		if Settings.Reach.Value == true then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
+		end
+		
+		if Settings.Reach.Value == false then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
+		end
+	end)
+end)
+
+task.spawn(function()
+	local NoKnockBack = CreateToggle(CombatTab, "NoKnockBack", Settings.NoKnockBack.Value, function(CallBack)
+		Settings.NoKnockBack.Value = CallBack
+
+		local OldKnockBackDirection = KnockBackTable.kbDirectionStrength
+		local OldKnockBackUp = KnockBackTable.kbUpwardStrength
+
+		if Settings.Reach.Value == true then
+			KnockBackTable.kbDirectionStrength = 0
+			KnockBackTable.kbUpwardStrength = 0	
+		end
+
+		if Settings.Reach.Value == false then
+			KnockBackTable.kbDirectionStrength = OldKnockBackDirection
+			KnockBackTable.kbUpwardStrength = OldKnockBackUp
+		end
+	end)
+end)
+
+task.spawn(function()
+	local AimAssist, DropDownButton, LayoutOrder = CreateToggle(CombatTab, "AimAssist", Settings.AimAssist.Value, function(CallBack)
+		Settings.AimAssist.Value = CallBack
+
+		task.spawn(function()
+			repeat
+				local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
+
+				if IsAlive(LocalPlayer) and NearestEntity then
+					local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
+
+					Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
+				end
+			until Settings.AimAssist.Value == false
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(CombatTab, "Range", Settings.AimAssist.Range, 18, LayoutOrder + 1, function(CallBack)
+					Settings.AimAssist.Range = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
