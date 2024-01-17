@@ -10,8 +10,9 @@ local WorkSpace = game:GetService("Workspace") or workspace
 
 local AlSploit = Instance.new("ScreenGui")
 local ContainerFrame = Instance.new("Frame")
-local UIListLayoutContainerFrame = Instance.new("UIListLayout")
+local ContainerFrameUIListLayout = Instance.new("UIListLayout")
 local NotificationContainer = Instance.new("Frame")
+local NotificationContainerUIListLayout = Instance.new("UIListLayout")
 
 local DefaultLayoutOrder = 0
 
@@ -30,11 +31,11 @@ ContainerFrame.Position = UDim2.new(0, 0, 0, 0)
 ContainerFrame.Size = UDim2.new(1, 0, 1, 0)
 ContainerFrame.Visible = false
 
-UIListLayoutContainerFrame.Parent = ContainerFrame
-UIListLayoutContainerFrame.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayoutContainerFrame.Padding = UDim.new(0, 50)
-UIListLayoutContainerFrame.FillDirection = Enum.FillDirection.Horizontal
-UIListLayoutContainerFrame.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ContainerFrameUIListLayout.Parent = ContainerFrame
+ContainerFrameUIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ContainerFrameUIListLayout.Padding = UDim.new(0, 50)
+ContainerFrameUIListLayout.FillDirection = Enum.FillDirection.Horizontal
+ContainerFrameUIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 NotificationContainer.Name = "NotificationContainer"
 NotificationContainer.Parent = AlSploit
@@ -44,6 +45,12 @@ NotificationContainer.BorderColor3 = Color3.new(0, 0, 0)
 NotificationContainer.BorderSizePixel = 0
 NotificationContainer.Position = UDim2.new(0.842737675, 0, 0, 0)
 NotificationContainer.Size = UDim2.new(0.157002911, 0, 0.980487823, 0)
+
+NotificationContainerUIListLayout.Parent = NotificationContainer
+NotificationContainerUIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+NotificationContainerUIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+NotificationContainerUIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+NotificationContainerUIListLayout.Padding = UDim.new(0, 10)
 
 local UIAspectRatioConstraintOpen = Instance.new("UIAspectRatioConstraint")
 local UIStroke = Instance.new("UIStroke")
@@ -497,18 +504,11 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 end
 
 local function CreateNotification(Duration, Message)
-	local UIListLayout = Instance.new("UIListLayout")
 	local Notification = Instance.new("Frame")
 	local UIStroke = Instance.new("UIStroke")
 	local UIGradient = Instance.new("UIGradient")
 	local UICorner = Instance.new("UICorner")
 	local Text = Instance.new("TextLabel")
-	
-	UIListLayout.Parent = NotificationContainer
-	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-	UIListLayout.Padding = UDim.new(0, 10)
 
 	Notification.Name = "Notification"
 	Notification.Parent = NotificationContainer
@@ -546,26 +546,24 @@ local function CreateNotification(Duration, Message)
 	task.spawn(function()
 		local NotificationSize = UDim2.new(1, 0, 0.087, 0)
 
-		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+		local TweenInformation = TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
-	end)
-	
-	task.spawn(function()
+		
 		task.wait(Duration)
-		
-		local NotificationSize = UDim2.new(0, 0, 0, 0)
 
-		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
-		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
+		NotificationSize = UDim2.new(0, 0, 0, 0)
 
-		SizeTween:Play()
-		
+		local SizeTween2 = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
+
+		SizeTween2:Play()
+
 		task.spawn(function()
 			task.wait(Duration + TweenInformation.Time)
-			
+
 			Notification:Destroy()
+			UIStroke:Destroy()
 			Text:Destroy()
 		end)
 	end)
