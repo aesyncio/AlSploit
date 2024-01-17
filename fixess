@@ -338,13 +338,14 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 	local UIGradient_3 = Instance.new("UIGradient")
 
 	Slider.Name = "Slider"
-	Slider.Parent = game.StarterGui.AlSploit.ContainerFrame.Tab.ModulesContainer
+	Slider.Parent =  Parent
 	Slider.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	Slider.BackgroundTransparency = 0.150
 	Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Slider.BorderSizePixel = 0
 	Slider.Position = UDim2.new(0, 0, 0.116778016, 0)
 	Slider.Size = UDim2.new(0.99999994, 0, 0.0687298849, 0)
+	Slider.LayoutOrder = LayoutOrder
 
 	SliderFrame.Name = "SliderFrame"
 	SliderFrame.Parent = Slider
