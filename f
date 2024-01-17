@@ -251,6 +251,7 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 				if not InputFound then
 					KeyBind.Text = "KeyBind: " .. "..."
 					CallBackToggle("...")
+					Value = false
 				end
 			end)
 		end)
@@ -668,7 +669,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateMiniToggle(CombatTab, Settings.KillAura.CustomAnimation, LayoutOrder + 2, function(CallBack)
+				InstanceUI = CreateMiniToggle(CombatTab, "CustomAnimation", Settings.KillAura.CustomAnimation, LayoutOrder + 2, function(CallBack)
 					Settings.KillAura.CustomAnimation = CallBack
 				end)
 			end
