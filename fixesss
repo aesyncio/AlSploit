@@ -841,7 +841,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, LayoutOrder + 3, function(CallBack)
+				InstanceUI = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, 18, LayoutOrder + 3, function(CallBack)
 					Settings.KillAura.Range = CallBack
 				end)
 			end
