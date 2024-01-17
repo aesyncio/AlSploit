@@ -1090,3 +1090,7 @@ task.spawn(function()
 		end)
 	end)
 end)
+
+task.spawn(function()
+	CreateNotification(3, "AlSploit has loaded!")
+end)
