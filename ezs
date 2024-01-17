@@ -953,6 +953,8 @@ task.spawn(function()
 
 		task.spawn(function()
 			repeat
+				task.wait()
+				
 				local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
 
 				if IsAlive(LocalPlayer) and NearestEntity then
