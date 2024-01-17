@@ -331,6 +331,8 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 	local Bar = Instance.new("TextButton")
 	local UICorner_2 = Instance.new("UICorner")
 	local UIGradient = Instance.new("UIGradient")
+	local UIStroke = Instance.new("UIStroke")
+	
 	local Title = Instance.new("TextLabel")
 	local UIGradient_2 = Instance.new("UIGradient")
 	local Fill = Instance.new("Frame")
@@ -378,6 +380,11 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(195, 135, 255))}
 	UIGradient.Parent = Bar
+	
+	UIStroke.Parent = Bar
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Thickness = 2
+	UIStroke.Color = Color3.new(0, 0, 0)
 
 	Title.Name = "Title"
 	Title.Parent = SliderFrame
@@ -390,7 +397,7 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 	Title.Font = Enum.Font.GothamBold
 	Title.Text = "Range: 18"
 	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.TextSize = 14.000
+	Title.TextSize = 11.00
 
 	UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 	UIGradient_2.Rotation = 90
@@ -782,6 +789,25 @@ task.spawn(function()
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateMiniToggle(CombatTab, "CustomAnimation", Settings.KillAura.CustomAnimation, LayoutOrder + 2, function(CallBack)
+					Settings.KillAura.CustomAnimation = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
 		
 		DropDownButton.Activated:Connect(function()
 			Value = not Value
@@ -808,25 +834,6 @@ task.spawn(function()
 				end)
 			end
 			
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateMiniToggle(CombatTab, "CustomAnimation", Settings.KillAura.CustomAnimation, LayoutOrder + 2, function(CallBack)
-					Settings.KillAura.CustomAnimation = CallBack
-				end)
-			end
-
 			if Value == false then
 				InstanceUI:Destroy()
 			end
