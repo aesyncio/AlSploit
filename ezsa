@@ -244,6 +244,15 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 			InputFound = false
 			Value = true
 			KeyBind.Text = "..."
+			
+			task.spawn(function()
+				task.wait(2)
+
+				if not InputFound then
+					KeyBind.Text = "KeyBind: " .. "..."
+					CallBackToggle("...")
+				end
+			end)
 		end)
 		
 		task.spawn(function()
@@ -258,15 +267,6 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 					end
 				end
 			end)
-		end)
-		
-		task.spawn(function()
-			task.wait(3)
-			
-			if not InputFound then
-				KeyBind.Text = "KeyBind: " .. "..."
-				CallBackToggle("...")
-			end
 		end)
 	end)
 	
