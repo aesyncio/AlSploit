@@ -499,8 +499,10 @@ end
 local function CreateNotification(Duration, Message)
 	local UIListLayout = Instance.new("UIListLayout")
 	local Notification = Instance.new("Frame")
+	local UIStroke = Instance.new("UIStroke")
 	local UICorner = Instance.new("UICorner")
 	local Text = Instance.new("TextLabel")
+	
 
 	UIListLayout.Parent = NotificationContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -516,8 +518,14 @@ local function CreateNotification(Duration, Message)
 	Notification.BorderSizePixel = 0
 	Notification.Position = UDim2.new(0.226286799, 0, 0, 0)
 	Notification.Size = UDim2.new(0, 0, 0, 0)
+	
+	UIStroke.Parent = Notification
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Thickness = 2
+	UIStroke.Color = Color3.new(0, 0, 0)
 
 	UICorner.Parent = Notification
+	UICorner.CornerRadius = UDim.new(0, 6)
 
 	Text.Name = "Text"
 	Text.Parent = Notification
@@ -530,12 +538,12 @@ local function CreateNotification(Duration, Message)
 	Text.Font = Enum.Font.GothamBold
 	Text.Text = Message
 	Text.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Text.TextSize = 14.000
+	Text.TextSize = 12.000
 	
 	task.spawn(function()
 		local NotificationSize = UDim2.new(0.999167681, 0, 0.103658535, 0)
 
-		local TweenInformation = TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+		local TweenInformation = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
@@ -546,7 +554,7 @@ local function CreateNotification(Duration, Message)
 		
 		local NotificationSize = UDim2.new(0, 0, 0, 0)
 
-		local TweenInformation = TweenInfo.new(0.3, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+		local TweenInformation = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
@@ -555,6 +563,7 @@ local function CreateNotification(Duration, Message)
 			task.wait(Duration + TweenInformation.Time)
 			
 			Notification:Destroy()
+			Text:Destroy()
 		end)
 	end)
 end
