@@ -544,9 +544,9 @@ local function CreateNotification(Duration, Message)
 	Text.TextSize = 8.00
 	
 	task.spawn(function()
-		local NotificationSize = UDim2.new(0.999167681, 0, 0.103658535, 0)
+		local NotificationSize = UDim2.new(1, 0, 0.087, 0)
 
-		local TweenInformation = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)
+		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
@@ -557,7 +557,7 @@ local function CreateNotification(Duration, Message)
 		
 		local NotificationSize = UDim2.new(0, 0, 0, 0)
 
-		local TweenInformation = TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+		local TweenInformation = TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
