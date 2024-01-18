@@ -164,9 +164,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local LayoutOrder = 0
 
-	local function CallBackToggle(Value)
-		Value = Value or (not CallBackValue)
-		
+	local function CallBackToggle(Value)		
 		task.spawn(function()
 			if Value == true then
 				CallBackValue = true
@@ -222,11 +220,11 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	DropDownButton.Size = UDim2.new(0.132, 0, 0.668, 0)
 	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
 	
-	CallBackToggle(DefaultValue)
+	CallBackToggle(CallBackValue)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			CallBackToggle(not CallBackValue)
+			CallBackToggle(CallBackValue)
 		end)
 	end)
 
