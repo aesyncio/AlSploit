@@ -585,7 +585,7 @@ local function CheckFirstTime()
 	end
 end
 
-local function LoadSettings()
+local function CreateSettingsFile()
 	Settings = {
 		NoPlacementCps = {Value = true, KeyBind = "..."},
 		ChestStealer = {Value = true, KeyBind = "..."},
@@ -621,7 +621,8 @@ local function LoadSettings()
 		BedTp = {Value = true, KeyBind = "..."},
 		Cape = {Value = true, KeyBind = "..."},
 		Esp = {Value = true, KeyBind = "..."},
-		Fov = {Value = false, Fov = 100, KeyBind = "..."}}
+		Fov = {Value = false, Fov = 100, KeyBind = "..."}
+	}
 
 	if not (writefile or makefolder or readfile or isfile) then
 		CreateNotification(5, "Your executor does not support saving.")
@@ -637,12 +638,12 @@ local function LoadSettings()
 
 			writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)			
 		end
-
-		if FirstTime == false then
-			Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
-		end
 	end
+end
 
+function LoadSettings()
+	Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
+	
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		Loaded = true
 	end
@@ -654,7 +655,10 @@ function SaveSettings()
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
 end
 
-LoadSettings()
+task.spawn(function()
+	CreateSettingsFile()
+	LoadSettings()
+end)
 
 task.spawn(function()
 	task.wait(0.5)
