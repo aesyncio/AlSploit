@@ -168,6 +168,8 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		Value = Value or (not CallBackValue)
 		CallBackValue = Value
 		
+		print(Value)
+		
 		if Value == true then
 			task.spawn(function()
 				CallBack(true)
@@ -188,7 +190,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	end
 
 	if DefaultValue == true then
-		CallBackToggle()
+		CallBackToggle(true)
 	end
 	
 	CallBack(DefaultValue)
