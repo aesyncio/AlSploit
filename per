@@ -172,6 +172,8 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 				CallBackValue = true
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 			
+				print("nigger")
+			
 				CallBack(true)
 			end
 		end)
@@ -186,7 +188,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end)
 	end
 
-	CallBackToggle(CallBackValue)
+	CallBackToggle(DefaultValue)
 
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
