@@ -629,13 +629,19 @@ local function LoadSettings()
 
 	if writefile and makefolder and readfile and isfile then 
 		local FirstTime = CheckFirstTime()
+		
+		print(FirstTime)
 
 		if FirstTime == true then
 			makefolder("AlSploitBedwarsConfig")
+			
+			print("1")
 
 			local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
-			writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)			
+			writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)		
+			
+			print("2")
 		end
 
 		if FirstTime == false then
