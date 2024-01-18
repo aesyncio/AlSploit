@@ -166,7 +166,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local Checker = {["Enabled"] = false}
 
-	print("DefautlValue: " .. DefaultValue)
+	print(DefaultValue)
 
 	function Checker:Toggle(Boolean)
 		Boolean = Boolean or (not Checker["Enabled"])
