@@ -576,11 +576,11 @@ local Loaded = false
 local SaveFileName = "AlSploitBedwarsSaving"
 
 local function CheckFirstTime()
-	if isfile("AlSploitBedwarsConfig") then
+	if isfile("AlSploitBedwarsConfig" .. SaveFileName) then
 		return false
 	end
 
-	if not isfile("AlSploitBedwarsConfig") then
+	if not isfile("AlSploitBedwarsConfig" .. SaveFileName) then
 		return true
 	end
 end
