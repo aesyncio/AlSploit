@@ -561,7 +561,7 @@ local function CreateNotification(Duration, Message)
 		SizeTween2:Play()
 
 		task.spawn(function()
-			task.wait(Duration + 0.15)
+			task.wait(TweenInformation.Time)
 
 			Notification:Destroy()
 			UIStroke:Destroy()
@@ -641,8 +641,6 @@ local function CreateSettingsFile()
 	end
 end
 
-print(CheckFirstTime())
-
 function LoadSettings()
 	Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
 	
@@ -651,9 +649,7 @@ function LoadSettings()
 	end
 end
 
-function SaveSettings()
-	deletefile("AlSploitBedwarsConfig/" .. SaveFileName)
-	
+function SaveSettings()	
 	local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
