@@ -623,15 +623,15 @@ local function LoadSettings()
 		Esp = {Value = true, KeyBind = "..."},
 		Fov = {Value = false, Fov = 100, KeyBind = "..."}}
 	
-	if not (writefile or createfolder or readfile or isfile) then
+	if not (writefile or makefolder or readfile or isfile) then
 		CreateNotification(5, "Your executor does not support saving.")
 	end
 
-	if writefile and createfolder and readfile and isfile then 
+	if writefile and makefolder and readfile and isfile then 
 		local FirstTime = CheckFirstTime()
 
 		if FirstTime == true then
-			createfolder("AlSploitBedwarsConfig")
+			makefolder("AlSploitBedwarsConfig")
 
 			local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
@@ -642,14 +642,16 @@ local function LoadSettings()
 			Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
 		end
 	end
+	
+	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
+		Loaded = true
+	end
 end
 
 function SaveSettings()
 	local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
-	
-	Loaded = true
 end
 
 task.spawn(function()
@@ -661,10 +663,6 @@ task.spawn(function()
 end)
 
 repeat task.wait() until Loaded == true
-
-task.spawn(function()
-	CreateNotification(5, "AlSploit has loaded!")
-end)
 
 local Camera = WorkSpace.CurrentCamera
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
@@ -1151,4 +1149,8 @@ task.spawn(function()
 			end
 		end)
 	end)
+end)
+
+task.spawn(function()
+	CreateNotification(5, "AlSploit has loaded!")
 end)
