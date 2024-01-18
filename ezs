@@ -642,6 +642,8 @@ local function LoadSettings()
 			Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
 		end
 	end
+	
+	Loaded = true
 end
 
 function SaveSettings()
