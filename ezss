@@ -224,7 +224,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			CallBackToggle(CallBackValue)
+			CallBackToggle(not CallBackValue)
 		end)
 	end)
 
@@ -1035,6 +1035,8 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	print(Settings.KillAura.Value)
+	
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
