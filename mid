@@ -164,7 +164,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local LayoutOrder = 0
 
-	local function Toggle(Value)
+	local function CallBackToggle(Value)
 		Value = Value or (not CallBackValue)
 		CallBackValue = Value
 		
@@ -187,7 +187,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end
 	end
 
-	Toggle(DefaultValue)
+	CallBackToggle(DefaultValue)
 	
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
@@ -227,7 +227,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			Toggle()
+			CallBackToggle()
 		end)
 	end)
 
