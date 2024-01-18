@@ -561,7 +561,7 @@ local function CreateNotification(Duration, Message)
 		SizeTween2:Play()
 
 		task.spawn(function()
-			task.wait(Duration + TweenInformation.Time)
+			task.wait(Duration + 0.15)
 
 			Notification:Destroy()
 			UIStroke:Destroy()
@@ -576,11 +576,11 @@ local Loaded = false
 local SaveFileName = "AlSploitBedwarsSaving"
 
 local function CheckFirstTime()
-	if isfile("AlSploitBedwarsConfig" .. SaveFileName) then
+	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		return false
 	end
 
-	if not isfile("AlSploitBedwarsConfig" .. SaveFileName) then
+	if not isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		return true
 	end
 end
