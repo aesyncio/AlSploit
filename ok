@@ -298,25 +298,28 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	local MiniToggle = Instance.new("TextButton")
 	local UIGradient = Instance.new("UIGradient")
 
-	local CallBackValue = not DefaultValue
+	local CallBackValue = DefaultValue
 
-	local function CallBackToggle(Value)
-		if Value == true then
-			CallBack(true)
 
-			CallBackValue = true
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-		end
+	local function CallBackToggle(Value)		
+		task.spawn(function()
+			if Value == true then
+				CallBackValue = true
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 
-		if Value == false then
-			CallBack(false)
+				CallBack(true)
+			end
+		end)
 
-			CallBackValue = false
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-		end
+		task.spawn(function()
+			if Value == false then
+				CallBackValue = false
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+
+				CallBack(false)
+			end
+		end)
 	end
-
-	CallBackToggle(not CallBackValue)
 
 	MiniToggle.Name = "MiniToggle"
 	MiniToggle.Parent = Parent
@@ -336,6 +339,8 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = MiniToggle
+	
+	CallBackToggle(CallBackValue)
 
 	task.spawn(function()
 		MiniToggle.Activated:Connect(function()
