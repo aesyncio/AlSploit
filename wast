@@ -99,7 +99,7 @@ local function CreateTab(Name)
 	local UIListLayout = Instance.new("UIListLayout")	
 	local Title = Instance.new("TextLabel")
 	local UIGradient = Instance.new("UIGradient")
-	
+
 	Tab.Name = "Tab"
 	Tab.Parent = ContainerFrame
 	Tab.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -107,10 +107,10 @@ local function CreateTab(Name)
 	Tab.BorderSizePixel = 0
 	Tab.Position = UDim2.new(0.434123844, 0, 0, 0)
 	Tab.Size = UDim2.new(0.142, 0, 0.049, 0)
-	
+
 	UICorner.CornerRadius = UDim.new(0, 12)
 	UICorner.Parent = Tab
-	
+
 	CornerFix.Name = "CornerFix"
 	CornerFix.Parent = Tab
 	CornerFix.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -127,7 +127,7 @@ local function CreateTab(Name)
 	ModulesContainer.BorderSizePixel = 0
 	ModulesContainer.Position = UDim2.new(0, 0, 1, 0)
 	ModulesContainer.Size = UDim2.new(1, 0, 21.4285717, 0)
-	
+
 	UIListLayout.Parent = ModulesContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout.FillDirection = Enum.FillDirection.Vertical
@@ -146,11 +146,11 @@ local function CreateTab(Name)
 	Title.TextColor3 = Color3.new(255, 255, 255)
 	Title.TextSize = 17
 	Title.TextWrapped = true
-	
+
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.843137, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Title
-	
+
 	return ModulesContainer
 end
 
@@ -159,27 +159,27 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIPadding = Instance.new("UIPadding")
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
-	
+
 	local CallBackValue = not DefaultValue
-	
+
 	local LayoutOrder = 0
-	
+
 	local function CallBackToggle(Value)
 		if Value == true then
 			CallBack(true)
-			
+
 			CallBackValue = true
 			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 		end
-		
+
 		if Value == false then
 			CallBack(false)
-			
+
 			CallBackValue = false
 			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 		end
 	end
-	
+
 	CallBackToggle(not CallBackValue)
 
 	Toggle.Name = "Toggle"
@@ -199,7 +199,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	LayoutOrder = Toggle.LayoutOrder
 	DefaultLayoutOrder = LayoutOrder
-	
+
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 15)
 
@@ -223,7 +223,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 			CallBackToggle(not CallBackValue)
 		end)
 	end)
-	
+
 	return Toggle, DropDownButton, LayoutOrder, UIGradient
 end
 
@@ -253,32 +253,32 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = KeyBind
-	
+
 	task.spawn(function()
 		local InputValue = false
 		local Value = false
-		
+
 		KeyBind.Activated:Connect(function()
 			if Value == false then
 				InputValue = true	
 				KeyBind.Text = "..."
 			end
-			
+
 			if Value == true and InputValue == true then
 				KeyBind.Text = "KeyBind: " .. "..."
 				InputValue = false
 				CallBackToggle("...")
 			end
-			
+
 			Value = not Value
 		end)
-		
+
 		task.spawn(function()
 			UserInputService.InputBegan:Connect(function(Input)
 				if InputValue == true and not UserInputService:GetFocusedTextBox() then
 					if Input.KeyCode and Input.UserInputType == Enum.UserInputType.Keyboard then
 						KeyBind.Text = "KeyBind: " .. Input.KeyCode.Name
-						
+
 						CallBackToggle(Input.KeyCode.Name)
 						InputValue = false
 					end
@@ -286,7 +286,7 @@ local function CreateKeyBind(Parent, DefaultValue, LayoutOrder, CallBack)
 			end)
 		end)
 	end)
-	
+
 	return KeyBind
 end
 
@@ -332,13 +332,13 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = MiniToggle
-	
+
 	task.spawn(function()
 		MiniToggle.Activated:Connect(function()
 			CallBackToggle(not CallBackValue)
 		end)
 	end)
-	
+
 	return MiniToggle
 end
 
@@ -350,7 +350,7 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 	local UICorner_2 = Instance.new("UICorner")
 	local UIGradient = Instance.new("UIGradient")
 	local UIStroke = Instance.new("UIStroke")
-	
+
 	local Title = Instance.new("TextLabel")
 	local UIGradient_2 = Instance.new("UIGradient")
 	local Fill = Instance.new("Frame")
@@ -398,7 +398,7 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Parent = Bar
-	
+
 	UIStroke.Parent = Bar
 	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke.Thickness = 2
@@ -433,7 +433,7 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 
 	UIGradient_3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient_3.Parent = Fill
-	
+
 	local Debounce = true
 
 	local function Snap(Number, Factor)
@@ -519,12 +519,12 @@ local function CreateNotification(Duration, Message)
 	Notification.BorderSizePixel = 0
 	Notification.Position = UDim2.new(0.226286799, 0, 0, 0)
 	Notification.Size = UDim2.new(0, 0, 0, 0)
-	
+
 	UIStroke.Parent = Notification
 	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	UIStroke.Thickness = 2
 	UIStroke.Color = Color3.new(1, 1, 1)
-	
+
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Parent = UIStroke
 
@@ -543,7 +543,7 @@ local function CreateNotification(Duration, Message)
 	Text.Text = Message
 	Text.TextColor3 = Color3.new(255, 255, 255)
 	Text.TextSize = 8.00
-	
+
 	task.spawn(function()
 		local NotificationSize = UDim2.new(1, 0, 0.087, 0)
 
@@ -551,7 +551,7 @@ local function CreateNotification(Duration, Message)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
 
 		SizeTween:Play()
-		
+
 		task.wait(Duration)
 
 		NotificationSize = UDim2.new(0, 0, 0, 0)
@@ -622,7 +622,7 @@ local function LoadSettings()
 		Cape = {Value = true, KeyBind = "..."},
 		Esp = {Value = true, KeyBind = "..."},
 		Fov = {Value = false, Fov = 100, KeyBind = "..."}}
-	
+
 	if not (writefile or makefolder or readfile or isfile) then
 		CreateNotification(5, "Your executor does not support saving.")
 	end
@@ -642,7 +642,7 @@ local function LoadSettings()
 			Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
 		end
 	end
-	
+
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		Loaded = true
 	end
@@ -658,10 +658,10 @@ LoadSettings()
 
 task.spawn(function()
 	task.wait(0.5)
-	
+
 	repeat
 		task.wait(0.5)
-		
+
 		SaveSettings()
 	until not game
 end)
@@ -717,7 +717,7 @@ local function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
 	local NearestEntity = nil
 	local IsNotAPlayer = true
-	
+
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("DiamondGuardian") do
 			if v.PrimaryPart then
@@ -730,7 +730,7 @@ local function FindNearestEntity(MaxDistance)
 			end 
 		end
 	end)
-	
+
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("GolemBoss") do
 			if v.PrimaryPart then
@@ -743,7 +743,7 @@ local function FindNearestEntity(MaxDistance)
 			end
 		end
 	end)	
-	
+
 	task.spawn(function()
 		for i, v in next, CollectionService:GetTagged("Monster") do
 			if v.PrimaryPart then
@@ -756,7 +756,7 @@ local function FindNearestEntity(MaxDistance)
 			end
 		end
 	end)
-	
+
 	task.spawn(function()
 		for i, v in next, PlayerService:GetPlayers() do
 			if IsAlive(v) and v ~= LocalPlayer and v.Team ~= LocalPlayer.Team then
@@ -774,7 +774,7 @@ local function FindNearestEntity(MaxDistance)
 	if NearestEntity then	
 		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
 	end
-	
+
 	return nil
 end
 
@@ -784,9 +784,9 @@ end
 
 local function GetInventory(Player)
 	local Player = Player or LocalPlayer
-	
+
 	local Inventory = InventoryUtil.getInventory(Player).items
-	
+
 	return Inventory
 end
 
@@ -1029,7 +1029,7 @@ task.spawn(function()
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1064,7 +1064,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1083,7 +1083,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1105,20 +1105,20 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local NoPlacementCps, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "NoPlacementCps", Settings.NoPlacementCps.Value, function(CallBack)
-		Settings.NoPlacementCps.Value = CallBack
-		
-		local OldCps = PlacementCPS.BLOCK_PLACE_CPS
-		
-		if Settings.NoPlacementCps.Value == true then
-			PlacementCPS.BLOCK_PLACE_CPS = math.huge
+	local Reach, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Reach", Settings.Reach.Value, function(CallBack)
+		Settings.Reach.Value = CallBack
+
+		local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
+
+		if Settings.Reach.Value == true then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
 		end
-		
-		if Settings.NoPlacementCps.Value == false then
-			PlacementCPS.BLOCK_PLACE_CPS = OldCps
+
+		if Settings.Reach.Value == false then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
 		end
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1127,7 +1127,58 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.NoPlacementCps.KeyBind, LayoutOrder + 1, function(CallBack)
+				InstanceUI = CreateKeyBind(CombatTab, Settings.Reach.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Reach.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.Reach.KeyBind then
+							Settings.Reach.Value = not Settings.Reach.Value
+
+							if Settings.Reach.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.Reach.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local NoPlacementCps, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoPlacementCps", Settings.NoPlacementCps.Value, function(CallBack)
+		Settings.NoPlacementCps.Value = CallBack
+
+		local OldCps = PlacementCPS.BLOCK_PLACE_CPS
+
+		if Settings.NoPlacementCps.Value == true then
+			PlacementCPS.BLOCK_PLACE_CPS = math.huge
+		end
+
+		if Settings.NoPlacementCps.Value == false then
+			PlacementCPS.BLOCK_PLACE_CPS = OldCps
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.NoPlacementCps.KeyBind, LayoutOrder + 1, function(CallBack)
 					Settings.NoPlacementCps.KeyBind = CallBack
 				end)
 
