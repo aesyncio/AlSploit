@@ -2870,6 +2870,8 @@ end)
 
 task.spawn(function()
 	repeat
+		task.wait()
+		
 		print(Settings.KillAura.Value)
 	until not game
 end)
