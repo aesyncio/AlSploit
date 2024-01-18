@@ -184,7 +184,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	if DefaultValue == true then
 		Checker:Toggle()
 	end
-	
+
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
 	Toggle.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -206,7 +206,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 15)
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Toggle
 
@@ -649,14 +649,14 @@ end
 function LoadSettings()
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
-		
+
 		Loaded = true
 	end
 end
 
 task.spawn(function()
 	local FirstTime = CheckFirstTime()
-	
+
 	if FirstTime == true then
 		CreateSettingsFile()
 	end
@@ -1035,7 +1035,7 @@ end)
 
 task.spawn(function()
 	print(Settings.KillAura.Value)
-	
+
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
