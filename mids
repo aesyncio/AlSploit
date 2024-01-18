@@ -187,7 +187,11 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end
 	end
 
-	CallBackToggle(DefaultValue)
+	if DefaultValue == true then
+		CallBackToggle()
+	end
+	
+	CallBack(DefaultValue)
 	
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
