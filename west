@@ -170,15 +170,15 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 		if Boolean == true then
 			task.spawn(function()
-				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+				CallBack(true)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 			end)
 		end
 			
 		if Boolean == false then
 			task.spawn(function()
 				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
 			end)
 		end
 	end
@@ -307,15 +307,15 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 
 		if Boolean == true then
 			task.spawn(function()
-				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+				CallBack(true)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 			end)
 		end
 
 		if Boolean == false then
 			task.spawn(function()
 				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
 			end)
 		end
 	end
@@ -1041,10 +1041,10 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	print(Settings.KillAura.Value)
+
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
-		
-		print(CallBack)
 	end)
 
 	task.spawn(function()
