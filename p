@@ -160,38 +160,33 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
 
-	local Checker = {["Enabled"] = false}
+	local CallBackValue = DefaultValue
 
 	local LayoutOrder = 0
 
-	local Checker = {["Enabled"] = false}
-
-	print(DefaultValue)
-
-	function Checker:Toggle(Boolean)
-		Boolean = Boolean or (not Checker["Enabled"])
-		Checker["Enabled"] = Boolean
-
-		print("Checked Toggled")
-
+	local function CallBackToggle(Value)
+		Value = Value or (not CallBackValue)
+		
 		task.spawn(function()
-			if Boolean == true then
+			if Value == true then
 				CallBack(true)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+
+				CallBackValue = true
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 			end
 		end)
-
+		
 		task.spawn(function()
-			if Boolean == false then
+			if Value == false then
 				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+
+				CallBackValue = false
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 			end
 		end)
 	end
 
-	if DefaultValue == true then
-		Checker:Toggle()
-	end
+	CallBackToggle(CallBackValue)
 
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
@@ -214,7 +209,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 15)
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Toggle
 
@@ -231,7 +226,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			Checker:Toggle()
+			CallBackToggle(not CallBackValue)
 		end)
 	end)
 
@@ -305,34 +300,25 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	local MiniToggle = Instance.new("TextButton")
 	local UIGradient = Instance.new("UIGradient")
 
-	local Checker = {["Enabled"] = false}
-	
-	print("DefautlValue: " .. DefaultValue)
+	local CallBackValue = not DefaultValue
 
-	function Checker:Toggle(Boolean)
-		Boolean = Boolean or (not Checker["Enabled"])
-		Checker["Enabled"] = Boolean
+	local function CallBackToggle(Value)
+		if Value == true then
+			CallBack(true)
 
-		print("Checked Toggled")
+			CallBackValue = true
+			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+		end
 
-		task.spawn(function()
-			if Boolean == true then
-				CallBack(true)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
-			end
-		end)
+		if Value == false then
+			CallBack(false)
 
-		task.spawn(function()
-			if Boolean == false then
-				CallBack(false)
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
-			end
-		end)
+			CallBackValue = false
+			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+		end
 	end
 
-	if DefaultValue == true then
-		Checker:Toggle()
-	end
+	CallBackToggle(not CallBackValue)
 
 	MiniToggle.Name = "MiniToggle"
 	MiniToggle.Parent = Parent
@@ -355,7 +341,7 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 
 	task.spawn(function()
 		MiniToggle.Activated:Connect(function()
-			Checker:Toggle()
+			CallBackToggle(not CallBackValue)
 		end)
 	end)
 
@@ -666,14 +652,14 @@ end
 function LoadSettings()
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
-
+		
 		Loaded = true
 	end
 end
 
 task.spawn(function()
 	local FirstTime = CheckFirstTime()
-
+	
 	if FirstTime == true then
 		CreateSettingsFile()
 	end
@@ -1051,8 +1037,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	print(Settings.KillAura.Value)
-
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
