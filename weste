@@ -300,24 +300,28 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	local UIGradient = Instance.new("UIGradient")
 
 	local Checker = {["Enabled"] = false}
+	
+	print("DefautlValue: " .. DefaultValue)
 
 	function Checker:Toggle(Boolean)
 		Boolean = Boolean or (not Checker["Enabled"])
 		Checker["Enabled"] = Boolean
 
-		if Boolean == true then
-			task.spawn(function()
+		print("Checked Toggled")
+
+		task.spawn(function()
+			if Boolean == true then
 				CallBack(true)
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
-			end)
-		end
+			end
+		end)
 
-		if Boolean == false then
-			task.spawn(function()
+		task.spawn(function()
+			if Boolean == false then
 				CallBack(false)
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
-			end)
-		end
+			end
+		end)
 	end
 
 	if DefaultValue == true then
