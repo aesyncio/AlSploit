@@ -160,28 +160,35 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
 
-	local CallBackValue = DefaultValue
+	local CallBackValue = false
 
 	local LayoutOrder = 0
 
-	local function CallBackToggle(Value)
+	local function Toggle(Value)
+		Value = Value or (not CallBackValue)
+		CallBackValue = Value
+		
 		if Value == true then
-			CallBack(true)
+			task.spawn(function()
+				CallBack(true)
 
-			CallBackValue = true
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+				CallBackValue = true
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+			end)		
 		end
 
 		if Value == false then
-			CallBack(false)
+			task.spawn(function()
+				CallBack(false)
 
-			CallBackValue = false
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+				CallBackValue = false
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+			end)
 		end
 	end
 
-	CallBackToggle(DefaultValue)
-
+	Toggle(DefaultValue)
+	
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
 	Toggle.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -220,7 +227,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			CallBackToggle(not CallBackValue)
+			Toggle()
 		end)
 	end)
 
