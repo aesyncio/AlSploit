@@ -164,18 +164,20 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	local LayoutOrder = 0
 
-	function Checker:Toggle(Bool)
-		Bool = Bool or (not Checker["Enabled"])
-		Checker["Enabled"] = Bool
+	function Checker:Toggle(Boolean)
+		Boolean = Boolean or (not Checker["Enabled"])
+		Checker["Enabled"] = Boolean
 
-		if not Bool then
-			spawn(function()
+		if Boolean == true then
+			task.spawn(function()
 				CallBack(false)
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
 			end)
-		else
-			spawn(function()
-				CallBack(true)
+		end
+			
+		if Boolean == false then
+			task.spawn(function()
+				CallBack(false)
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 			end)
 		end
@@ -297,25 +299,30 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	local MiniToggle = Instance.new("TextButton")
 	local UIGradient = Instance.new("UIGradient")
 
-	local CallBackValue = not DefaultValue
+	local Checker = {["Enabled"] = false}
 
-	local function CallBackToggle(Value)
-		if Value == true then
-			CallBack(true)
+	function Checker:Toggle(Boolean)
+		Boolean = Boolean or (not Checker["Enabled"])
+		Checker["Enabled"] = Boolean
 
-			CallBackValue = true
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+		if Boolean == true then
+			task.spawn(function()
+				CallBack(false)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+			end)
 		end
 
-		if Value == false then
-			CallBack(false)
-
-			CallBackValue = false
-			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+		if Boolean == false then
+			task.spawn(function()
+				CallBack(false)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
+			end)
 		end
 	end
 
-	CallBackToggle(not CallBackValue)
+	if DefaultValue == true then
+		Checker:Toggle()
+	end
 
 	MiniToggle.Name = "MiniToggle"
 	MiniToggle.Parent = Parent
@@ -338,7 +345,7 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 
 	task.spawn(function()
 		MiniToggle.Activated:Connect(function()
-			CallBackToggle(not CallBackValue)
+			Checker:Toggle()
 		end)
 	end)
 
@@ -1034,10 +1041,10 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	print(Settings.KillAura.Value)
-
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
+		
+		print(CallBack)
 	end)
 
 	task.spawn(function()
