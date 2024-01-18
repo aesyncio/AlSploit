@@ -642,14 +642,14 @@ local function LoadSettings()
 			Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
 		end
 	end
-	
-	Loaded = true
 end
 
 function SaveSettings()
 	local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
+	
+	Loaded = true
 end
 
 task.spawn(function()
