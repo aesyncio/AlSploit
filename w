@@ -160,42 +160,30 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
 
-	local CallBackValue = DefaultValue
+	local Checker = {["Enabled"] = false}
 
 	local LayoutOrder = 0
 
-	local function CallBackToggle(Value)
-		print(Value)
-		
-		Value = Value or (not CallBackValue)
-		CallBackValue = Value
-		
-		print(Value)
-		
-		if Value == true then
-			task.spawn(function()
-				CallBack(true)
+	function Checker:Toggle(Bool)
+		Bool = Bool or (not Checker["Enabled"])
+		Checker["Enabled"] = Bool
 
-				CallBackValue = true
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-			end)		
-		end
-
-		if Value == false then
-			task.spawn(function()
+		if not Bool then
+			spawn(function()
 				CallBack(false)
-
-				CallBackValue = false
-				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+			end)
+		else
+			spawn(function()
+				CallBack(true)
+				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(170, 85, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(215, 175, 255))}
 			end)
 		end
 	end
 
 	if DefaultValue == true then
-		CallBackToggle(true)
+		Checker:Toggle()
 	end
-	
-	CallBack(DefaultValue)
 	
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
@@ -235,7 +223,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 
 	task.spawn(function()
 		Toggle.Activated:Connect(function()
-			CallBackToggle()
+			Checker:Toggle()
 		end)
 	end)
 
@@ -1046,6 +1034,8 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	print(Settings.KillAura.Value)
+	
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
