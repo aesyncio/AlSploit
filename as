@@ -1227,11 +1227,3 @@ end)
 task.spawn(function()
 	CreateNotification(5, "AlSploit has loaded!")
 end)
-
-task.spawn(function()
-	repeat
-		task.wait()
-
-		print(Settings.KillAura.Value)
-	until not game
-end)
