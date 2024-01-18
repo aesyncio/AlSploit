@@ -160,7 +160,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
 
-	local CallBackValue = not DefaultValue
+	local CallBackValue = DefaultValue
 
 	local LayoutOrder = 0
 
@@ -180,7 +180,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		end
 	end
 
-	CallBackToggle(not CallBackValue)
+	CallBackToggle(DefaultValue)
 
 	Toggle.Name = "Toggle"
 	Toggle.Parent = Parent
