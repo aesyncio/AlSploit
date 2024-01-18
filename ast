@@ -160,11 +160,13 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	local UIGradient = Instance.new("UIGradient")
 	local DropDownButton = Instance.new("ImageButton")
 
-	local CallBackValue = false
+	local CallBackValue = DefaultValue
 
 	local LayoutOrder = 0
 
 	local function CallBackToggle(Value)
+		print(Value)
+		
 		Value = Value or (not CallBackValue)
 		CallBackValue = Value
 		
