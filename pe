@@ -169,19 +169,19 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 		
 		task.spawn(function()
 			if Value == true then
-				CallBack(true)
-
 				CallBackValue = true
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+			
+				CallBack(true)
 			end
 		end)
 		
 		task.spawn(function()
 			if Value == false then
-				CallBack(false)
-
 				CallBackValue = false
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+			
+				CallBack(false)
 			end
 		end)
 	end
@@ -209,7 +209,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	UIPadding.Parent = Toggle
 	UIPadding.PaddingLeft = UDim.new(0, 15)
 
-	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = Toggle
 
