@@ -575,16 +575,6 @@ local Loaded = false
 
 local SaveFileName = "AlSploitBedwarsSaving"
 
-local function CheckFirstTime()
-	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
-		return false
-	end
-
-	if not isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
-		return true
-	end
-end
-
 local function CreateSettingsFile()
 	Settings = {
 		NoPlacementCps = {Value = true, KeyBind = "..."},
@@ -637,11 +627,13 @@ local function CreateSettingsFile()
 	end
 end
 
-function LoadSettings()
-	Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
-	
+local function CheckFirstTime()
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
-		Loaded = true
+		return false
+	end
+
+	if not isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
+		return true
 	end
 end
 
@@ -649,6 +641,14 @@ function SaveSettings()
 	local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
+end
+
+function LoadSettings()
+	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
+		Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
+		
+		Loaded = true
+	end
 end
 
 task.spawn(function()
@@ -664,10 +664,8 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	task.wait(0.5)
-
 	repeat
-		task.wait(0.5)
+		task.wait(1)
 
 		SaveSettings()
 	until not game
