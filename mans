@@ -636,10 +636,12 @@ local function CreateSettingsFile()
 
 			local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
-			writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)			
+			writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
 		end
 	end
 end
+
+print(CheckFirstTime())
 
 function LoadSettings()
 	Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
@@ -650,6 +652,8 @@ function LoadSettings()
 end
 
 function SaveSettings()
+	deletefile("AlSploitBedwarsConfig/" .. SaveFileName)
+	
 	local JSONEncodeSettings = HttpService:JSONEncode(Settings)
 
 	writefile("AlSploitBedwarsConfig/" .. SaveFileName, JSONEncodeSettings)	
