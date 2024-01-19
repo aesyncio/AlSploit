@@ -809,9 +809,7 @@ local function GetMatchState()
 end
 
 function SwitchItem(Item)
-	if LocalPlayer.Character.HandInvItem.Value ~= Item then
-		Client:Get(EquipItemRemote):CallServerAsync({hand = Item})
-	end	
+	Client:Get(EquipItemRemote):CallServerAsync({hand = Item})	
 end
 
 local function GetSword()
