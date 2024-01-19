@@ -737,7 +737,7 @@ local function FindNearestEntity(MaxDistance)
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-				if Distance < NearestEntityDistance and  Distance <= Settings.KillAura.Range then
+				if Distance < NearestEntityDistance and  Distance <= MaxDistance then
 					NearestEntityDistance = Distance
 					NearestEntity = v
 				end
@@ -750,7 +750,7 @@ local function FindNearestEntity(MaxDistance)
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-				if Distance < NearestEntityDistance and Distance <= Settings.KillAura.Range then
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
 					NearestEntityDistance = Distance
 					NearestEntity = v
 				end
@@ -763,7 +763,7 @@ local function FindNearestEntity(MaxDistance)
 			if v.PrimaryPart then
 				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-				if Distance < NearestEntityDistance and Distance <= Settings.KillAura.Range then
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
 					NearestEntityDistance = Distance
 					NearestEntity = v
 				end
@@ -776,7 +776,7 @@ local function FindNearestEntity(MaxDistance)
 			if IsAlive(v) and v ~= LocalPlayer and v.Team ~= LocalPlayer.Team then
 				local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
-				if Distance < NearestEntityDistance and Distance <= Settings.KillAura.Range then
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
 					NearestEntityDistance = Distance
 					NearestEntity= v
 					IsNotAPlayer = false
@@ -833,6 +833,16 @@ local function GetSword()
 	return Sword
 end
 
+function HasItem(Name)
+	for i, v in next, (GetInventory(LocalPlayer).items) do
+		if v.itemType:find(Name) then
+			return v, i
+		end
+	end	
+
+	return nil
+end
+
 function IsAlive(Player)
 	Player = Player or LocalPlayer
 
@@ -870,24 +880,48 @@ task.spawn(function()
 				KillAuraAnimationCooldown = true
 			end
 		end)
-
+		
 		task.spawn(function()
-			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+			if Settings.KillAura.ToolCheck == false then
+				SwitchItem(Weapon.tool)
+				
+				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
-			SwordHitRemote:FireServer({
-				weapon = Weapon.tool,
-				chargedAttack = {chargeRatio = 0},
-				entityInstance = Entity,
-				validate = {
-					raycast = {
-						cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-						cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
-					},
-					targetPosition = HashFunction(EntityPrimaryPart.Position),
-					selfPosition = HashFunction(SelfPosition)
-				}
-			})
-		end)	
+				SwordHitRemote:FireServer({
+					weapon = Weapon.tool,
+					chargedAttack = {chargeRatio = 0},
+					entityInstance = Entity,
+					validate = {
+						raycast = {
+							cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+							cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
+						},
+						targetPosition = HashFunction(EntityPrimaryPart.Position),
+						selfPosition = HashFunction(SelfPosition)
+					}
+				})
+			end
+			
+			if Settings.KillAura.ToolCheck == true then
+				if HasItem(Weapon.tool) then
+					SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+
+					SwordHitRemote:FireServer({
+						weapon = Weapon.tool,
+						chargedAttack = {chargeRatio = 0},
+						entityInstance = Entity,
+						validate = {
+							raycast = {
+								cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+								cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
+							},
+							targetPosition = HashFunction(EntityPrimaryPart.Position),
+							selfPosition = HashFunction(SelfPosition)
+						}
+					})
+				end				
+			end
+		end)
 	end
 
 	task.spawn(function()
