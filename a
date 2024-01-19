@@ -862,12 +862,6 @@ task.spawn(function()
 		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 		task.spawn(function()
-			if Settings.KillAura.ToolCheck == false then
-				SwitchItem(Weapon.tool)
-			end
-		end)
-
-		task.spawn(function()
 			if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
 				KillAuraAnimationCooldown = false
 
@@ -1177,9 +1171,11 @@ task.spawn(function()
 	local Sprint, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Sprint", Settings.Sprint.Value, function(CallBack)
 		Settings.Sprint.Value = CallBack
 		
-		local OldSprintFunction = SprintController.stopSprinting
+		local OldSprintFunction
 
 		if Settings.Sprint.Value == true then
+			OldSprintFunction = SprintController.stopSprinting
+			
 			SprintController.stopSprinting = function(...)
 				local Function = OldSprintFunction(...)
 
