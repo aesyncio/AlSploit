@@ -331,7 +331,7 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	MiniToggle.Size = UDim2.new(0.99999994, 0, 0.0353890099, 0)
 	MiniToggle.AutoButtonColor = false
 	MiniToggle.Font = Enum.Font.GothamBold
-	MiniToggle.Text = "CustomAnimation"
+	MiniToggle.Text = Name
 	MiniToggle.TextColor3 = Color3.new(255, 255, 255)
 	MiniToggle.TextSize = 11.000
 	MiniToggle.LayoutOrder = LayoutOrder
