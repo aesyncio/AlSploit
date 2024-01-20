@@ -958,7 +958,7 @@ local function SwordHit(Entity, Weapon)
 
 	task.spawn(function()
 		if Settings.KillAura.ToolCheck == false then
-			SwitchItem(Weapon.tool)
+			SwitchItem(Weapon.itemType)
 
 			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
