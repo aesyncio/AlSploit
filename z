@@ -958,7 +958,7 @@ local function SwordHit(Entity, Weapon)
 
 	task.spawn(function()
 		if Settings.KillAura.ToolCheck == false then
-			SwitchItem(Weapon)
+			SwitchItem(Weapon.tool)
 
 			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -1025,16 +1025,6 @@ task.spawn(function()
 				end
 			end		
 		end)
-		
-		task.spawn(function()
-			if Settings.ChestStealer.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-				local NearestChest = FindNearestChest()
-				
-				if NearestChest then
-					StealChest(NearestChest)
-				end
-			end
-		end)
 	until not game
 end)
 
@@ -1047,6 +1037,16 @@ task.spawn(function()
 				GroundHitRemote:FireServer()
 			end
 		end)		
+		
+		task.spawn(function()
+			if Settings.ChestStealer.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				local NearestChest = FindNearestChest()
+
+				if NearestChest then
+					StealChest(NearestChest)
+				end
+			end
+		end)
 	until not game	
 end)
 
@@ -1756,6 +1756,11 @@ task.spawn(function()
 			debug.setupvalue(DamageIndicator, 10, {
 				Create = function(self, obj, ...)
 					obj = OldObj
+					
+					task.spawn(function()
+						task.wait(0.5)
+						obj.Parent:Destroy()
+					end)					
 				end
 			})
 		end
