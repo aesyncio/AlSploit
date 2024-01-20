@@ -794,6 +794,10 @@ local function FindNearestEntity(MaxDistance)
 	return nil
 end
 
+local function GetMatchState()
+	return ClientHandlerStore:getState().Game.matchState
+end
+
 local function HashFunction(Value)
 	return {value = Value}
 end
@@ -804,10 +808,6 @@ local function GetInventory(Player)
 	local Inventory = InventoryUtil.getInventory(Player).items
 
 	return Inventory
-end
-
-local function GetMatchState()
-	return ClientHandlerStore:getState().Game.matchState
 end
 
 function SwitchItem(Item)
@@ -878,7 +878,6 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
 				SwitchItem(Weapon.itemType)
-				SwitchItem(Weapon.tool)
 				
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
