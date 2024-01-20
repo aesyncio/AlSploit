@@ -7,6 +7,7 @@ local LightingService = game:GetService("Lighting")
 local PlayerService = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
+local Runservice = game:GetService("RunService")
 local WorkSpace = game:GetService("Workspace") or workspace
 
 local AlSploit = Instance.new("ScreenGui")
@@ -1284,7 +1285,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, 18, LayoutOrder + 4, function(CallBack)
+				InstanceUI = CreateSlider(CombatTab, "Range", Settings.KillAura.Range, 20, LayoutOrder + 4, function(CallBack)
 					Settings.KillAura.Range = CallBack
 				end)
 			end
@@ -1704,6 +1705,84 @@ task.spawn(function()
 							end
 
 							if Settings.DamageBoost.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local Indicators, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Indicators", Settings.Indicators.Value, function(CallBack)
+		Settings.Indicators.Value = CallBack
+		
+		local OldObj = debug.getupvalue(DamageIndicator, 10)
+		
+		if Settings.Indicators.Value == true then
+			local Messages = {"AlSploit", "Best Client", ":D", "💀"}
+
+			debug.setupvalue(DamageIndicator, 10, {
+				Create = function(self, obj, ...)
+					task.spawn(function()
+						if Settings.Indicators.Value == true then
+							local Message = Messages[math.random(#Messages)]
+
+							obj.Parent.Text = Message
+							obj.Parent.TextColor3 = Color3.fromHSV(tick() % 10 / 10, 2, 2)
+
+							task.spawn(function()
+								task.wait(0.75)
+
+								if Settings.Indicators.Value == true then
+									obj.Parent:Destroy()
+								end
+							end)
+						end
+					end)
+				end
+			})
+		end
+		
+		if Settings.Indicators.Value == false then
+			local Messages = {"AlSploit", "Best Client", ":D", "💀"}
+
+			debug.setupvalue(DamageIndicator, 10, {
+				Create = function(self, obj, ...)
+					obj = OldObj
+				end
+			})
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(WorldTab, Settings.Indicators.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Indicators.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.Indicators.KeyBind then
+							Settings.Indicators.Value = not Settings.Indicators.Value
+
+							if Settings.Indicators.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.Indicators.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
