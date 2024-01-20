@@ -801,7 +801,7 @@ end
 local function GetInventory(Player)
 	local Player = Player or LocalPlayer
 
-	local Inventory = InventoryUtil.getInventory(Player).items
+	local Inventory = InventoryUtil.getInventory(Player)
 
 	return Inventory
 end
@@ -817,7 +817,7 @@ end
 local function GetSword()
 	local HighestDamage, Sword = -math.huge, nil
 
-	for i, v in next, GetInventory(LocalPlayer) do 
+	for i, v in next, GetInventory(LocalPlayer).items do 
 		local SwordMetaGame = ItemTable[v.itemType].sword
 
 		if SwordMetaGame then
@@ -834,7 +834,8 @@ local function GetSword()
 end
 
 function HasItem(Name)
-	for i, v in next, GetInventory(LocalPlayer) do
+	for i, v in next, GetInventory(LocalPlayer).items do
+		print(v.itemType)
 		if v.itemType:find(Name) then
 			return v, i
 		end
