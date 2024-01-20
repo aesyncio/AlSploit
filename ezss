@@ -582,7 +582,7 @@ end
 local Settings = {}
 local Loaded = false
 
-local SaveFileName = "AlSploitBedwarsSaving"
+local SaveFileName = "AlSploitBedwarsModuleSaving"
 
 local function CreateSettingsFile()
 	Settings = {
@@ -591,6 +591,7 @@ local function CreateSettingsFile()
 		InfiniteJump = {Value = true, KeyBind = "..."},
 		Autoclicker = {Value = true, KeyBind = "..."},
 		NoKnockBack = {Value = true, KeyBind = "..."},	
+		InfiniteFly = {Value = false, KeyBind = "..."},
 		DamageBoost = {Value = true},
 		ChatSpammer = {Value = false, Speed = 50, KeyBind = "..."},
 		AcDisabler = {Value = true, KeyBind = "..."},
@@ -619,6 +620,7 @@ local function CreateSettingsFile()
 		Nuker = {Value = true, Range = 30, BreakOres = true, KeyBind = "..."},
 		BedTp = {Value = true, KeyBind = "..."},
 		Cape = {Value = true, KeyBind = "..."},
+		Fly = {Value = false, KeyBind = "..."},
 		Esp = {Value = true, KeyBind = "..."},
 		Fov = {Value = false, Fov = 100, KeyBind = "..."}
 	}
@@ -875,7 +877,7 @@ task.spawn(function()
 		
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
-				SwitchItem(Weapon.tool)
+				SwitchItem(Weapon.itemType)
 				
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -911,7 +913,7 @@ task.spawn(function()
 							selfPosition = HashFunction(SelfPosition)
 						}
 					})
-				end				
+				end
 			end
 		end)
 	end
