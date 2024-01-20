@@ -1047,9 +1047,9 @@ end)
 
 task.spawn(function()
 	repeat
-		task.spawn(function()
-			task.wait(0.5)
-
+		task.wait(0.5)
+		
+		task.spawn(function()			
 			if Settings.NoFall.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				GroundHitRemote:FireServer()
 			end
