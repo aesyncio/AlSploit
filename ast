@@ -801,7 +801,7 @@ end
 local function GetInventory(Player)
 	local Player = Player or LocalPlayer
 
-	local Inventory = InventoryUtil.getInventory(Player)
+	local Inventory = InventoryUtil.getInventory(Player).items
 
 	return Inventory
 end
@@ -817,7 +817,7 @@ end
 local function GetSword()
 	local HighestDamage, Sword = -math.huge, nil
 
-	for i, v in next, GetInventory(LocalPlayer).items do 
+	for i, v in next, GetInventory(LocalPlayer) do 
 		local SwordMetaGame = ItemTable[v.itemType].sword
 
 		if SwordMetaGame then
@@ -834,8 +834,7 @@ local function GetSword()
 end
 
 function HasItem(Name)
-	for i, v in next, GetInventory(LocalPlayer).items do
-		print(v.itemType)
+	for i, v in next, GetInventory(LocalPlayer) do
 		if v.itemType:find(Name) then
 			return v, i
 		end
@@ -879,6 +878,7 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
 				SwitchItem(Weapon.itemType)
+				SwitchItem(Weapon.tool)
 				
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -898,7 +898,7 @@ task.spawn(function()
 			end
 			
 			if Settings.KillAura.ToolCheck == true then
-				if HasItem(Weapon) then
+				if HasItem(Weapon.itemType) then
 					SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 					SwordHitRemote:FireServer({
