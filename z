@@ -169,16 +169,16 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 			if Value == true then
 				CallBackValue = true
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-			
+
 				CallBack(true)
 			end
 		end)
-		
+
 		task.spawn(function()
 			if Value == false then
 				CallBackValue = false
 				UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-			
+
 				CallBack(false)
 			end
 		end)
@@ -219,7 +219,7 @@ local function CreateToggle(Parent, Name, DefaultValue, CallBack)
 	DropDownButton.Rotation = 90.000
 	DropDownButton.Size = UDim2.new(0.132, 0, 0.668, 0)
 	DropDownButton.Image = "http://www.roblox.com/asset/?id=12809025337"
-	
+
 	CallBackToggle(CallBackValue)
 
 	task.spawn(function()
@@ -339,7 +339,7 @@ local function CreateMiniToggle(Parent, Name, DefaultValue, LayoutOrder, CallBac
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 	UIGradient.Rotation = 90
 	UIGradient.Parent = MiniToggle
-	
+
 	CallBackToggle(CallBackValue)
 
 	task.spawn(function()
@@ -582,14 +582,14 @@ end
 local Settings = {}
 local Loaded = false
 
-local SaveFileName = "AlSploitBedwarsModuleSaving"
+local SaveFileName = "AlSploitSaving"
 
 local function CreateSettingsFile()
 	Settings = {
 		NoPlacementCps = {Value = true, KeyBind = "..."},
-		ChestStealer = {Value = true, KeyBind = "..."},
+		ChestStealer = {Value = true, Range = 30, KeyBind = "..."},
 		InfiniteJump = {Value = true, KeyBind = "..."},
-		Autoclicker = {Value = true, KeyBind = "..."},
+		Autoclicker = {Value = true, Cps = 20, KeyBind = "..."},
 		NoKnockBack = {Value = true, KeyBind = "..."},	
 		InfiniteFly = {Value = false, KeyBind = "..."},
 		DamageBoost = {Value = true},
@@ -604,7 +604,7 @@ local function CreateSettingsFile()
 		PlayAgain = {Value = true, KeyBind = "..."},
 		Invisible = {Value = false, KeyBind = "..."},
 		AimAssist = {Value = true, Range = 18, KeyBind = "..."},
-		Scaffold = {Value = false, KeyBind = "..."},
+		Scaffold = {Value = false, ExpandDistance = 2, KeyBind = "..."},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, KeyBind = "..."},
 		AntiVoid = {Value = true, Transparency = 0.65, KeyBind = "..."},
 		AutoBank = {Value = true, KeyBind = "..."},
@@ -657,14 +657,14 @@ end
 function LoadSettings()
 	if isfile("AlSploitBedwarsConfig/" .. SaveFileName) then
 		Settings = HttpService:JSONDecode(readfile("AlSploitBedwarsConfig/" .. SaveFileName))
-		
+
 		Loaded = true
 	end
 end
 
 task.spawn(function()
 	local FirstTime = CheckFirstTime()
-	
+
 	if FirstTime == true then
 		CreateSettingsFile()
 	end
@@ -721,6 +721,7 @@ local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
 local KillAuraAnimationCooldown = true
+local DamageBoost = false
 
 local Animations = {
 	KillAura = {
@@ -794,6 +795,33 @@ local function FindNearestEntity(MaxDistance)
 	return nil
 end
 
+local function FindNearestChest()
+	local NearestChest = nil
+	local MinDistance = math.huge	
+
+	for i, v in next, CollectionService:GetTagged("chest") do
+		if v:FindFirstChild("ChestFolderValue") then
+			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+			if Distance < MinDistance then
+				NearestChest = v
+				MinDistance = Distance				
+			end
+		end
+	end
+
+	return NearestChest:FindFirstChild("ChestFolderValue")
+end
+
+local function SendChatMessage(Message)
+	local Args = {
+		[1] = Message,
+		[2] = "All"
+	}
+
+	SendMessageRemote:FireServer(unpack(Args))
+end
+
 local function GetMatchState()
 	return ClientHandlerStore:getState().Game.matchState
 end
@@ -810,10 +838,30 @@ local function GetInventory(Player)
 	return Inventory
 end
 
-function SwitchItem(Item)
+local function SwitchItem(Item)
 	if LocalPlayer.Character.HandInvItem.Value ~= Item then
 		Client:Get(EquipItemRemote):CallServerAsync({hand = Item})
 	end	
+end
+
+local function StealChest(NearestChest)
+	local Chestitems = NearestChest and NearestChest:GetChildren()
+
+	if #Chestitems > 1 then
+		SetObservedChestRemote:FireServer("BlockChest")
+
+		for i, v in next, Chestitems do
+			if v:IsA("Accessory") then
+				task.spawn(function()
+					ChestGetItemRemote:InvokeServer(NearestChest, v)
+				end)
+			end
+		end
+
+		task.wait(0.001)
+
+		SetObservedChestRemote:FireServer(nil)
+	end
 end
 
 local function GetSword()
@@ -835,7 +883,40 @@ local function GetSword()
 	return Sword
 end
 
-function HasItem(Name)
+local function ChatSpam()
+	task.wait(100 / Settings.ChatSpammer.Speed)
+
+	local Randomized = math.random(0, 5)
+	local KillMessage = ""
+
+	if Randomized == 0 then
+		KillMessage = "AlSploit does more updates than Bedwars 💀. | AlSploit On Top"
+	end
+
+	if Randomized ~= 0 then
+		KillMessage = "SkidB4 is as bad as how you felt when your dad left you. | AlSploit On Top"
+	end
+
+	if Randomized == 2 then
+		KillMessage = "Switch to AlSploit, ez wins. | AlSploit On Top"
+	end
+
+	if Randomized == 3 then
+		KillMessage = "I am not cheating, my gaming chair is. | AlSploit On Top"
+	end
+
+	if Randomized == 4 then
+		KillMessage = "3 years now, and the anticheat is still the same. | AlSploit On Top"
+	end
+
+	if Randomized == 5 then
+		KillMessage = "Kids in bedwars just keep getting worst. | AlSploit On Top"
+	end
+
+	SendChatMessage(KillMessage)
+end
+
+local function HasItem(Name)
 	for i, v in next, GetInventory(LocalPlayer) do
 		if v.itemType:find(Name) then
 			return v, i
@@ -856,31 +937,49 @@ function IsAlive(Player)
 	return true
 end	
 
-task.spawn(function()
-	local function SwordHit(Entity, Weapon)
-		local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
-		local EntityPrimaryPart = Entity.PrimaryPart
+local function SwordHit(Entity, Weapon)
+	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
+	local EntityPrimaryPart = Entity.PrimaryPart
 
-		local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+	local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
-		task.spawn(function()
-			if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
-				KillAuraAnimationCooldown = false
+	task.spawn(function()
+		if KillAuraAnimationCooldown and Settings.KillAura.CustomAnimation == true then
+			KillAuraAnimationCooldown = false
 
-				for i, v in next, Animations.KillAura do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+			for i, v in next, Animations.KillAura do
+				local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
 
-					task.wait(v.Time - 0.01)
-				end
-
-				KillAuraAnimationCooldown = true
+				task.wait(v.Time - 0.01)
 			end
-		end)
-		
-		task.spawn(function()
-			if Settings.KillAura.ToolCheck == false then
-				SwitchItem(Weapon.tool)
-				
+
+			KillAuraAnimationCooldown = true
+		end
+	end)
+
+	task.spawn(function()
+		if Settings.KillAura.ToolCheck == false then
+			SwitchItem(Weapon.itemType)
+
+			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+
+			SwordHitRemote:FireServer({
+				weapon = Weapon.tool,
+				chargedAttack = {chargeRatio = 0},
+				entityInstance = Entity,
+				validate = {
+					raycast = {
+						cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+						cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
+					},
+					targetPosition = HashFunction(EntityPrimaryPart.Position),
+					selfPosition = HashFunction(SelfPosition)
+				}
+			})
+		end
+
+		if Settings.KillAura.ToolCheck == true then
+			if HasItem(Weapon.itemType) then
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 				SwordHitRemote:FireServer({
@@ -897,33 +996,15 @@ task.spawn(function()
 					}
 				})
 			end
-			
-			if Settings.KillAura.ToolCheck == true then
-				if HasItem(Weapon.itemType) then
-					SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+		end
+	end)
+end
 
-					SwordHitRemote:FireServer({
-						weapon = Weapon.tool,
-						chargedAttack = {chargeRatio = 0},
-						entityInstance = Entity,
-						validate = {
-							raycast = {
-								cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
-								cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
-							},
-							targetPosition = HashFunction(EntityPrimaryPart.Position),
-							selfPosition = HashFunction(SelfPosition)
-						}
-					})
-				end
-			end
-		end)
-	end
+task.spawn(function()
+	repeat
+		task.wait()
 
-	task.spawn(function()
-		repeat
-			task.wait()
-
+		task.spawn(function()
 			if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
 				local Sword = GetSword()
@@ -932,29 +1013,69 @@ task.spawn(function()
 					SwordHit(NearestEntity, Sword)
 				end
 			end
-		until not game
-	end)
+		end)
+
+		task.spawn(function()
+			if Settings.AimAssist.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
+
+				if NearestEntity then
+					local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
+
+					Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
+				end
+			end		
+		end)
+		
+		task.spawn(function()
+			if Settings.ChestStealer.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				local NearestChest = FindNearestChest()
+				
+				if NearestChest then
+					StealChest(NearestChest)
+				end
+			end
+		end)
+		
+		task.spawn(function()
+			if Settings.ChatSpammer.Value == true and GetMatchState() ~= 0 then
+				ChatSpam()
+			end
+		end)
+	until not game
 end)
 
 task.spawn(function()
 	repeat
-		task.wait()
-		
-		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-			local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
+		task.spawn(function()
+			task.wait(0.5)
 
-			if NearestEntity then
-				local LookVector = (NearestEntity.PrimaryPart.Position - Camera.CFrame.Position).unit
-
-				Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
+			if Settings.NoFall.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				GroundHitRemote:FireServer()
 			end
-		end		
-	until not game
+		end)		
+	until not game	
+end)
+
+task.spawn(function()	
+	Client:WaitFor("EntityDamageEvent"):andThen(function(v)
+		v:Connect(function(Player) 
+			if Player.entityInstance == LocalPlayer.Character and Settings.DamageBoost.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then 
+				task.spawn(function()
+					DamageBoost = true
+
+					task.wait(0.8)
+
+					DamageBoost = false	
+				end) 
+			end 
+		end)    
+	end)
 end)
 
 local CombatTab = CreateTab("Combat")
-local UtilityTab = CreateTab("Utility")
 local BlatantTab = CreateTab("Blatant")
+local UtilityTab = CreateTab("Utility")
 local WorldTab = CreateTab("World")
 
 task.spawn(function()
@@ -1073,7 +1194,7 @@ end)
 
 task.spawn(function()
 	print(Settings.KillAura.Value)
-	
+
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
@@ -1131,7 +1252,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1174,12 +1295,12 @@ end)
 task.spawn(function()
 	local Sprint, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Sprint", Settings.Sprint.Value, function(CallBack)
 		Settings.Sprint.Value = CallBack
-		
+
 		local OldSprintFunction
 
 		if Settings.Sprint.Value == true then
 			OldSprintFunction = SprintController.stopSprinting
-			
+
 			SprintController.stopSprinting = function(...)
 				local Function = OldSprintFunction(...)
 
@@ -1341,6 +1462,259 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local InfiniteJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteJump", Settings.InfiniteJump.Value, function(CallBack)
+		Settings.InfiniteJump.Value = CallBack
+		
+		if Settings.InfiniteJump.Value == true then
+			task.spawn(function()
+				UserInputService.JumpRequest:Connect(function()
+					if IsAlive(LocalPlayer) and Settings.InfiniteJump.Value == true then
+						LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+					end
+				end)
+			end)		
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.InfiniteJump.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.InfiniteJump.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.InfiniteJump.KeyBind then
+							Settings.InfiniteJump.Value = not Settings.InfiniteJump.Value
+
+							if Settings.InfiniteJump.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.InfiniteJump.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local ChestStealer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "ChestStealer", Settings.ChestStealer.Value, function(CallBack)
+		Settings.ChestStealer.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.ChestStealer.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.ChestStealer.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.ChestStealer.KeyBind then
+							Settings.ChestStealer.Value = not Settings.ChestStealer.Value
+
+							if Settings.ChestStealer.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.ChestStealer.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(BlatantTab, "Range", Settings.ChestStealer.Range, 30, LayoutOrder + 2, function(CallBack)
+					Settings.ChestStealer.Range = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local NoFall, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.NoFall.Value, function(CallBack)
+		Settings.NoFall.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.NoFall.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.NoFall.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.NoFall.KeyBind then
+							Settings.NoFall.Value = not Settings.NoFall.Value
+
+							if Settings.NoFall.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.NoFall.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local ChatSpammer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "ChatSpammer", Settings.ChatSpammer.Value, function(CallBack)
+		Settings.ChatSpammer.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.ChatSpammer.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.ChatSpammer.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.ChatSpammer.KeyBind then
+							Settings.ChatSpammer.Value = not Settings.ChatSpammer.Value
+
+							if Settings.ChatSpammer.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.ChatSpammer.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 2, function(CallBack)
+					Settings.ChatSpammer.Speed = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
+		Settings.DamageBoost.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.DamageBoost.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
+							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
+
+							if Settings.DamageBoost.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.DamageBoost.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	CreateNotification(5, "AlSploit has loaded!")
-	setfps(999)
+	setfpscap(999)
 end)
