@@ -834,7 +834,7 @@ local function GetSword()
 end
 
 function HasItem(Name)
-	for i, v in next, (GetInventory(LocalPlayer).items) do
+	for i, v in next, GetInventory(LocalPlayer) do
 		if v.itemType:find(Name) then
 			return v, i
 		end
@@ -1340,4 +1340,5 @@ end)
 
 task.spawn(function()
 	CreateNotification(5, "AlSploit has loaded!")
+	setfps(999)
 end)
