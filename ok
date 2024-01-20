@@ -884,8 +884,6 @@ local function GetSword()
 end
 
 local function ChatSpam()
-	task.wait(100 / Settings.ChatSpammer.Speed)
-
 	local Randomized = math.random(0, 5)
 	local KillMessage = ""
 
@@ -959,7 +957,7 @@ local function SwordHit(Entity, Weapon)
 
 	task.spawn(function()
 		if Settings.KillAura.ToolCheck == false then
-			SwitchItem(Weapon.itemType)
+			SwitchItem(Weapon)
 
 			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -1036,12 +1034,6 @@ task.spawn(function()
 				end
 			end
 		end)
-		
-		task.spawn(function()
-			if Settings.ChatSpammer.Value == true and GetMatchState() ~= 0 then
-				ChatSpam()
-			end
-		end)
 	until not game
 end)
 
@@ -1054,6 +1046,18 @@ task.spawn(function()
 				GroundHitRemote:FireServer()
 			end
 		end)		
+	until not game	
+end)
+
+task.spawn(function()
+	repeat
+		task.wait(100 / Settings.ChatSpammer.Speed)
+		
+		task.spawn(function()
+			if Settings.ChatSpammer.Value == true and GetMatchState() ~= 0 then
+				ChatSpam()
+			end
+		end)
 	until not game	
 end)
 
@@ -1614,47 +1618,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
-		Settings.DamageBoost.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.DamageBoost.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
-							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
-
-							if Settings.DamageBoost.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.DamageBoost.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local ChatSpammer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "ChatSpammer", Settings.ChatSpammer.Value, function(CallBack)
 		Settings.ChatSpammer.Value = CallBack
 	end)
@@ -1693,7 +1656,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -1704,6 +1667,47 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 2, function(CallBack)
 					Settings.ChatSpammer.Speed = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
+		Settings.DamageBoost.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.DamageBoost.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
+							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
+
+							if Settings.DamageBoost.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.DamageBoost.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
 				end)
 			end
 
