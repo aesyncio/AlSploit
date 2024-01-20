@@ -422,7 +422,7 @@ local function CreateSlider(Parent, Name, DefaultValue, MaximumValue, LayoutOrde
 	Title.Position = UDim2.new(0.321428567, 0, -3.7615819, 0)
 	Title.Size = UDim2.new(0.357142866, 0, 2.5, 0)
 	Title.Font = Enum.Font.GothamBold
-	Title.Text = "Range: 18"
+	Title.Text = Name .. ": " .. DefaultValue
 	Title.TextColor3 = Color3.new(255, 255, 255)
 	Title.TextSize = 11.00
 
@@ -582,7 +582,7 @@ end
 local Settings = {}
 local Loaded = false
 
-local SaveFileName = "AlSploitSaving"
+local SaveFileName = "AlSploitConfigSavingBedwars"
 
 local function CreateSettingsFile()
 	Settings = {
@@ -592,7 +592,7 @@ local function CreateSettingsFile()
 		Autoclicker = {Value = true, Cps = 20, KeyBind = "..."},
 		NoKnockBack = {Value = true, KeyBind = "..."},	
 		InfiniteFly = {Value = false, KeyBind = "..."},
-		DamageBoost = {Value = true},
+		DamageBoost = {Value = true, KeyBind = "..."},
 		ChatSpammer = {Value = false, Speed = 50, KeyBind = "..."},
 		AcDisabler = {Value = true, KeyBind = "..."},
 		FpsBooster = {Value = false, KeyBind = "..."},
@@ -1293,6 +1293,57 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Reach, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Reach", Settings.Reach.Value, function(CallBack)
+		Settings.Reach.Value = CallBack
+
+		local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
+
+		if Settings.Reach.Value == true then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
+		end
+
+		if Settings.Reach.Value == false then
+			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(CombatTab, Settings.Reach.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Reach.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.Reach.KeyBind then
+							Settings.Reach.Value = not Settings.Reach.Value
+
+							if Settings.Reach.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.Reach.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local Sprint, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Sprint", Settings.Sprint.Value, function(CallBack)
 		Settings.Sprint.Value = CallBack
 
@@ -1345,57 +1396,6 @@ task.spawn(function()
 							end
 
 							if Settings.Sprint.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end) 
-
-task.spawn(function()
-	local Reach, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "Reach", Settings.Reach.Value, function(CallBack)
-		Settings.Reach.Value = CallBack
-
-		local OldReach = CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE
-
-		if Settings.Reach.Value == true then
-			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = 20
-		end
-
-		if Settings.Reach.Value == false then
-			CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = OldReach
-		end
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(CombatTab, Settings.Reach.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.Reach.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.Reach.KeyBind then
-							Settings.Reach.Value = not Settings.Reach.Value
-
-							if Settings.Reach.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.Reach.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
@@ -1462,6 +1462,66 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local ChestStealer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "ChestStealer", Settings.ChestStealer.Value, function(CallBack)
+		Settings.ChestStealer.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.ChestStealer.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.ChestStealer.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.ChestStealer.KeyBind then
+							Settings.ChestStealer.Value = not Settings.ChestStealer.Value
+
+							if Settings.ChestStealer.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.ChestStealer.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(BlatantTab, "Range", Settings.ChestStealer.Range, 30, LayoutOrder + 2, function(CallBack)
+					Settings.ChestStealer.Range = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local InfiniteJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteJump", Settings.InfiniteJump.Value, function(CallBack)
 		Settings.InfiniteJump.Value = CallBack
 		
@@ -1513,66 +1573,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local ChestStealer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "ChestStealer", Settings.ChestStealer.Value, function(CallBack)
-		Settings.ChestStealer.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.ChestStealer.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.ChestStealer.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.ChestStealer.KeyBind then
-							Settings.ChestStealer.Value = not Settings.ChestStealer.Value
-
-							if Settings.ChestStealer.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.ChestStealer.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateSlider(BlatantTab, "Range", Settings.ChestStealer.Range, 30, LayoutOrder + 2, function(CallBack)
-					Settings.ChestStealer.Range = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local NoFall, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.NoFall.Value, function(CallBack)
 		Settings.NoFall.Value = CallBack
 	end)
@@ -1599,6 +1599,47 @@ task.spawn(function()
 							end
 
 							if Settings.NoFall.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
+		Settings.DamageBoost.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.DamageBoost.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
+							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
+
+							if Settings.DamageBoost.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.DamageBoost.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
@@ -1663,47 +1704,6 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 2, function(CallBack)
 					Settings.ChatSpammer.Speed = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
-		Settings.DamageBoost.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.DamageBoost.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
-							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
-
-							if Settings.DamageBoost.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.DamageBoost.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
 				end)
 			end
 
