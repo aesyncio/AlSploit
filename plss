@@ -811,7 +811,9 @@ local function GetInventory(Player)
 end
 
 function SwitchItem(Item)
-	Client:Get(EquipItemRemote):CallServerAsync({hand = Item})	
+	if LocalPlayer.Character.HandInvItem.Value ~= Item then
+		Client:Get(EquipItemRemote):CallServerAsync({hand = Item})
+	end	
 end
 
 local function GetSword()
@@ -877,7 +879,7 @@ task.spawn(function()
 		
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
-				SwitchItem(Weapon.itemType)
+				SwitchItem(Weapon.tool)
 				
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -922,7 +924,7 @@ task.spawn(function()
 		repeat
 			task.wait()
 
-			if Settings.KillAura.Value == true and IsAlive(LocalPlayer) then
+			if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
 				local Sword = GetSword()
 
@@ -938,7 +940,7 @@ task.spawn(function()
 	repeat
 		task.wait()
 		
-		if IsAlive(LocalPlayer) then
+		if IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			local NearestEntity = FindNearestEntity(Settings.AimAssist.Range)
 
 			if NearestEntity then
