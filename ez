@@ -841,7 +841,7 @@ end
 
 local function SwitchItem(Item)
 	if LocalPlayer.Character.HandInvItem.Value ~= Item then
-		Client:Get(EquipItemRemote):CallServerAsync({hand = Item})
+		EquipItemRemote:InvokeServer({hand = ReplicatedStorage:WaitForChild("Inventories"):WaitForChild("AlSploitRevamped"):WaitForChild(Item)})
 	end	
 end
 
