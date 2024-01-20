@@ -876,9 +876,6 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.KillAura.ToolCheck == false then
 				SwitchItem(Weapon.tool)
-				SwitchItem(Weapon)
-				
-				print("e")
 				
 				SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
@@ -898,7 +895,7 @@ task.spawn(function()
 			end
 			
 			if Settings.KillAura.ToolCheck == true then
-				if HasItem(Weapon.tool) then
+				if HasItem(Weapon) then
 					SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 					SwordHitRemote:FireServer({
