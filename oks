@@ -581,6 +581,71 @@ local function CreateNotification(Duration, Message)
 	end)
 end
 
+local function CreateFlyHud()
+	local Background = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Text = Instance.new("TextLabel")
+	local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+	local DisplayBackground = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local Display = Instance.new("Frame")
+	local UICorner_3 = Instance.new("UICorner")
+
+	Background.Name = "Background"
+	Background.Parent = AlSploit
+	Background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Background.BackgroundTransparency = 0.250
+	Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Background.BorderSizePixel = 0
+	Background.Position = UDim2.new(0.40931946, 0, 0.786585391, 0)
+	Background.Size = UDim2.new(0.177424029, 0, 0.0853658691, 0)
+
+	UICorner.Parent = Background
+
+	Text.Name = "Text"
+	Text.Parent = Background
+	Text.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Text.BackgroundTransparency = 1.000
+	Text.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Text.BorderSizePixel = 0
+	Text.Position = UDim2.new(-0.00332811219, 0, 0.510591209, 0)
+	Text.Size = UDim2.new(0.999999762, 0, 0.489407092, 0)
+	Text.Font = Enum.Font.GothamBold
+	Text.Text = "1"
+	Text.TextColor3 = Color3.fromRGB(175, 105, 255)
+	Text.TextScaled = true
+	Text.TextSize = 20.000
+	Text.TextWrapped = true
+
+	UITextSizeConstraint.Parent = Text
+	UITextSizeConstraint.MaxTextSize = 20
+
+	DisplayBackground.Name = "DisplayBackground"
+	DisplayBackground.Parent = Background
+	DisplayBackground.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	DisplayBackground.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	DisplayBackground.BorderSizePixel = 0
+	DisplayBackground.Position = UDim2.new(0.228761196, 0, 0.266666889, 0)
+	DisplayBackground.Size = UDim2.new(0.544929683, 0, 0.149570271, 0)
+
+	UICorner_2.CornerRadius = UDim.new(0, 6)
+	UICorner_2.Parent = DisplayBackground
+
+	Display.Name = "Display"
+	Display.Parent = DisplayBackground
+	Display.BackgroundColor3 = Color3.fromRGB(175, 105, 255)
+	Display.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Display.BorderSizePixel = 0
+	Display.Position = UDim2.new(-0.0466447435, 0, -0.0290079489, 0)
+	Display.Size = UDim2.new(0.740091681, 0, 1, 0)
+	Display.ZIndex = 2
+
+	UICorner_3.CornerRadius = UDim.new(0, 6)
+	UICorner_3.Parent = Display
+	
+	return Background, Text, Display
+end
+
 local Settings = {}
 local Loaded = false
 
@@ -726,7 +791,12 @@ local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
 local KillAuraAnimationCooldown = true
+local InfiniteFlyValue = false
+local SpoofedCamera = nil
 local DamageBoost = false
+local StartLevel = nil
+local FlyDown = false
+local FlyUp = false
 
 local Animations = {
 	KillAura = {
@@ -734,6 +804,15 @@ local Animations = {
 		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
 	}
 }
+
+local function CreateSpoofedCamera()
+	SpoofedCamera = Instance.new("Part", WorkSpace)
+	SpoofedCamera.Anchored = true
+	SpoofedCamera.Transparency = 1
+	SpoofedCamera.Position = LocalPlayer.Character.Head.Position
+
+	return SpoofedCamera
+end
 
 local function FindNearestEntity(MaxDistance)
 	local NearestEntityDistance = MaxDistance or math.huge
@@ -819,12 +898,7 @@ local function FindNearestChest()
 end
 
 local function SendChatMessage(Message)
-	local Args = {
-		[1] = Message,
-		[2] = "All"
-	}
-
-	SendMessageRemote:FireServer(unpack(Args))
+	SendMessageRemote:FireServer({[1] = Message, [2] = "All"})
 end
 
 local function GetMatchState()
@@ -841,6 +915,44 @@ local function GetInventory(Player)
 	local Inventory = InventoryUtil.getInventory(Player).items
 
 	return Inventory
+end
+
+local function InfiniteFly()
+	if InfiniteFlyValue == true and IsAlive(LocalPlayer) then
+		SpoofedCamera = CreateSpoofedCamera()
+		StartLevel = LocalPlayer.Character.Head.Position.Y
+		
+		if SpoofedCamera then
+			SetCamera(SpoofedCamera)
+		end
+
+		LocalPlayer.Character.PrimaryPart.CFrame += Vector3.new(0, 1000000, 0)
+		SpoofedCamera.Position = Vector3.new(SpoofedCamera.Position.X, StartLevel, SpoofedCamera.Position.Z)
+
+		repeat 
+			task.wait()
+			
+			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (FlyUp and 1 or 0) + (FlyDown and -1 or 0), LocalPlayer.Character.HumanoidRootPart.Position.Z)
+			StartLevel = SpoofedCamera.Position.Y	
+		until InfiniteFlyValue == false or not IsAlive(LocalPlayer)
+
+		if InfiniteFlyValue == false or not IsAlive(LocalPlayer) then
+			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
+			SetCamera(LocalPlayer.Character)
+
+			SpoofedCamera:Destroy()
+			LocalPlayer.Character.PrimaryPart.Anchored = true
+
+			task.wait(0.025)
+
+			game.Workspace.Gravity = 50
+			LocalPlayer.Character.PrimaryPart.Anchored = false
+
+			task.wait(1)
+
+			game.Workspace.Gravity = 196.2
+		end
+	end	
 end
 
 local function SwitchItem(Item)
@@ -869,6 +981,10 @@ local function StealChest(NearestChest)
 
 		SetObservedChestRemote:FireServer(nil)
 	end
+end
+
+function SetCamera(Camera)
+	WorkSpace.CurrentCamera.CameraSubject = Camera
 end
 
 local function AutoToxic(Player)
@@ -994,7 +1110,7 @@ function AutoKit()
 	--end)
 	
 	task.spawn(function()
-		TrinitySetAngelTypRemote:FireServer({["angel"] = "Void"})
+		TrinitySetAngelTypRemote:FireServer({angel = "Void"})
 	end)
 end
 
@@ -1239,6 +1355,28 @@ task.spawn(function()
 				end) 
 			end 
 		end)    
+	end)
+end)
+
+task.spawn(function()
+	UserInputService.InputBegan:Connect(function(Input)
+		if Input.KeyCode == Enum.KeyCode.Space and not UserInputService:GetFocusedTextBox() then
+			FlyUp = true
+		end
+
+		if Input.KeyCode == Enum.KeyCode.LeftShift and not UserInputService:GetFocusedTextBox() then
+			FlyDown = true
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(Input)
+		if Input.KeyCode == Enum.KeyCode.Space and not UserInputService:GetFocusedTextBox() then
+			FlyUp = false
+		end
+
+		if Input.KeyCode == Enum.KeyCode.LeftShift and not UserInputService:GetFocusedTextBox() then
+			FlyDown = false
+		end
 	end)
 end)
 
@@ -1816,7 +1954,68 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.AutoKit.Value, function(CallBack)
+	local InfiniteFly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteFly", Settings.InfiniteFly.Value, function(CallBack)
+		Settings.InfiniteFly.Value = CallBack
+		
+		task.spawn(function()
+			if Settings.InfiniteFly.Value == true then
+				InfiniteFly()
+			end
+			
+			if Settings.InfiniteFly.Value == false then
+				InfiniteFlyValue = false
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.InfiniteFly.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.InfiniteFly.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
+							Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value
+							
+							task.spawn(function()
+								if Settings.InfiniteFly.Value == true then
+									InfiniteFly()
+								end
+
+								if Settings.InfiniteFly.Value == false then
+									InfiniteFlyValue = false
+								end
+							end)							
+
+							if Settings.InfiniteFly.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.InfiniteFly.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
 		Settings.AutoKit.Value = CallBack
 	end)
 
@@ -2085,47 +2284,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AntiStaff, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AntiStaff.Value, function(CallBack)
-		Settings.AntiStaff.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.AntiStaff.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AntiStaff.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.AntiStaff.KeyBind then
-							Settings.AntiStaff.Value = not Settings.AntiStaff.Value
-
-							if Settings.AntiStaff.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.AntiStaff.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local AutoToxic, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
 		Settings.AutoToxic.Value = CallBack
 	end)
@@ -2152,6 +2310,47 @@ task.spawn(function()
 							end
 
 							if Settings.AutoToxic.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AntiStaff, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AntiStaff.Value, function(CallBack)
+		Settings.AntiStaff.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AntiStaff.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AntiStaff.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AntiStaff.KeyBind then
+							Settings.AntiStaff.Value = not Settings.AntiStaff.Value
+
+							if Settings.AntiStaff.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AntiStaff.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
