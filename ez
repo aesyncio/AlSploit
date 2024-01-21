@@ -1688,6 +1688,34 @@ task.spawn(function()
 				end
 			end		
 		end)
+		
+		task.spawn(function()
+			local HipHeight = 1.99999
+
+			if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
+				local Elk = LocalPlayer.Character:FindFirstChild("elk")
+
+				LocalPlayer.Character.Humanoid.HipHeight = HipHeight
+				AnticheatDisabled = true
+
+				if Elk and Elk:FindFirstChild("body_mesh") then
+					Elk:FindFirstChild("body_mesh"):Destroy()
+					Elk.PrimaryPart:Destroy()
+				end
+
+				task.spawn(function()
+					local Args = {
+						[1] = "elk_summon"
+					}
+
+					ElkSummonRemote:FireServer(unpack(Args))
+				end)
+			end
+
+			if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
+				AnticheatDisabled = false
+			end
+		end)
 	until not game
 end)
 
@@ -2499,46 +2527,6 @@ end)
 task.spawn(function()
 	local AcDisabler, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisabler.Value, function(CallBack)
 		Settings.AcDisabler.Value = CallBack
-
-		local HipHeight = 1.99999
-
-		if Settings.AcDisabler.Value == true then
-			task.spawn(function()
-				local Elk = LocalPlayer.Character:FindFirstChild("elk")
-
-				LocalPlayer.Character.Humanoid.HipHeight = HipHeight
-				AnticheatDisabled = true
-
-				if Elk and Elk:FindFirstChild("body_mesh") then
-					Elk:FindFirstChild("body_mesh"):Destroy()
-					Elk.PrimaryPart:Destroy()
-				end
-
-				ElkSummonRemote:FireServer("elk_summon")
-				
-				task.spawn(function()
-					LocalPlayer.CharacterAdded:Connect(function()
-						task.wait(0.3)
-						
-						local Elk = LocalPlayer.Character:FindFirstChild("elk")
-
-						LocalPlayer.Character.Humanoid.HipHeight = HipHeight
-						AnticheatDisabled = true
-
-						if Elk and Elk:FindFirstChild("body_mesh") then
-							Elk:FindFirstChild("body_mesh"):Destroy()
-							Elk.PrimaryPart:Destroy()
-						end
-
-						ElkSummonRemote:FireServer("elk_summon")
-					end)
-				end)
-			end)			
-		end
-
-		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
-			AnticheatDisabled = false
-		end
 	end)
 
 	task.spawn(function()
@@ -2571,6 +2559,57 @@ task.spawn(function()
 					end
 
 					if Settings.AcDisabler.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
+		Settings.HighJump.Value = CallBack
+
+		task.spawn(function()
+			UserInputService.JumpRequest:Connect(function()
+				if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
+					LocalPlayer.Character.PrimaryPart.Velocity = LocalPlayer.Character.PrimaryPart.Velocity + Vector3.new(0, 16.5, 0)
+				end
+			end)
+		end)	
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.HighJump.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.HighJump.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.HighJump.KeyBind then
+					Settings.HighJump.Value = not Settings.HighJump.Value
+
+					if Settings.HighJump.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.HighJump.Value == false then
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
@@ -2916,57 +2955,6 @@ task.spawn(function()
 					end
 
 					if Settings.AutoKit.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
-		Settings.HighJump.Value = CallBack
-
-		task.spawn(function()
-			UserInputService.JumpRequest:Connect(function()
-				if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
-					LocalPlayer.Character.PrimaryPart.Velocity = LocalPlayer.Character.PrimaryPart.Velocity + Vector3.new(0, 16.5, 0)
-				end
-			end)
-		end)	
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.HighJump.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.HighJump.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.HighJump.KeyBind then
-					Settings.HighJump.Value = not Settings.HighJump.Value
-
-					if Settings.HighJump.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.HighJump.Value == false then
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
