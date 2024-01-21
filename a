@@ -7,7 +7,7 @@ local LightingService = game:GetService("Lighting")
 local PlayerService = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
-local Runservice = game:GetService("RunService")
+local RunService = game:GetService("RunService")
 local WorkSpace = game:GetService("Workspace") or workspace
 local CoreGui = game:GetService("CoreGui")
 
@@ -1275,6 +1275,51 @@ local function FpsBoost()
 	end
 end
 
+function GetSpeed()
+	local Speed = 0
+
+	if IsAlive(LocalPlayer) then 
+
+		local SpeedDamageBoost =  LocalPlayer.Character:GetAttribute("SpeedBoost")
+
+		if SpeedDamageBoost and SpeedDamageBoost > 1 then 
+			Speed = Speed + (20 * (SpeedDamageBoost - 1))
+		end
+
+		if LocalPlayer.Character:GetAttribute("SpeedPieBuff") then 
+			Speed = Speed + 5
+		end
+
+		if LocalPlayer.Character:GetAttribute("GrimReaperChannel") then 
+			Speed = Speed + 20
+		end
+
+		local Armor = GetInventory().Armor[3]
+
+		if type(Armor) ~= "table" then Armor = {itemType = ""} end
+
+		if Armor.itemType == "Speed_boots" then 
+			Speed = Speed + 25
+		end
+
+		if ZephyrOrb ~= 0 then
+			Speed = Speed + 19
+		end
+
+		if DamageBoost == true then
+			Speed = Speed + 18
+		end
+
+		if AnticheatDisabled == true then
+			Speed = Speed + 12
+		end
+
+		Speed = ((Speed + Settings.Speed.Speed) - 20.1)
+	end
+
+	return Speed
+end
+
 function GetBlock()
 	for i, v in next, GetInventory(LocalPlayer) do
 		if ItemTable[v.itemType].block ~= nil and v.itemType:find("wool") then
@@ -1751,7 +1796,7 @@ task.spawn(function()
 						local Bow = HasItem(BestBow.itemType)
 
 						if Bow and HasItem("arrow") then			
-							SwitchItem(BestBow.tool)
+							SwitchItem(BestBow.itemType)
 
 							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
 						end
@@ -1846,9 +1891,11 @@ task.spawn(function()
 
 		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			task.spawn(function()
-				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
+				if BlockPlacementController.blockPlacer.clientManager then
+					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 
-				BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)			
+					BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)		
+				end					
 			end)
 
 			task.spawn(function()
@@ -1992,6 +2039,31 @@ task.spawn(function()
 			end
 		end
 	until not game
+end)
+
+task.spawn(function()
+	RunService.Heartbeat:Connect(function(Delta)
+		if IsAlive(LocalPlayer) and Settings.Speed.Value == true then			
+			local SpeedValue = GetSpeed()
+
+			local RaycastParameters = RaycastParams.new()
+
+			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
+			RaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
+
+			local Raycast = game.Workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, RaycastParameters)
+
+			if Raycast then
+				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.HumanoidRootPart.Position) 
+
+				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame - SpeedCFrame
+			end
+
+			if not Raycast then
+				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + SpeedCFrame
+			end			
+		end
+	end)
 end)
 
 task.spawn(function()
@@ -3144,6 +3216,68 @@ task.spawn(function()
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local Speed, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "Speed", Settings.Speed.Value, function(CallBack)
+		Settings.Speed.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.Speed.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Speed.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Speed.KeyBind then
+					Settings.Speed.Value = not Settings.Speed.Value
+
+					if Settings.Speed.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.Speed.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(BlatantTab, "Speed", Settings.Speed.Speed, 23, LayoutOrder + 2, function(CallBack)
+					Settings.Speed.Speed = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
 			end
 		end)
 	end)
