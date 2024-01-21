@@ -1586,7 +1586,7 @@ end
 function GetBow()
 	local BestBow, BestBowDamage = nil, 0
 
-	for i, v in next, (GetInventory(LocalPlayer).items) do
+	for i, v in next, GetInventory(LocalPlayer) do
 		if v.itemType:find("bow") then 
 			local Item = ItemTable[v.itemType].projectileSource
 			local Arrow = Item.projectileType("arrow")	
@@ -1848,7 +1848,7 @@ task.spawn(function()
 			task.spawn(function()
 				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 
-				BlockPlacementController.blockPlacer:placeBlock(MouseInformation)			
+				BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)			
 			end)
 
 			task.spawn(function()
@@ -3645,6 +3645,87 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local PlayerTp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "PlayerTp", Settings.PlayerTp.Value, function(CallBack)
+		Settings.PlayerTp.Value = CallBack
+
+
+		task.spawn(function()
+			if Settings.PlayerTp.Value == true then
+				if IsAlive(LocalPlayer) then
+					repeat task.wait() until GetMatchState() ~= 0
+
+					local NearestPlayer = FindNearestPlayer()
+
+					if NearestPlayer ~= nil then
+						KillHumanoid()
+
+						LocalPlayer.CharacterAdded:Connect(function()
+							repeat task.wait() until IsAlive(LocalPlayer)
+
+							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
+								task.wait(0.15)
+
+								TweenToNearestPlayer()
+							end
+						end)
+					end	
+				end
+
+				if not IsAlive(LocalPlayer) then
+					LocalPlayer.CharacterAdded:Connect(function()
+						repeat task.wait() until IsAlive(LocalPlayer)						
+
+						if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true and FindNearestPlayer() then
+							task.wait(0.25)
+
+							TweenToNearestPlayer()
+						end
+					end)
+				end
+			end	
+		end)
+
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(WorldTab, Settings.PlayerTp.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.PlayerTp.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.PlayerTp.KeyBind then
+					Settings.PlayerTp.Value = not Settings.PlayerTp.Value
+
+					if Settings.PlayerTp.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.PlayerTp.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
 
@@ -3763,87 +3844,6 @@ task.spawn(function()
 
 			if Value == false then
 				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local PlayerTp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "PlayerTp", Settings.PlayerTp.Value, function(CallBack)
-		Settings.PlayerTp.Value = CallBack
-
-
-		task.spawn(function()
-			if Settings.PlayerTp.Value == true then
-				if IsAlive(LocalPlayer) then
-					repeat task.wait() until GetMatchState() ~= 0
-
-					local NearestPlayer = FindNearestPlayer()
-
-					if NearestPlayer ~= nil then
-						KillHumanoid()
-
-						LocalPlayer.CharacterAdded:Connect(function()
-							repeat task.wait() until IsAlive(LocalPlayer)
-
-							if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true then
-								task.wait(0.15)
-
-								TweenToNearestPlayer()
-							end
-						end)
-					end	
-				end
-
-				if not IsAlive(LocalPlayer) then
-					LocalPlayer.CharacterAdded:Connect(function()
-						repeat task.wait() until IsAlive(LocalPlayer)						
-
-						if IsAlive(LocalPlayer) and Settings.PlayerTp.Value == true and FindNearestPlayer() then
-							task.wait(0.25)
-
-							TweenToNearestPlayer()
-						end
-					end)
-				end
-			end	
-		end)
-
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(WorldTab, Settings.PlayerTp.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.PlayerTp.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.PlayerTp.KeyBind then
-					Settings.PlayerTp.Value = not Settings.PlayerTp.Value
-
-					if Settings.PlayerTp.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.PlayerTp.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
 			end
 		end)
 	end)
