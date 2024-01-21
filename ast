@@ -849,6 +849,7 @@ local function SwitchItem(Item)
 end
 
 local function StealChest(NearestChest)
+	print(NearestChest)
 	local Chestitems = NearestChest and NearestChest:GetChildren()
 
 	if #Chestitems > 1 then
@@ -1119,17 +1120,17 @@ task.spawn(function()
 	local Cooldown = false
 	
 	repeat
-		task.wait()
+		task.wait(0.5)
 		
 		if Cooldown == false and Settings.AntiStaff.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
-				if v:GetRankInGroup(5774246) >= 1 then
-					CreateNotification(60,  "A staff has joined your game!")				
+				if v:GetRankInGroup(5774246) >= 2 then
 					Cooldown = true
+					CreateNotification(60,  "A staff has joined your game!")				
 				end
 			end
 		end		
-	until not game
+	until Cooldown == true
 end)
 
 task.spawn(function()	
@@ -1976,6 +1977,47 @@ task.spawn(function()
 							end
 
 							if Settings.AntiStaff.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AutoToxic, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AutoToxic.Value, function(CallBack)
+		Settings.AutoToxic.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoToxic.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoToxic.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AutoToxic.KeyBind then
+							Settings.AutoToxic.Value = not Settings.AutoToxic.Value
+
+							if Settings.AutoToxic.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AutoToxic.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
