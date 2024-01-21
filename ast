@@ -1168,8 +1168,6 @@ end
 
 local function InfFly()
 	if InfiniteFlyValue == true and IsAlive(LocalPlayer) then
-		print("4")
-
 		SpoofedCamera = CreateSpoofedCamera()
 		StartLevel = LocalPlayer.Character.Head.Position.Y
 
@@ -1267,14 +1265,16 @@ task.spawn(function()
 	repeat
 		task.wait(1 / Settings.AutoClicker.Cps)
 
-		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 and BlockPlacementController.blockPlacer then
 			task.spawn(function()
-				BlockPlacementController.blockPlacer:placeBlock()										
+				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
+				
+				BlockPlacementController.blockPlacer:placeBlock()
 			end)
 
 			task.spawn(function()
 				SwordController:swingSwordAtMouse()
-			end)					
+			end)
 		end
 	until not game
 end)
@@ -2584,7 +2584,7 @@ task.spawn(function()
 							obj.Parent.TextColor3 = Color3.fromHSV(tick() % 10 / 10, 2, 2)
 
 							task.spawn(function()
-								task.wait(0.75)
+								task.wait(0.95)
 
 								if Settings.Indicators.Value == true then
 									obj.Parent:Destroy()
@@ -2597,18 +2597,14 @@ task.spawn(function()
 		end
 		
 		if Settings.Indicators.Value == false then
-			local Messages = {"AlSploit", "Best Client", ":D", "💀"}
-
 			debug.setupvalue(DamageIndicator, 10, {
 				Create = function(self, obj, ...)
 					obj = OldObj
 					
-					print(obj.Parent.TextColor3)
-					
 					task.spawn(function()
 						task.wait(0.5)
 						obj.Parent:Destroy()
-					end)					
+					end)
 				end
 			})
 		end
