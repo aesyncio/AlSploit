@@ -1072,10 +1072,8 @@ task.spawn(function()
 		local MousePosition = UserInputService:GetMouseLocation() - Vector2.new(0, -36)
 		
 		if UserInputService:GetFocusedTextBox() then return false end	
-		for i,v in next, LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if not v.Active then return false end end
-		for i,v in next, CoreGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if v.Parent:IsA("ScreenGui") and v.Parent.Enabled then if not v.Active then return false end end end
-		
-		return true
+		for i,v in next, LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if not v.Active then return true end end
+		for i,v in next, CoreGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if v.Parent:IsA("ScreenGui") and v.Parent.Enabled then if not v.Active then return true end end end
 	end
 	
 	task.spawn(function()
