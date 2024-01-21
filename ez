@@ -2152,6 +2152,16 @@ task.spawn(function()
 		
 		task.spawn(function()
 			Invisibility()
+
+			task.spawn(function()
+				LocalPlayer.CharacterAdded:Connect(function()
+					task.wait(0.3)
+
+					if Settings.Invisible.Value == true and IsAlive(LocalPlayer) then
+						Invisibility()
+					end
+				end)
+			end)
 		end)
 	end)
 
@@ -2182,6 +2192,16 @@ task.spawn(function()
 					
 					task.spawn(function()
 						Invisibility()
+						
+						task.spawn(function()
+							LocalPlayer.CharacterAdded:Connect(function()
+								task.wait(0.3)
+								
+								if Settings.Invisible.Value == true and IsAlive(LocalPlayer) then
+									Invisibility()
+								end
+							end)
+						end)
 					end)
 
 					if Settings.Invisible.Value == true then
