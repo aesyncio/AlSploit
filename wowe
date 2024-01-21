@@ -1069,10 +1069,9 @@ task.spawn(function()
 	end)
 	
 	local function AutoClickerCheck()		
-		if UserInputService:GetFocusedTextBox() then return false end
-		if MouseDown == false then return false end
-		
-		return true
+		if not UserInputService:GetFocusedTextBox() and MouseDown == true then
+			return true
+		end
 	end
 	
 	task.spawn(function()
@@ -1122,10 +1121,64 @@ local UtilityTab = CreateTab("Utility")
 local WorldTab = CreateTab("World")
 
 task.spawn(function()
+	local NoKnockBack, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "NoKnockBack", Settings.NoKnockBack.Value, function(CallBack)
+		Settings.NoKnockBack.Value = CallBack
+
+		local OldKnockBackDirection = KnockBackTable.kbDirectionStrength
+		local OldKnockBackUp = KnockBackTable.kbUpwardStrength
+
+		if Settings.NoKnockBack.Value == true then
+			KnockBackTable.kbDirectionStrength = 0
+			KnockBackTable.kbUpwardStrength = 0	
+		end
+
+		if Settings.NoKnockBack.Value == false then
+			KnockBackTable.kbDirectionStrength = OldKnockBackDirection
+			KnockBackTable.kbUpwardStrength = OldKnockBackUp
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(CombatTab, Settings.NoKnockBack.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.NoKnockBack.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.NoKnockBack.KeyBind then
+							Settings.NoKnockBack.Value = not Settings.NoKnockBack.Value
+
+							if Settings.NoKnockBack.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.NoKnockBack.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local AutoClicker, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "AutoClicker", Settings.AutoClicker.Value, function(CallBack)
 		Settings.AutoClicker.Value = CallBack
 		
-		local OldCpsFunction = SwordController.isClickingTooFast
+		local OldCpsFunction = nil
 		
 		if Settings.AutoClicker.Value == true then
 			SwordController.isClickingTooFast = function(self) 
@@ -1185,60 +1238,6 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateSlider(CombatTab, "Cps", Settings.AutoClicker.Cps, 20, LayoutOrder + 2, function(CallBack)
 					Settings.AutoClicker.Cps = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local NoKnockBack, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "NoKnockBack", Settings.NoKnockBack.Value, function(CallBack)
-		Settings.NoKnockBack.Value = CallBack
-
-		local OldKnockBackDirection = KnockBackTable.kbDirectionStrength
-		local OldKnockBackUp = KnockBackTable.kbUpwardStrength
-
-		if Settings.NoKnockBack.Value == true then
-			KnockBackTable.kbDirectionStrength = 0
-			KnockBackTable.kbUpwardStrength = 0	
-		end
-
-		if Settings.NoKnockBack.Value == false then
-			KnockBackTable.kbDirectionStrength = OldKnockBackDirection
-			KnockBackTable.kbUpwardStrength = OldKnockBackUp
-		end
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(CombatTab, Settings.NoKnockBack.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.NoKnockBack.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.NoKnockBack.KeyBind then
-							Settings.NoKnockBack.Value = not Settings.NoKnockBack.Value
-
-							if Settings.NoKnockBack.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.NoKnockBack.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
 				end)
 			end
 
