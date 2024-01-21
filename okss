@@ -649,14 +649,14 @@ end
 local Settings = {}
 local Loaded = false
 
-local SaveFileName = "AlSploitConfigSavingBedwars"
+local SaveFileName = "AlSploitConfigsSavingBedwars"
 
 local function CreateSettingsFile()
 	Settings = {
 		NoPlacementCps = {Value = true, KeyBind = "..."},
 		ChestStealer = {Value = true, Range = 30, KeyBind = "..."},
 		InfiniteJump = {Value = true, KeyBind = "..."},
-		AutoClicker = {Value = true, Cps = 20, KeyBind = "..."},
+		AutoClicker = {Value = true, Cps = 30, KeyBind = "..."},
 		NoKnockBack = {Value = true, KeyBind = "..."},	
 		InfiniteFly = {Value = false, KeyBind = "..."},
 		DamageBoost = {Value = true, KeyBind = "..."},
@@ -665,7 +665,7 @@ local function CreateSettingsFile()
 		FpsBooster = {Value = false, KeyBind = "..."},
 		Indicators = {Value = true, KeyBind = "..."},
 		AutoReport = {Value = true, KeyBind = "..."},
-		AntiStaff = {Value = true, KeyBind = "..."},
+		AntiStaff = {Value = true, Kick = false, KeyBind = "..."},
 		AutoToxic = {Value = false, KeyBind = "..."},
 		GalaxySky = {Value = true, KeyBind = "..."},
 		PlayAgain = {Value = true, KeyBind = "..."},
@@ -674,7 +674,7 @@ local function CreateSettingsFile()
 		Scaffold = {Value = false, ExpandDistance = 2, KeyBind = "..."},
 		KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, KeyBind = "..."},
 		AntiVoid = {Value = true, Transparency = 0.65, KeyBind = "..."},
-		AutoBank = {Value = true, KeyBind = "..."},
+		AutoBank = {Value = true, Range = 30, KeyBind = "..."},
 		HighJump = {Value = false, KeyBind = "..."},
 		PlayerTp = {Value = true, KeyBind = "..."},
 		AutoKit = {Value = true, KeyBind = "..."},
@@ -1183,16 +1183,16 @@ local function InfFly()
 		repeat 
 			task.wait()
 
-			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (FlyUp and 1 or 0) + (FlyDown and -1 or 0), LocalPlayer.Character.HumanoidRootPart.Position.Z)
+			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (FlyUp and 0.5 or 0) + (FlyDown and -0.5 or 0), LocalPlayer.Character.HumanoidRootPart.Position.Z)
 			StartLevel = SpoofedCamera.Position.Y	
 		until InfiniteFlyValue == false or not IsAlive(LocalPlayer)
 
 		if InfiniteFlyValue == false or not IsAlive(LocalPlayer) then
-			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)		
+			LocalPlayer.Character.PrimaryPart.Anchored = true
+			LocalPlayer.Character.PrimaryPart.CFrame = SpoofedCamera.CFrame + Vector3.new(0, 5, 0)	
 			SetCamera(LocalPlayer.Character)
 
 			SpoofedCamera:Destroy()
-			LocalPlayer.Character.PrimaryPart.Anchored = true
 
 			task.wait(0.025)
 
@@ -1321,7 +1321,11 @@ task.spawn(function()
 			for i, v in next, PlayerService:GetPlayers() do
 				if v:GetRankInGroup(5774246) >= 2 then
 					Cooldown = true
-					CreateNotification(60,  "A staff has joined your game!")				
+					CreateNotification(60,  "A staff has joined your game!")
+					
+					if Settings.AntiStaff.Kick == true then
+						LocalPlayer:Kick("A staff has joined your game!")
+					end
 				end
 			end
 		end		
@@ -1535,7 +1539,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(CombatTab, "Cps", Settings.AutoClicker.Cps, 20, LayoutOrder + 2, function(CallBack)
+				InstanceUI = CreateSlider(CombatTab, "Cps", Settings.AutoClicker.Cps, 30, LayoutOrder + 2, function(CallBack)
 					Settings.AutoClicker.Cps = CallBack
 				end)
 			end
