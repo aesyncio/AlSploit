@@ -1231,6 +1231,19 @@ function AutoBuy()
 	local NearestNpc = FindNearestNpc(30)
 	
 	if NearestNpc then		
+		local Wool =
+			[1] = {
+				["shopItem"] = {
+					["currency"] = "iron",
+					["itemType"] = "wool_white",
+					["amount"] = 16,
+					["price"] = 8,
+					["category"] = "Blocks"
+				},
+				["shopId"] = NearestNpc.Name
+			}
+		}
+
 		local EmeraldArmor ={
 			[1] = {
 				["shopItem"] = {
@@ -1435,7 +1448,7 @@ function AutoBuy()
 				PurchaseItem(DiamondSword)
 			end
 
-			if HasItem("stone_sword") then
+			if HasItem("stone_sword") and HasItem("iron_chestplate") then
 				PurchaseItem(IronSword)
 			end
 
@@ -1444,7 +1457,7 @@ function AutoBuy()
 			end
 		end)
 
-		task.spawn(function()			
+		task.spawn(function()
 			if HasItem("diamond_chestplate") then
 				PurchaseItem(EmeraldArmor)
 			end	
@@ -1460,6 +1473,12 @@ function AutoBuy()
 			if HasItem("stone_sword") then
 				PurchaseItem(LeatherArmor)
 			end		
+		end)
+		
+		task.spawn(function()
+			if HasItem("iron_chestplate") and HasItem("iron_sword") and Settings.Scaffold.Value == true then
+				PurchaseItem(Wool)
+			end
 		end)
 	end	
 end
@@ -1677,7 +1696,7 @@ task.spawn(function()
 				if BlockPlacementController.blockPlacer then
 					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 
-					BlockPlacementController.blockPlacer:placeBlock()
+					BlockPlacementController.blockPlacer:placeBlock(MouseInformation)
 				end				
 			end)
 
@@ -2560,6 +2579,49 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
+		Settings.AutoBuy.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoBuy.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
+					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
+
+					if Settings.AutoBuy.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoBuy.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local Invisible, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "Invisible", Settings.Invisible.Value, function(CallBack)
 		Settings.Invisible.Value = CallBack
 		
@@ -2626,49 +2688,6 @@ task.spawn(function()
 					end
 
 					if Settings.Invisible.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
-		Settings.AutoBuy.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoBuy.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
-					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
-
-					if Settings.AutoBuy.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.AutoBuy.Value == false then
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
@@ -3426,7 +3445,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
+				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency * 100, 100, LayoutOrder + 2, function(CallBack)
 					Settings.AntiVoid.Transparency = CallBack / 100
 					
 					task.spawn(function()
