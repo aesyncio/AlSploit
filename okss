@@ -758,7 +758,7 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
 local HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
-local TrinitySetAngelTypRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetAngelType")
+local TrinitySetAngelTypeRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetAngelType")
 local SetObservedChestRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/SetObservedChest")
 local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 local ChestGiveItemRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/ChestGiveItem")
@@ -778,6 +778,7 @@ local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForCh
 local CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant
 local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
 local ReportRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ReportPlayer")
+local MinerRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("DestroyPetrifiedPlayer")
 
 local KnockBackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
@@ -804,6 +805,14 @@ local Animations = {
 		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
 	}
 }
+
+local function FindPetrifiedPlayer()
+	for i, v in next, WorkSpace:GetChildren() do		
+		if v:GetAttribute("PetrifyId") then
+			return v
+		end
+	end
+end
 
 local function CreateSpoofedCamera()
 	SpoofedCamera = Instance.new("Part", WorkSpace)
@@ -1093,24 +1102,25 @@ local function HasItem(Name)
 end
 
 function AutoKit()
-	--local FindPetrifiedPlayer = FindPetrifiedPlayer()
+	local FindPetrifiedPlayer = FindPetrifiedPlayer()
+	local NearestEntity = FindNearestEntity()
 
-	--task.spawn(function()
-	--	if IsAlive(LocalPlayer) and NearestPlayer then
-	--		HannahPromptTriggerRemote:CallServer({victimEntity = NearestPlayer.Character, ["user"] = LocalPlayer})
-	--	end
-	--end)
+	task.spawn(function()
+		if IsAlive(LocalPlayer) and NearestEntity then
+			HannahPromptTriggerRemote:CallServer({victimEntity = NearestEntity, ["user"] = LocalPlayer})
+		end
+	end)
 
-	--task.spawn(function()
-	--	if FindPetrifiedPlayer then
-		--	MinerRemote:SendToServer({
-		--		petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-		--	})
-		--end		
-	--end)
+	task.spawn(function()
+		if FindPetrifiedPlayer then
+			MinerRemote:SendToServer({
+				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
+			})
+		end
+	end)
 	
 	task.spawn(function()
-		TrinitySetAngelTypRemote:FireServer({angel = "Void"})
+		TrinitySetAngelTypeRemote:FireServer({angel = "Void"})
 	end)
 end
 
@@ -1959,6 +1969,7 @@ task.spawn(function()
 		
 		task.spawn(function()
 			if Settings.InfiniteFly.Value == true then
+				InfiniteFlyValue = true
 				InfiniteFly()
 			end
 			
@@ -1987,6 +1998,7 @@ task.spawn(function()
 							
 							task.spawn(function()
 								if Settings.InfiniteFly.Value == true then
+									InfiniteFlyValue = true
 									InfiniteFly()
 								end
 
