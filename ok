@@ -1068,18 +1068,12 @@ task.spawn(function()
 		end)
 	end)
 	
-	local function AutoClickerCheck()		
-		if not UserInputService:GetFocusedTextBox() and MouseDown == true then
-			return true
-		end
-	end
-	
 	task.spawn(function()
 		repeat
 			task.wait(1 / Settings.AutoClicker.Cps)
 
 			if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-				if AutoClickerCheck() == true then
+				if MouseDown == true then
 					SwordController:swingSwordAtMouse()
 				end
 			end
@@ -1530,9 +1524,11 @@ task.spawn(function()
 	local NoPlacementCps, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoPlacementCps", Settings.NoPlacementCps.Value, function(CallBack)
 		Settings.NoPlacementCps.Value = CallBack
 
-		local OldCps = PlacementCPS.BLOCK_PLACE_CPS
+		local OldCps = nil
 
 		if Settings.NoPlacementCps.Value == true then
+			OldCps = PlacementCPS.BLOCK_PLACE_CPS
+			
 			PlacementCPS.BLOCK_PLACE_CPS = math.huge
 		end
 
