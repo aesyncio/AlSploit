@@ -2019,12 +2019,17 @@ task.spawn(function()
 							Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
 
 							if Settings.InfiniteFly.Value == true then
+								print("1")
 								task.spawn(function()
 									InfiniteFlyValue = true
 									InfiniteFly()
+									
+									print("2")
 								end)
 								
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							
+								print("3")
 							end
 
 							if Settings.InfiniteFly.Value == false then
@@ -2395,7 +2400,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local PlayAgain, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.PlayAgain.Value, function(CallBack)
+	local PlayAgain, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
 		Settings.PlayAgain.Value = CallBack
 	end)
 
@@ -2436,7 +2441,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local GalaxySky, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "AntiStaff", Settings.GalaxySky.Value, function(CallBack)
+	local GalaxySky, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "GalaxySky", Settings.GalaxySky.Value, function(CallBack)
 		Settings.GalaxySky.Value = CallBack
 
 		if Settings.GalaxySky.Value == true then
