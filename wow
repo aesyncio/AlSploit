@@ -1068,12 +1068,11 @@ task.spawn(function()
 		end)
 	end)
 	
-	local function AutoClickerCheck()
-		local MousePosition = UserInputService:GetMouseLocation() - Vector2.new(0, -36)
+	local function AutoClickerCheck()		
+		if UserInputService:GetFocusedTextBox() then return false end
+		if MouseDown == false then return false end
 		
-		if UserInputService:GetFocusedTextBox() then return false end	
-		for i,v in next, LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if not v.Active then return true end end
-		for i,v in next, CoreGui:GetGuiObjectsAtPosition(MousePosition.X, MousePosition.Y) do if v.Parent:IsA("ScreenGui") and v.Parent.Enabled then if not v.Active then return true end end end
+		return true
 	end
 	
 	task.spawn(function()
@@ -1125,6 +1124,20 @@ local WorldTab = CreateTab("World")
 task.spawn(function()
 	local AutoClicker, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "AutoClicker", Settings.AutoClicker.Value, function(CallBack)
 		Settings.AutoClicker.Value = CallBack
+		
+		local OldCpsFunction = SwordController.isClickingTooFast
+		
+		if Settings.AutoClicker.Value == true then
+			SwordController.isClickingTooFast = function(self) 
+				self.lastSwing = tick()
+				
+				return false 
+			end
+		end
+		
+		if Settings.AutoClicker.Value == false then
+			SwordController.isClickingTooFast = OldCpsFunction
+		end
 	end)
 
 	task.spawn(function()
