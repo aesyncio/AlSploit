@@ -972,6 +972,26 @@ local function FindNearestChest()
 	return NearestChest:FindFirstChild("ChestFolderValue")
 end
 
+function ShootProjectile(Item, Projectile)
+	local NearestPlayer = FindNearestPlayer()
+
+	if NearestPlayer then
+		local Args = {
+			[1] = Item,
+			[2] = Projectile,
+			[3] = Projectile,
+			[4] = NearestPlayer.Character.PrimaryPart.Position,
+			[5] = NearestPlayer.Character.PrimaryPart.Position,
+			[6] = Vector3.new(0, -25, 0),
+			[7] = HttpService:GenerateGUID(true),
+			[8] = {["drawDurationSeconds"] = 0.96, ["shotId"] = HttpService:GenerateGUID(false)},
+			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
+		}
+
+		ProjectileRemote:InvokeServer(unpack(Args))
+	end
+end
+
 local function SendChatMessage(Message)
 	local Arguments = {
 		[1] = Message,
@@ -1561,6 +1581,25 @@ function IsAlive(Player)
 	return true
 end	
 
+function GetBow()
+	local BestBow, BestBowDamage = nil, 0
+
+	for i, v in next, (GetInventory(LocalPlayer).items) do
+		if v.itemType:find("bow") then 
+			local Item = ItemTable[v.itemType].projectileSource
+			local Arrow = Item.projectileType("arrow")	
+			local Damage = ProjectileMeta[Arrow].combat.damage
+
+			if Damage > BestBowDamage then
+				BestBowDamage = Damage
+				BestBow = v
+			end
+		end
+	end	
+
+	return BestBow, BestBowDamage
+end
+
 local function SwordHit(Entity, Weapon)
 	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
 	local EntityPrimaryPart = Entity.PrimaryPart
@@ -1687,6 +1726,46 @@ task.spawn(function()
 					Camera.CFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + LookVector)
 				end
 			end		
+		end)
+		
+		task.spawn(function()
+			local NearestPlayer, NearestPlayerDistance = FindNearestEntity()
+			
+			if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and IsAlive(NearestPlayer) and NearestPlayer and not NearestPlayer.Character:FindFirstChildOfClass("ForceField") then	
+				local BestBow = GetBow()
+
+				if BestBow and IsAlive(LocalPlayer) and NearestPlayerDistance > 18 then
+					if Settings.Aimbot.ToolCheck == true then
+						if HasItem(BestBow.itemType) and HasItem("arrow") then
+							local Bow = HasItem(BestBow.itemType)
+
+							if Bow then
+								ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
+							end
+						end
+					end
+
+					if Settings.Aimbot.ToolCheck == false then
+						local Bow = HasItem(BestBow.itemType)
+
+						if Bow and HasItem("arrow") then			
+							SwitchItem(BestBow.tool)
+
+							ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(BestBow.itemType), "arrow")
+						end
+					end
+				end
+
+				if not BestBow and IsAlive(LocalPlayer) then
+					if HasItem("fireball") then
+						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild("fireball"), "fireball")
+					end
+
+					if HasItem("snowball") then
+						ShootProjectile(ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild("snowball"), "snowball")
+					end
+				end
+			end
 		end)
 		
 		task.spawn(function()
@@ -2958,6 +3037,68 @@ task.spawn(function()
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local Aimbot, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.Aimbot.Value, function(CallBack)
+		Settings.Aimbot.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.Aimbot.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Aimbot.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Aimbot.KeyBind then
+					Settings.Aimbot.Value = not Settings.Aimbot.Value
+
+					if Settings.Aimbot.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.Aimbot.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateMiniToggle(BlatantTab, "ToolCheck", Settings.Aimbot.ToolCheck, LayoutOrder + 2, function(CallBack)
+					Settings.Aimbot.ToolCheck = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
 			end
 		end)
 	end)
