@@ -757,12 +757,14 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
+
 local HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 local TrinitySetAngelTypeRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetAngelType")
 local SetObservedChestRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/SetObservedChest")
 local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 local ChestGiveItemRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/ChestGiveItem")
 local ChestGetItemRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/ChestGetItem")
+local PurchaseItemRemote = ReplicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.BedwarsPurchaseItem
 local BlockPlacingRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@easy-games"):WaitForChild("block-engine"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("PlaceBlock")
 local ClientHandlerStore = require(LocalPlayer.PlayerScripts.TS.ui.store).ClientStore
 local SendMessageRemote = ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
@@ -939,12 +941,12 @@ local function FindNearestChest()
 end
 
 local function SendChatMessage(Message)
-	local Args = {
+	local Arguments = {
 		[1] = Message,
 		[2] = "All"
 	}
 
-	SendMessageRemote:FireServer(unpack(Args))
+	SendMessageRemote:FireServer(unpack(Arguments))
 end
 
 local function FindNearestNpc(MaxDistance)
@@ -985,7 +987,6 @@ function SetCollisions(Value)
 	end
 end
 
-
 local function GetMatchState()
 	return ClientHandlerStore:getState().Game.matchState
 end
@@ -1006,6 +1007,10 @@ local function GetInventory(Player)
 	local Inventory = InventoryUtil.getInventory(Player).items
 
 	return Inventory
+end
+
+local function PurchaseItem(Arguments)
+	PurchaseItemRemote:InvokeServer(unpack(Arguments))
 end
 
 local function Invisibility()
@@ -1065,7 +1070,7 @@ local function SwitchItem(Item)
 	end	
 end
 
-function PlaceBlock(Position, Block)
+local function PlaceBlock(Position, Block)
 	BlockPlacingRemote:InvokeServer({["blockType"] = Block, ["blockData"] = 0,["position"] = Position})
 end
 
@@ -1220,6 +1225,113 @@ local function HasItem(Name)
 	end	
 
 	return nil
+end
+
+function AutoBuy()
+	local EmeraldSword = {
+		[1] = {
+			["shopItem"] = {
+				["disabledInQueue"] = {
+					[1] = "tnt_wars"
+				},
+				["itemType"] = "emerald_sword",
+				["price"] = 20,
+				["superiorItems"] = {
+					[1] = ""
+				},
+				["currency"] = "iron",
+				["amount"] = 1,
+				["ignoredByKit"] = {
+					[1] = "barbarian",
+					[2] = "dasher",
+					[3] = "frost_hammer_kit"
+				},
+				["category"] = "Combat",
+				["lockAfterPurchase"] = true
+			},
+			["shopId"] = "1_item_shop"
+		}
+	}
+	
+	local DiamondSword = {
+		[1] = {
+			["shopItem"] = {
+				["disabledInQueue"] = {
+					[1] = "tnt_wars"
+				},
+				["itemType"] = "diamond_sword",
+				["price"] = 4,
+				["superiorItems"] = {
+					[1] = "emerald_sword"
+				},
+				["currency"] = "emerald",
+				["amount"] = 1,
+				["ignoredByKit"] = {
+					[1] = "barbarian",
+					[2] = "dasher",
+					[3] = "frost_hammer_kit"
+				},
+				["category"] = "Combat",
+				["lockAfterPurchase"] = true
+			},
+			["shopId"] = "1_item_shop"
+		}
+	}
+	
+	local IronSword = {
+		[1] = {
+			["shopItem"] = {
+				["disabledInQueue"] = {
+					[1] = "tnt_wars"
+				},
+				["itemType"] = "iron_sword",
+				["price"] = 70,
+				["superiorItems"] = {
+					[1] = "diamond_sword"
+				},
+				["currency"] = "iron",
+				["amount"] = 1,
+				["ignoredByKit"] = {
+					[1] = "barbarian",
+					[2] = "dasher",
+					[3] = "frost_hammer_kit"
+				},
+				["category"] = "Combat",
+				["lockAfterPurchase"] = true
+			},
+			["shopId"] = "1_item_shop"
+		}
+	}
+	
+	local StoneSword = {
+		[1] = {
+			["shopItem"] = {
+				["disabledInQueue"] = {
+					[1] = "tnt_wars"
+				},
+				["itemType"] = "stone_sword",
+				["price"] = 20,
+				["superiorItems"] = {
+					[1] = "iron_sword"
+				},
+				["currency"] = "iron",
+				["amount"] = 1,
+				["ignoredByKit"] = {
+					[1] = "barbarian",
+					[2] = "dasher",
+					[3] = "frost_hammer_kit"
+				},
+				["category"] = "Combat",
+				["lockAfterPurchase"] = true
+			},
+			["shopId"] = "1_item_shop"
+		}
+	}
+	
+	PurchaseItem(EmeraldSword)
+	PurchaseItem(DiamondSword)
+	PurchaseItem(IronSword)
+	PurchaseItem(StoneSword)
 end
 
 function AutoKit()
@@ -1415,6 +1527,12 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				AutoBank()
+			end
+		end)
+		
+		task.spawn(function()
+			if Settings.AutoBuy.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				AutoBuy()
 			end			
 		end)
 	until not game
@@ -2441,6 +2559,49 @@ task.spawn(function()
 
 			if Value == false then
 				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
+		Settings.AutoBuy.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoBuy.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
+					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
+
+					if Settings.AutoBuy.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoBuy.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
 			end
 		end)
 	end)
