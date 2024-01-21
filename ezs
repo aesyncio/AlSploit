@@ -3008,7 +3008,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(BlatantTab, "ExpandDistance", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
+				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
 					Settings.AntiVoid.Transparency = CallBack / 100
 				end)
 			end
