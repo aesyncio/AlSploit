@@ -712,6 +712,7 @@ local ProjectileMeta = require(ReplicatedStorage.TS.projectile["projectile-meta"
 local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
 local CombatConstant = require(ReplicatedStorage.TS.combat["combat-constant"]).CombatConstant
 local PlacementCPS = require(game.ReplicatedStorage.TS["shared-constants"]).CpsConstants
+local ReportRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ReportPlayer")
 
 local KnockBackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
@@ -917,6 +918,20 @@ local function ChatSpam()
 	SendChatMessage(KillMessage)
 end
 
+local function FpsBoost()
+	for i, v in next, CollectionService:GetTagged("block") do
+		if v:GetAttribute("PlacedByUserId") == 0 then
+			v.Material = Enum.Material.SmoothPlastic
+
+			for i2, v2 in next, (v:GetDescendants()) do
+				if v2:IsA("BasePart") then
+					v2.Material = Enum.Material.SmoothPlastic
+				end
+			end
+		end
+	end
+end
+
 local function HasItem(Name)
 	for i, v in next, GetInventory(LocalPlayer) do
 		if v.itemType:find(Name) then
@@ -1080,6 +1095,28 @@ task.spawn(function()
 			end
 		end)
 	until not game	
+end)
+
+task.spawn(function()
+	local ReportedList = {}
+	
+	repeat
+		task.wait()
+		if Settings.AutoReport.Value == true then
+			for i, v in next, PlayerService:GetPlayers() do
+				if v ~= LocalPlayer and v:GetAttribute("PlayerConnected") and ReportedList[v] == nil then
+					ReportRemote:FireServer(v.UserId)
+					ReportedList[v] = true
+					
+					task.wait(1)
+				end
+			end
+		end	
+	until not game
+end)
+
+task.spawn(function()
+	
 end)
 
 task.spawn(function()	
@@ -1799,6 +1836,133 @@ task.spawn(function()
 							end
 
 							if Settings.DamageBoost.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local FpsBooster, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "FpsBooster", Settings.FpsBooster.Value, function(CallBack)
+		Settings.FpsBooster.Value = CallBack
+		
+		if Settings.FpsBooster.Value == true then
+			FpsBoost()
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.FpsBooster.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.FpsBooster.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.FpsBooster.KeyBind then
+							Settings.FpsBooster.Value = not Settings.FpsBooster.Value
+
+							if Settings.FpsBooster.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.FpsBooster.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AutoReport, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoReport", Settings.AutoReport.Value, function(CallBack)
+		Settings.AutoReport.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoReport.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoReport.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AutoReport.KeyBind then
+							Settings.AutoReport.Value = not Settings.AutoReport.Value
+
+							if Settings.AutoReport.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AutoReport.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AntiStaff, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AntiStaff.Value, function(CallBack)
+		Settings.AntiStaff.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AntiStaff.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AntiStaff.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AntiStaff.KeyBind then
+							Settings.AntiStaff.Value = not Settings.AntiStaff.Value
+
+							if Settings.AntiStaff.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AntiStaff.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
