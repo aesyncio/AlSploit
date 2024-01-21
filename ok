@@ -1510,7 +1510,7 @@ function AutoBuy()
 				PurchaseItem(EmeraldSword)
 			end
 
-			if HasItem("iron_sword") then
+			if HasItem("iron_sword") or HasItem("stone_sword") or HasItem("wood_sword") then
 				PurchaseItem(DiamondSword)
 			end
 
@@ -1731,12 +1731,12 @@ task.spawn(function()
 		end)
 		
 		task.spawn(function()
-			local NearestPlayer, NearestPlayerDistance = FindNearestEntity()
+			local NearestEntity, NearestEntityDistance = FindNearestEntity()
 			
-			if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and IsAlive(NearestPlayer) and NearestPlayer and not NearestPlayer.Character:FindFirstChildOfClass("ForceField") then	
+			if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestEntity and not NearestEntity:FindFirstChildOfClass("ForceField") then	
 				local BestBow = GetBow()
 
-				if BestBow and IsAlive(LocalPlayer) and NearestPlayerDistance > 18 then
+				if BestBow and IsAlive(LocalPlayer) and NearestEntityDistance > 18 then
 					if Settings.Aimbot.ToolCheck == true then
 						if HasItem(BestBow.itemType) and HasItem("arrow") then
 							local Bow = HasItem(BestBow.itemType)
