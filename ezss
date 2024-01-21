@@ -882,7 +882,9 @@ function FindNearestPlayer(MaxDistance)
 end
 
 local function FindNearestEntity(MaxDistance)
-	local NearestEntityDistance = MaxDistance or math.huge
+	local MaxDistance = MaxDistance or math.huge
+	
+	local NearestEntityDistance = MaxDistance
 	local NearestEntity = nil
 	local IsNotAPlayer = true
 
@@ -3043,7 +3045,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Aimbot, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.Aimbot.Value, function(CallBack)
+	local Aimbot, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "Aimbot", Settings.Aimbot.Value, function(CallBack)
 		Settings.Aimbot.Value = CallBack
 	end)
 
