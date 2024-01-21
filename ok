@@ -693,7 +693,7 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
 local HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
-local BlockPlacementController = KnitClient.Controllers.BlockPlacementController
+local TrinitySetAngelTypRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetAngelType")
 local SetObservedChestRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/SetObservedChest")
 local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 local ChestGiveItemRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/ChestGiveItem")
@@ -717,6 +717,7 @@ local ReportRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChil
 local KnockBackTable = debug.getupvalue(require(ReplicatedStorage.TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
+local BlockPlacementController = KnitClient.Controllers.BlockPlacementController
 local ZephyrController = KnitClient.Controllers.WindWalkerController
 local SprintController = KnitClient.Controllers.SprintController
 local FovController = KnitClient.Controllers.FovController
@@ -805,7 +806,7 @@ local function FindNearestChest()
 
 	for i, v in next, CollectionService:GetTagged("chest") do
 		if v:FindFirstChild("ChestFolderValue") then
-			local Distance = (v.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+			local Distance = (v.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
 			if Distance < MinDistance then
 				NearestChest = v
@@ -848,17 +849,18 @@ local function SwitchItem(Item)
 	end	
 end
 
-local function StealChest(NearestChest)
-	print(NearestChest)
+local function StealChest(NearestChest)	
+	NearestChest = NearestChest and NearestChest.Value or nil				
+
 	local Chestitems = NearestChest and NearestChest:GetChildren()
 
 	if #Chestitems > 1 then
 		SetObservedChestRemote:FireServer("BlockChest")
 
-		for i, v in next, Chestitems do
-			if v:IsA("Accessory") then
+		for i2, v2 in next, Chestitems do
+			if v2:IsA("Accessory") then
 				task.spawn(function()
-					ChestGetItemRemote:InvokeServer(NearestChest, v)
+					ChestGetItemRemote:InvokeServer(NearestChest, v2)
 				end)
 			end
 		end
@@ -867,6 +869,37 @@ local function StealChest(NearestChest)
 
 		SetObservedChestRemote:FireServer(nil)
 	end
+end
+
+local function AutoToxic(Player)
+	local Randomized = math.random(0, 5)
+	local KillMessage = ""					
+
+	if Randomized == 0 then
+		KillMessage = "You are so bad u died. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	if Randomized ~= 0 then
+		KillMessage = "I could probably win without cheats. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	if Randomized == 2 then
+		KillMessage = "Clowns are the only ones we kill. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	if Randomized == 3 then
+		KillMessage = "Rats. Imagine dying in a block game. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	if Randomized == 4 then
+		KillMessage = "I hack for fun. Too bad your fun is ruined. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	if Randomized == 5 then
+		KillMessage = "I ruined a good day for a good reason. L" .. Player.Name .. " | AlSploit on top"
+	end
+
+	SendChatMessage(KillMessage)
 end
 
 local function GetSword()
@@ -941,6 +974,28 @@ local function HasItem(Name)
 	end	
 
 	return nil
+end
+
+function AutoKit()
+	--local FindPetrifiedPlayer = FindPetrifiedPlayer()
+
+	--task.spawn(function()
+	--	if IsAlive(LocalPlayer) and NearestPlayer then
+	--		HannahPromptTriggerRemote:CallServer({victimEntity = NearestPlayer.Character, ["user"] = LocalPlayer})
+	--	end
+	--end)
+
+	--task.spawn(function()
+	--	if FindPetrifiedPlayer then
+		--	MinerRemote:SendToServer({
+		--		petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
+		--	})
+		--end		
+	--end)
+	
+	task.spawn(function()
+		TrinitySetAngelTypRemote:FireServer({["angel"] = "Void"})
+	end)
 end
 
 function IsAlive(Player)
@@ -1065,6 +1120,12 @@ task.spawn(function()
 				end
 			end
 		end)
+		
+		task.spawn(function()
+			if Settings.AutoKit.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				AutoKit()
+			end
+		end)
 	until not game	
 end)
 
@@ -1131,6 +1192,38 @@ task.spawn(function()
 			end
 		end		
 	until Cooldown == true
+end)
+
+task.spawn(function()
+	repeat task.wait() until GetMatchState() ~= 0
+
+	task.wait(0.3)
+
+	for i, v in next, PlayerService:GetPlayers() do
+		if IsAlive(v) then
+			v.Character.Humanoid.HealthChanged:Connect(function(Health)
+				if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
+					AutoToxic(v)
+				end
+			end)
+		end	
+
+		task.spawn(function()
+			v.CharacterAdded:Connect(function(Character)
+				task.wait(0.3)
+
+				local v = game.Players:FindFirstChild(Character.Name) or v
+
+				if IsAlive(v) then
+					v.Character.Humanoid.HealthChanged:Connect(function(Health)
+						if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
+							AutoToxic(v)
+						end
+					end)
+				end
+			end)
+		end)
+	end
 end)
 
 task.spawn(function()	
@@ -1723,6 +1816,47 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.AutoKit.Value, function(CallBack)
+		Settings.AutoKit.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoKit.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoKit.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AutoKit.KeyBind then
+							Settings.AutoKit.Value = not Settings.AutoKit.Value
+
+							if Settings.AutoKit.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AutoKit.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local NoFall, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.NoFall.Value, function(CallBack)
 		Settings.NoFall.Value = CallBack
 	end)
@@ -1992,7 +2126,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoToxic, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AutoToxic.Value, function(CallBack)
+	local AutoToxic, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
 		Settings.AutoToxic.Value = CallBack
 	end)
 
