@@ -3012,8 +3012,14 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 1, LayoutOrder + 2, function(CallBack)
-					Settings.AntiVoid.Transparency = CallBack
+				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
+					Settings.AntiVoid.Transparency = CallBack / 100
+					
+					task.spawn(function()
+						if AntiVoidPart then
+							AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
+						end
+					end)
 				end)
 			end
 
