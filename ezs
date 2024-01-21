@@ -968,7 +968,7 @@ local function GetInventory(Player)
 	return Inventory
 end
 
-local function Invivibility()
+local function Invisibility()
 	repeat task.wait() until GetMatchState() ~= 0 and IsAlive(LocalPlayer)
 	
 	task.wait(0.3)
