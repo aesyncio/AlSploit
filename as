@@ -1124,7 +1124,8 @@ task.spawn(function()
 		if Cooldown == false and Settings.AntiStaff.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
 				if v:GetRankInGroup(5774246) >= 1 then
-					CreateNotification(60,  "A staff has joined your game!")
+					CreateNotification(60,  "A staff has joined your game!")				
+					Cooldown = true
 				end
 			end
 		end		
