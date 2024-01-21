@@ -794,6 +794,7 @@ local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"
 local KillAuraAnimationCooldown = true
 local InfiniteFlyValue = false
 local SpoofedCamera = nil
+local AntiVoidPart = nil
 local DamageBoost = false
 local StartLevel = nil
 local FlyDown = false
@@ -2192,8 +2193,10 @@ task.spawn(function()
 		Settings.Invisible.Value = CallBack
 		
 		task.spawn(function()
-			Invisibility()
-
+			if Settings.Invisible.Value == true then
+				Invisibility()
+			end
+			
 			task.spawn(function()
 				LocalPlayer.CharacterAdded:Connect(function()
 					task.wait(0.3)
@@ -2232,12 +2235,14 @@ task.spawn(function()
 					Settings.Invisible.Value = not Settings.Invisible.Value
 					
 					task.spawn(function()
-						Invisibility()
-						
+						if Settings.Invisible.Value == true then
+							Invisibility()
+						end
+
 						task.spawn(function()
 							LocalPlayer.CharacterAdded:Connect(function()
 								task.wait(0.3)
-								
+
 								if Settings.Invisible.Value == true and IsAlive(LocalPlayer) then
 									Invisibility()
 								end
@@ -2309,7 +2314,7 @@ task.spawn(function()
 
 			if Value == true then
 				InstanceUI = CreateSlider(BlatantTab, "ExpandDistance", Settings.Scaffold.ExpandDistance, 4, LayoutOrder + 2, function(CallBack)
-					Settings.KillAura.Range = CallBack
+					Settings.Scaffold.ExpandDistance = CallBack
 				end)
 			end
 
@@ -2907,12 +2912,54 @@ task.spawn(function()
 		
 		if Settings.AntiVoid.Value == true then
 			task.spawn(function()
-				
+				local OldLowestPosition = math.huge
+				local LowestPosition = 99999
+
+				local BlockRaycastParameters = RaycastParams.new()
+
+				BlockRaycastParameters.FilterType = Enum.RaycastFilterType.Include
+				BlockRaycastParameters.FilterDescendantsInstances = CollectionService:GetTagged("block")
+
+				AntiVoidPart = Instance.new("Part")
+				AntiVoidPart.Parent = WorkSpace
+				AntiVoidPart.Material = Enum.Material.Neon
+				AntiVoidPart.Name = "AntiVoidPart"
+				AntiVoidPart.Size = Vector3.new(99999, 1, 99999)
+				AntiVoidPart.Position = Vector3.new(0, 99999, 0)
+				AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
+				AntiVoidPart.Color = Color3.new(0.666667, 0, 1)
+				AntiVoidPart.CanCollide = false
+				AntiVoidPart.Anchored = true
+
+				for i, v in next, CollectionService:GetTagged("block") do
+					local NewRay = WorkSpace:Raycast(v.Position + Vector3.new(0, 800, 0), Vector3.new(0, -1000, 0), BlockRaycastParameters)
+
+					if NewRay then
+						LowestPosition = NewRay.Position.Y
+						if LowestPosition < OldLowestPosition then
+							OldLowestPosition = LowestPosition
+
+							AntiVoidPart.Position = Vector3.new(0, LowestPosition - 4, 0)
+						end
+					end					
+				end
+
+				AntiVoidPart.Touched:Connect(function()
+					if IsAlive(LocalPlayer) and AntiVoidPart and LocalPlayer.Character.PrimaryPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
+						for i = 1, 3 do
+							if IsAlive(LocalPlayer) then
+								LocalPlayer.Character.PrimaryPart.Velocity = Vector3.new(LocalPlayer.Character.PrimaryPart.Velocity.X, 100, LocalPlayer.Character.HumanoidRootPart.Velocity.Z)
+							end
+						end
+					end
+				end)
 			end)
 		end
 		
-		if Settings.AntiVoid.Value == true then
-			
+		if Settings.AntiVoid.Value == false then
+			if AntiVoidPart then
+				AntiVoidPart:Destroy()
+			end
 		end
 	end)
 
@@ -2949,6 +2996,25 @@ task.spawn(function()
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(BlatantTab, "ExpandDistance", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
+					Settings.AntiVoid.Transparency = CallBack / 100
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
 			end
 		end)
 	end)
