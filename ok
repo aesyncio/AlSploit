@@ -934,6 +934,8 @@ end
 
 local function InfiniteFly()
 	if InfiniteFlyValue == true and IsAlive(LocalPlayer) then
+		print("4")
+		
 		SpoofedCamera = CreateSpoofedCamera()
 		StartLevel = LocalPlayer.Character.Head.Position.Y
 		
@@ -1109,7 +1111,7 @@ end
 
 function AutoKit()
 	local FindPetrifiedPlayer = FindPetrifiedPlayer()
-	local NearestEntity = FindNearestEntity()
+	local NearestEntity = FindNearestEntity(math.huge)
 
 	task.spawn(function()
 		if IsAlive(LocalPlayer) and NearestEntity then
@@ -2012,37 +2014,34 @@ task.spawn(function()
 				InstanceUI = CreateKeyBind(BlatantTab, Settings.InfiniteFly.KeyBind, LayoutOrder + 1, function(CallBack)
 					Settings.InfiniteFly.KeyBind = CallBack
 				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
-							Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
-
-							if Settings.InfiniteFly.Value == true then
-								print("1")
-								task.spawn(function()
-									InfiniteFlyValue = true
-									InfiniteFly()
-									
-									print("2")
-								end)
-								
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							
-								print("3")
-							end
-
-							if Settings.InfiniteFly.Value == false then
-								InfiniteFlyValue = false
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
 			end
 
 			if Value == false then
 				InstanceUI:Destroy()
+			end
+		end)
+	end)
+	
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
+					Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
+
+					if Settings.InfiniteFly.Value == true then
+						task.spawn(function()
+							InfiniteFlyValue = true
+							InfiniteFly()
+						end)
+
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.InfiniteFly.Value == false then
+						InfiniteFlyValue = false
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
 			end
 		end)
 	end)
@@ -2131,6 +2130,47 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
+		Settings.DamageBoost.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.DamageBoost.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
+							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
+
+							if Settings.DamageBoost.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.DamageBoost.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local ChatSpammer, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "ChatSpammer", Settings.ChatSpammer.Value, function(CallBack)
 		Settings.ChatSpammer.Value = CallBack
 	end)
@@ -2180,47 +2220,6 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateSlider(UtilityTab, "Speed", Settings.ChatSpammer.Speed, 100, LayoutOrder + 2, function(CallBack)
 					Settings.ChatSpammer.Speed = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
-		Settings.DamageBoost.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.DamageBoost.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.DamageBoost.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.DamageBoost.KeyBind then
-							Settings.DamageBoost.Value = not Settings.DamageBoost.Value
-
-							if Settings.DamageBoost.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.DamageBoost.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
 				end)
 			end
 
@@ -2318,6 +2317,47 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local PlayAgain, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
+		Settings.PlayAgain.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.PlayAgain.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.PlayAgain.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.PlayAgain.KeyBind then
+							Settings.PlayAgain.Value = not Settings.PlayAgain.Value
+
+							if Settings.PlayAgain.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.PlayAgain.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local AutoToxic, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoToxic", Settings.AutoToxic.Value, function(CallBack)
 		Settings.AutoToxic.Value = CallBack
 	end)
@@ -2385,47 +2425,6 @@ task.spawn(function()
 							end
 
 							if Settings.AntiStaff.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local PlayAgain, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "PlayAgain", Settings.PlayAgain.Value, function(CallBack)
-		Settings.PlayAgain.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.PlayAgain.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.PlayAgain.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.PlayAgain.KeyBind then
-							Settings.PlayAgain.Value = not Settings.PlayAgain.Value
-
-							if Settings.PlayAgain.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.PlayAgain.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
