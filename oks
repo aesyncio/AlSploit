@@ -693,6 +693,7 @@ local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).s
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
 local HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
+local BlockPlacementController = KnitClient.Controllers.BlockPlacementController
 local SetObservedChestRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/SetObservedChest")
 local ResetCharacterRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("ResetCharacter")
 local ChestGiveItemRemote =  ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/ChestGiveItem")
@@ -1052,33 +1053,21 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local MouseDown = false
-	
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if Input.UserInputState == Enum.UserInputType.MouseButton1 then
-				MouseDown = true
-			end
-		end)
-		
-		UserInputService.InputEnded:Connect(function(Input)
-			if Input.UserInputState == Enum.UserInputType.MouseButton1 then
-				MouseDown = false
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		repeat
-			task.wait(1 / Settings.AutoClicker.Cps)
+	repeat
+		task.wait(1 / Settings.AutoClicker.Cps)
 
-			if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-				if MouseDown == true then
-					SwordController:swingSwordAtMouse()
-				end
-			end
-		until not game
-	end)
+		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+			task.spawn(function()
+				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
+
+				BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)										
+			end)
+
+			task.spawn(function()
+				SwordController:swingSwordAtMouse()
+			end)					
+		end
+	until not game
 end)
 
 task.spawn(function()
@@ -1303,8 +1292,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	print(Settings.KillAura.Value)
-
 	local KillAura, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "KillAura", Settings.KillAura.Value, function(CallBack)
 		Settings.KillAura.Value = CallBack
 	end)
