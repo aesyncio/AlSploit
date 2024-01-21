@@ -642,7 +642,7 @@ local function CreateFlyHud()
 
 	UICorner_3.CornerRadius = UDim.new(0, 6)
 	UICorner_3.Parent = Display
-	
+
 	return Background, Text, Display
 end
 
@@ -1059,12 +1059,12 @@ end
 
 local function Invisibility()
 	repeat task.wait() until GetMatchState() ~= 0 and IsAlive(LocalPlayer)
-	
+
 	task.wait(0.3)
-	
+
 	local Animation = Instance.new("Animation")
 	local Id = 11335949902
-	
+
 	Animation.AnimationId = "rbxassetid://".. Id
 
 	local PlayerAnimation = LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Animation)
@@ -1075,11 +1075,11 @@ local function Invisibility()
 
 		PlayerAnimation.Priority = Enum.AnimationPriority.Action4
 		PlayerAnimation.Looped = false
-		
+
 		LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 3 / -2, 0)	
 		LocalPlayer.Character.HumanoidRootPart.Transparency = 0.6
 		LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(2, 3, 1.1)
-		
+
 		SetCollisions(false)
 
 		task.spawn(function()
@@ -1092,14 +1092,14 @@ local function Invisibility()
 			if PlayerAnimation then
 				PlayerAnimation:Destroy()
 			end
-			
+
 			if Animation then
 				Animation:Destroy()
 			end
-			
+
 			if IsAlive(LocalPlayer) then
 				SetCollisions(true)
-				
+
 				LocalPlayer.Character.HumanoidRootPart.Size = Vector3.new(1.9, 2, 1)
 				LocalPlayer.Character.HumanoidRootPart.Transparency = 1
 				LocalPlayer.Character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
@@ -1227,12 +1227,12 @@ end
 
 local function AutoBank()
 	local NearestNpc = FindNearestNpc(Settings.AutoBank.Range)
-	
+
 	if IsAlive(LocalPlayer) then
 		if NearestNpc then
 			CollectEnderChestItems()
 		end
-		
+
 		if not NearestNpc then
 			SecureEnderChestItems()
 		end
@@ -1273,7 +1273,7 @@ end
 
 function AutoBuy()
 	local NearestNpc = FindNearestNpc(30)
-	
+
 	if NearestNpc then		
 		local Wool = {
 			[1] = {
@@ -1311,7 +1311,7 @@ function AutoBuy()
 				["shopId"] = NearestNpc.Name
 			}
 		}
-		
+
 		local DiamondArmor ={
 			[1] = {
 				["shopItem"] = {
@@ -1358,7 +1358,7 @@ function AutoBuy()
 				["shopId"] = NearestNpc.Name
 			}
 		}
-		
+
 		local LeatherArmor ={
 			[1] = {
 				["shopItem"] = {
@@ -1505,20 +1505,20 @@ function AutoBuy()
 			if HasItem("diamond_chestplate") then
 				PurchaseItem(EmeraldArmor)
 			end	
-			
+
 			if HasItem("iron_chestplate") then
 				PurchaseItem(DiamondArmor)
 			end	
-			
+
 			if HasItem("leather_chestplate") then
 				PurchaseItem(IronArmor)
 			end	
-			
+
 			if HasItem("stone_sword") then
 				PurchaseItem(LeatherArmor)
 			end		
 		end)
-		
+
 		task.spawn(function()
 			if HasItem("iron_chestplate") and HasItem("iron_sword") and Settings.Scaffold.Value == true then
 				PurchaseItem(Wool)
@@ -1544,7 +1544,7 @@ function AutoKit()
 			})
 		end
 	end)
-	
+
 	task.spawn(function()
 		TrinitySetAngelTypeRemote:FireServer({angel = "Void"})
 	end)
@@ -1694,13 +1694,13 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(0.5)
-		
+
 		task.spawn(function()			
 			if Settings.NoFall.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				GroundHitRemote:FireServer()
 			end
 		end)		
-		
+
 		task.spawn(function()
 			if Settings.ChestStealer.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				local NearestChest = FindNearestChest()
@@ -1710,19 +1710,19 @@ task.spawn(function()
 				end
 			end
 		end)
-		
+
 		task.spawn(function()
 			if Settings.AutoKit.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				AutoKit()
 			end
 		end)
-		
+
 		task.spawn(function()
 			if Settings.AutoBank.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				AutoBank()
 			end
 		end)
-		
+
 		task.spawn(function()
 			if Settings.AutoBuy.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				AutoBuy()
@@ -1752,7 +1752,7 @@ end)
 task.spawn(function()
 	repeat
 		task.wait(100 / Settings.ChatSpammer.Speed)
-		
+
 		task.spawn(function()
 			if Settings.ChatSpammer.Value == true and GetMatchState() ~= 0 then
 				ChatSpam()
@@ -1763,16 +1763,16 @@ end)
 
 task.spawn(function()
 	local ReportedList = {}
-	
+
 	repeat
 		task.wait()
-		
+
 		if Settings.AutoReport.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
 				if v ~= LocalPlayer and v:GetAttribute("PlayerConnected") and ReportedList[v] == nil then
 					ReportRemote:FireServer(v.UserId)
 					ReportedList[v] = true
-					
+
 					task.wait(1)
 				end
 			end
@@ -1782,17 +1782,17 @@ end)
 
 task.spawn(function()
 	local Cooldown = false
-	
+
 	repeat
 		task.wait(0.5)
-		
+
 		if Cooldown == false and Settings.AntiStaff.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
 				if v:GetRankInGroup(5774246) >= 2 then
 					if Settings.AntiStaff.Kick == true then
 						LocalPlayer:Kick("A staff has joined your game!")
 					end
-					
+
 					Cooldown = true
 					CreateNotification(60,  "A staff has joined your game!")				
 				end
@@ -1948,7 +1948,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -1971,17 +1971,17 @@ end)
 task.spawn(function()
 	local AutoClicker, DropDownButton, LayoutOrder, UIGradient = CreateToggle(CombatTab, "AutoClicker", Settings.AutoClicker.Value, function(CallBack)
 		Settings.AutoClicker.Value = CallBack
-		
+
 		local OldCpsFunction = nil
-		
+
 		if Settings.AutoClicker.Value == true then
 			SwordController.isClickingTooFast = function(self) 
 				self.lastSwing = tick()
-				
+
 				return false 
 			end
 		end
-		
+
 		if Settings.AutoClicker.Value == false then
 			SwordController.isClickingTooFast = OldCpsFunction
 		end
@@ -2005,7 +2005,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2023,7 +2023,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -2086,7 +2086,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2129,7 +2129,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2239,7 +2239,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2308,7 +2308,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2336,7 +2336,7 @@ task.spawn(function()
 
 		if Settings.NoPlacementCps.Value == true then
 			OldCps = PlacementCPS.BLOCK_PLACE_CPS
-			
+
 			PlacementCPS.BLOCK_PLACE_CPS = math.huge
 		end
 
@@ -2363,7 +2363,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2406,7 +2406,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2448,7 +2448,7 @@ end)
 task.spawn(function()
 	local InfiniteJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteJump", Settings.InfiniteJump.Value, function(CallBack)
 		Settings.InfiniteJump.Value = CallBack
-		
+
 		task.spawn(function()
 			UserInputService.JumpRequest:Connect(function()
 				if IsAlive(LocalPlayer) and Settings.InfiniteJump.Value == true then
@@ -2476,7 +2476,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -2497,85 +2497,45 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local InfiniteFly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteFly", Settings.InfiniteFly.Value, function(CallBack)
-		Settings.InfiniteFly.Value = CallBack
-		
-		task.spawn(function()
-			if Settings.InfiniteFly.Value == true then
-				InfiniteFlyValue = true
-				InfFly()
-			end
-			
-			if Settings.InfiniteFly.Value == false then
-				InfiniteFlyValue = false
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.InfiniteFly.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.InfiniteFly.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
-					Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
-
-					if Settings.InfiniteFly.Value == true then
-						task.spawn(function()
-							InfiniteFlyValue = true
-							InfFly()
-						end)
-
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.InfiniteFly.Value == false then
-						InfiniteFlyValue = false
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local AcDisabler, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AcDisabler", Settings.AcDisabler.Value, function(CallBack)
 		Settings.AcDisabler.Value = CallBack
-		
+
 		local HipHeight = 1.99999
-		
+
 		if Settings.AcDisabler.Value == true then
-			local Elk = LocalPlayer.Character:FindFirstChild("elk")
+			task.spawn(function()
+				local Elk = LocalPlayer.Character:FindFirstChild("elk")
 
-			LocalPlayer.Character.Humanoid.HipHeight = HipHeight
-			AnticheatDisabled = true
+				LocalPlayer.Character.Humanoid.HipHeight = HipHeight
+				AnticheatDisabled = true
 
-			if Elk and Elk:FindFirstChild("body_mesh") then
-				Elk:FindFirstChild("body_mesh"):Destroy()
-				Elk.PrimaryPart:Destroy()
-			end
+				if Elk and Elk:FindFirstChild("body_mesh") then
+					Elk:FindFirstChild("body_mesh"):Destroy()
+					Elk.PrimaryPart:Destroy()
+				end
 
-			ElkSummonRemote:FireServer("elk_summon")
+				ElkSummonRemote:FireServer("elk_summon")
+				
+				task.spawn(function()
+					LocalPlayer.CharacterAdded:Connect(function()
+						task.wait(0.3)
+						
+						local Elk = LocalPlayer.Character:FindFirstChild("elk")
+
+						LocalPlayer.Character.Humanoid.HipHeight = HipHeight
+						AnticheatDisabled = true
+
+						if Elk and Elk:FindFirstChild("body_mesh") then
+							Elk:FindFirstChild("body_mesh"):Destroy()
+							Elk.PrimaryPart:Destroy()
+						end
+
+						ElkSummonRemote:FireServer("elk_summon")
+					end)
+				end)
+			end)			
 		end
-		
+
 		if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
 			AnticheatDisabled = false
 		end
@@ -2617,6 +2577,23 @@ task.spawn(function()
 			end
 		end)
 	end)
+end)
+
+task.spawn(function()
+	local InfiniteFly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteFly", Settings.InfiniteFly.Value, function(CallBack)
+		Settings.InfiniteFly.Value = CallBack
+
+		task.spawn(function()
+			if Settings.InfiniteFly.Value == true then
+				InfiniteFlyValue = true
+				InfFly()
+			end
+
+			if Settings.InfiniteFly.Value == false then
+				InfiniteFlyValue = false
+			end
+		end)
+	end)
 
 	task.spawn(function()
 		local InstanceUI
@@ -2626,13 +2603,37 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(BlatantTab, "Range", Settings.AutoBank.Range, 30, LayoutOrder + 2, function(CallBack)
-					Settings.AutoBank.Range = CallBack
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.InfiniteFly.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.InfiniteFly.KeyBind = CallBack
 				end)
 			end
 
 			if Value == false then
 				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
+					Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
+
+					if Settings.InfiniteFly.Value == true then
+						task.spawn(function()
+							InfiniteFlyValue = true
+							InfFly()
+						end)
+
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.InfiniteFly.Value == false then
+						InfiniteFlyValue = false
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
 			end
 		end)
 	end)
@@ -2746,12 +2747,12 @@ end)
 task.spawn(function()
 	local Invisible, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "Invisible", Settings.Invisible.Value, function(CallBack)
 		Settings.Invisible.Value = CallBack
-		
+
 		task.spawn(function()
 			if Settings.Invisible.Value == true then
 				Invisibility()
 			end
-			
+
 			task.spawn(function()
 				LocalPlayer.CharacterAdded:Connect(function()
 					task.wait(0.3)
@@ -2788,7 +2789,7 @@ task.spawn(function()
 			if not UserInputService:GetFocusedTextBox() then
 				if Input.KeyCode.Name == Settings.Invisible.KeyBind then
 					Settings.Invisible.Value = not Settings.Invisible.Value
-					
+
 					task.spawn(function()
 						if Settings.Invisible.Value == true then
 							Invisibility()
@@ -2881,9 +2882,52 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
+		Settings.AutoKit.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoKit.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoKit.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoKit.KeyBind then
+					Settings.AutoKit.Value = not Settings.AutoKit.Value
+
+					if Settings.AutoKit.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoKit.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.HighJump.Value, function(CallBack)
 		Settings.HighJump.Value = CallBack
-		
+
 		task.spawn(function()
 			UserInputService.JumpRequest:Connect(function()
 				if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
@@ -2892,7 +2936,7 @@ task.spawn(function()
 			end)
 		end)	
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -2932,49 +2976,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
-		Settings.AutoKit.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoKit.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoKit.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-	
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.AutoKit.KeyBind then
-					Settings.AutoKit.Value = not Settings.AutoKit.Value
-
-					if Settings.AutoKit.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.AutoKit.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local NoFall, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.NoFall.Value, function(CallBack)
 		Settings.NoFall.Value = CallBack
 	end)
@@ -2997,7 +2998,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3040,7 +3041,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3083,7 +3084,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3145,7 +3146,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3168,7 +3169,7 @@ end)
 task.spawn(function()
 	local FpsBooster, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "FpsBooster", Settings.FpsBooster.Value, function(CallBack)
 		Settings.FpsBooster.Value = CallBack
-		
+
 		if Settings.FpsBooster.Value == true then
 			FpsBoost()
 		end
@@ -3192,7 +3193,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3235,7 +3236,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3278,7 +3279,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3321,7 +3322,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3339,7 +3340,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -3409,7 +3410,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3432,9 +3433,9 @@ end)
 task.spawn(function()
 	local Indicators, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Indicators", Settings.Indicators.Value, function(CallBack)
 		Settings.Indicators.Value = CallBack
-		
+
 		local OldObj = debug.getupvalue(DamageIndicator, 10)
-		
+
 		if Settings.Indicators.Value == true then
 			local Messages = {"AlSploit", "Best Client", ":D", "💀"}
 
@@ -3459,12 +3460,12 @@ task.spawn(function()
 				end
 			})
 		end
-		
+
 		if Settings.Indicators.Value == false then
 			debug.setupvalue(DamageIndicator, 10, {
 				Create = function(self, obj, ...)
 					obj = OldObj
-					
+
 					task.spawn(function()
 						task.wait(0.5)
 						obj.Parent:Destroy()
@@ -3492,7 +3493,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		UserInputService.InputBegan:Connect(function(Input)
 			if not UserInputService:GetFocusedTextBox() then
@@ -3515,13 +3516,13 @@ end)
 task.spawn(function()
 	local AntiVoid, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "AntiVoid", Settings.AntiVoid.Value, function(CallBack)
 		Settings.AntiVoid.Value = CallBack
-		
+
 		if Settings.AntiVoid.Value == true then
 			task.spawn(function()
 				repeat task.wait() until GetMatchState() ~= 0
-				
+
 				task.wait(0.3)
-				
+
 				local OldLowestPosition = math.huge
 				local LowestPosition = 99999
 
@@ -3565,7 +3566,7 @@ task.spawn(function()
 				end)
 			end)
 		end
-		
+
 		if Settings.AntiVoid.Value == false then
 			if AntiVoidPart then
 				AntiVoidPart:Destroy()
@@ -3609,7 +3610,7 @@ task.spawn(function()
 			end
 		end)
 	end)
-	
+
 	task.spawn(function()
 		local InstanceUI
 		local Value = false
@@ -3620,7 +3621,7 @@ task.spawn(function()
 			if Value == true then
 				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency * 100, 100, LayoutOrder + 2, function(CallBack)
 					Settings.AntiVoid.Transparency = CallBack / 100
-					
+
 					task.spawn(function()
 						if AntiVoidPart then
 							AntiVoidPart.Transparency = Settings.AntiVoid.Transparency
@@ -3637,14 +3638,15 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local PlayerTp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Indicators", Settings.PlayerTp.Value, function(CallBack)
+	local PlayerTp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "PlayerTp", Settings.PlayerTp.Value, function(CallBack)
 		Settings.PlayerTp.Value = CallBack
-		
-		if Settings.PlayerTp.Value == true then
-			task.spawn(function()
+
+
+		task.spawn(function()
+			if Settings.PlayerTp.Value == true then
 				if IsAlive(LocalPlayer) then
 					repeat task.wait() until GetMatchState() ~= 0
-					
+
 					local NearestPlayer = FindNearestPlayer()
 
 					if NearestPlayer ~= nil then
@@ -3673,8 +3675,9 @@ task.spawn(function()
 						end
 					end)
 				end
-			end)
-		end		
+			end	
+		end)
+
 	end)
 
 	task.spawn(function()
@@ -3732,7 +3735,7 @@ task.spawn(function()
 	C1 = ViewModel.RightHand.RightWrist.C1
 
 	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
-	
+
 	CreateNotification(5, "AlSploit has loaded!")
 	setfpscap(999)
 end)
