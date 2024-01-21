@@ -867,7 +867,7 @@ function FindNearestPlayer(MaxDistance)
 	local NearestPlayerDistance = MaxDistance or math.huge
 	local NearestPlayer
 
-	for i, v in next, PlayerService do
+	for i, v in next, PlayerService:GetPlayers() do
 		if IsAlive(v) and v ~= LocalPlayer and IsAlive(LocalPlayer) and v.Team ~= LocalPlayer.Team then
 			local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
 
@@ -2925,7 +2925,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "NoFall", Settings.HighJump.Value, function(CallBack)
+	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
 		Settings.HighJump.Value = CallBack
 
 		task.spawn(function()
