@@ -1230,153 +1230,238 @@ end
 function AutoBuy()
 	local NearestNpc = FindNearestNpc(30)
 	
-	local LeatherArmor ={
-		[1] = {
-			["shopItem"] = {
-				["lockAfterPurchase"] = true,
-				["itemType"] = "leather_chestplate",
-				["price"] = 50,
-				["customDisplayName"] = "Leather Armor",
-				["currency"] = "iron",
-				["category"] = "Combat",
-				["nextTier"] = "iron_chestplate",
-				["ignoredByKit"] = {
-					[1] = "bigman"
+	if NearestNpc then		
+		local EmeraldArmor ={
+			[1] = {
+				["shopItem"] = {
+					["lockAfterPurchase"] = true,
+					["itemType"] = "emerald_chestplate",
+					["price"] = 40,
+					["customDisplayName"] = "Emerald Armor",
+					["currency"] = "emerald",
+					["category"] = "Combat",
+					["nextTier"] = "",
+					["ignoredByKit"] = {
+						[1] = "bigman"
+					},
+					["spawnWithItems"] = {
+						[1] = "emerald_helmet",
+						[2] = "emerald_chestplate",
+						[3] = "emerald_boots"
+					},
+					["amount"] = 1
 				},
-				["spawnWithItems"] = {
-					[1] = "leather_helmet",
-					[2] = "leather_chestplate",
-					[3] = "leather_boots"
-				},
-				["amount"] = 1
-			},
-			["shopId"] = NearestNpc.Name
+				["shopId"] = NearestNpc.Name
+			}
 		}
-	}
-	
-	local EmeraldSword = {
-		[1] = {
-			["shopItem"] = {
-				["disabledInQueue"] = {
-					[1] = "tnt_wars"
-				},
-				["itemType"] = "emerald_sword",
-				["price"] = 20,
-				["superiorItems"] = {
-					[1] = ""
-				},
-				["currency"] = "iron",
-				["amount"] = 1,
-				["ignoredByKit"] = {
-					[1] = "barbarian",
-					[2] = "dasher",
-					[3] = "frost_hammer_kit"
-				},
-				["category"] = "Combat",
-				["lockAfterPurchase"] = true
-			},
-			["shopId"] = "1_item_shop"
-		}
-	}
-	
-	local DiamondSword = {
-		[1] = {
-			["shopItem"] = {
-				["disabledInQueue"] = {
-					[1] = "tnt_wars"
-				},
-				["itemType"] = "diamond_sword",
-				["price"] = 4,
-				["superiorItems"] = {
-					[1] = "emerald_sword"
-				},
-				["currency"] = "emerald",
-				["amount"] = 1,
-				["ignoredByKit"] = {
-					[1] = "barbarian",
-					[2] = "dasher",
-					[3] = "frost_hammer_kit"
-				},
-				["category"] = "Combat",
-				["lockAfterPurchase"] = true
-			},
-			["shopId"] = "1_item_shop"
-		}
-	}
-	
-	local IronSword = {
-		[1] = {
-			["shopItem"] = {
-				["disabledInQueue"] = {
-					[1] = "tnt_wars"
-				},
-				["itemType"] = "iron_sword",
-				["price"] = 70,
-				["superiorItems"] = {
-					[1] = "diamond_sword"
-				},
-				["currency"] = "iron",
-				["amount"] = 1,
-				["ignoredByKit"] = {
-					[1] = "barbarian",
-					[2] = "dasher",
-					[3] = "frost_hammer_kit"
-				},
-				["category"] = "Combat",
-				["lockAfterPurchase"] = true
-			},
-			["shopId"] = "1_item_shop"
-		}
-	}
-	
-	local StoneSword = {
-		[1] = {
-			["shopItem"] = {
-				["disabledInQueue"] = {
-					[1] = "tnt_wars"
-				},
-				["itemType"] = "stone_sword",
-				["price"] = 20,
-				["superiorItems"] = {
-					[1] = "iron_sword"
-				},
-				["currency"] = "iron",
-				["amount"] = 1,
-				["ignoredByKit"] = {
-					[1] = "barbarian",
-					[2] = "dasher",
-					[3] = "frost_hammer_kit"
-				},
-				["category"] = "Combat",
-				["lockAfterPurchase"] = true
-			},
-			["shopId"] = "1_item_shop"
-		}
-	}
 		
-	task.spawn(function()
-		if HasItem("diamond_sword") then
-			PurchaseItem(EmeraldSword)
-		end
+		local DiamondArmor ={
+			[1] = {
+				["shopItem"] = {
+					["lockAfterPurchase"] = true,
+					["itemType"] = "Diamond_chestplate",
+					["price"] = 8,
+					["customDisplayName"] = "Diamond Armor",
+					["currency"] = "emerald",
+					["category"] = "Combat",
+					["nextTier"] = "diamond_chestplate",
+					["ignoredByKit"] = {
+						[1] = "bigman"
+					},
+					["spawnWithItems"] = {
+						[1] = "diamond_helmet",
+						[2] = "diamond_chestplate",
+						[3] = "diamond_boots"
+					},
+					["amount"] = 1
+				},
+				["shopId"] = NearestNpc.Name
+			}
+		}
+		local IronArmor ={
+			[1] = {
+				["shopItem"] = {
+					["lockAfterPurchase"] = true,
+					["itemType"] = "iron_chestplate",
+					["price"] = 120,
+					["customDisplayName"] = "Iron Armor",
+					["currency"] = "iron",
+					["category"] = "Combat",
+					["nextTier"] = "diamond_chestplate",
+					["ignoredByKit"] = {
+						[1] = "bigman"
+					},
+					["spawnWithItems"] = {
+						[1] = "iron_helmet",
+						[2] = "iron_chestplate",
+						[3] = "iron_boots"
+					},
+					["amount"] = 1
+				},
+				["shopId"] = NearestNpc.Name
+			}
+		}
+		
+		local LeatherArmor ={
+			[1] = {
+				["shopItem"] = {
+					["lockAfterPurchase"] = true,
+					["itemType"] = "leather_chestplate",
+					["price"] = 50,
+					["customDisplayName"] = "Leather Armor",
+					["currency"] = "iron",
+					["category"] = "Combat",
+					["nextTier"] = "iron_chestplate",
+					["ignoredByKit"] = {
+						[1] = "bigman"
+					},
+					["spawnWithItems"] = {
+						[1] = "leather_helmet",
+						[2] = "leather_chestplate",
+						[3] = "leather_boots"
+					},
+					["amount"] = 1
+				},
+				["shopId"] = NearestNpc.Name
+			}
+		}
 
-		if HasItem("iron_sword") then
-			PurchaseItem(DiamondSword)
-		end
+		local EmeraldSword = {
+			[1] = {
+				["shopItem"] = {
+					["disabledInQueue"] = {
+						[1] = "tnt_wars"
+					},
+					["itemType"] = "emerald_sword",
+					["price"] = 20,
+					["superiorItems"] = {
+						[1] = ""
+					},
+					["currency"] = "iron",
+					["amount"] = 1,
+					["ignoredByKit"] = {
+						[1] = "barbarian",
+						[2] = "dasher",
+						[3] = "frost_hammer_kit"
+					},
+					["category"] = "Combat",
+					["lockAfterPurchase"] = true
+				},
+				["shopId"] = "1_item_shop"
+			}
+		}
 
-		if HasItem("stone_sword") then
-			PurchaseItem(IronSword)
-		end
+		local DiamondSword = {
+			[1] = {
+				["shopItem"] = {
+					["disabledInQueue"] = {
+						[1] = "tnt_wars"
+					},
+					["itemType"] = "diamond_sword",
+					["price"] = 4,
+					["superiorItems"] = {
+						[1] = "emerald_sword"
+					},
+					["currency"] = "emerald",
+					["amount"] = 1,
+					["ignoredByKit"] = {
+						[1] = "barbarian",
+						[2] = "dasher",
+						[3] = "frost_hammer_kit"
+					},
+					["category"] = "Combat",
+					["lockAfterPurchase"] = true
+				},
+				["shopId"] = "1_item_shop"
+			}
+		}
 
-		if HasItem("wood_sword") then
-			PurchaseItem(StoneSword)
-		end
-	end)
-	
-	task.spawn(function()
-		if HasItem("stone_sword") then
-			PurchaseItem(LeatherArmor)
-		end		
-	end)
+		local IronSword = {
+			[1] = {
+				["shopItem"] = {
+					["disabledInQueue"] = {
+						[1] = "tnt_wars"
+					},
+					["itemType"] = "iron_sword",
+					["price"] = 70,
+					["superiorItems"] = {
+						[1] = "diamond_sword"
+					},
+					["currency"] = "iron",
+					["amount"] = 1,
+					["ignoredByKit"] = {
+						[1] = "barbarian",
+						[2] = "dasher",
+						[3] = "frost_hammer_kit"
+					},
+					["category"] = "Combat",
+					["lockAfterPurchase"] = true
+				},
+				["shopId"] = "1_item_shop"
+			}
+		}
+
+		local StoneSword = {
+			[1] = {
+				["shopItem"] = {
+					["disabledInQueue"] = {
+						[1] = "tnt_wars"
+					},
+					["itemType"] = "stone_sword",
+					["price"] = 20,
+					["superiorItems"] = {
+						[1] = "iron_sword"
+					},
+					["currency"] = "iron",
+					["amount"] = 1,
+					["ignoredByKit"] = {
+						[1] = "barbarian",
+						[2] = "dasher",
+						[3] = "frost_hammer_kit"
+					},
+					["category"] = "Combat",
+					["lockAfterPurchase"] = true
+				},
+				["shopId"] = "1_item_shop"
+			}
+		}
+
+		task.spawn(function()
+			if HasItem("diamond_sword") then
+				PurchaseItem(EmeraldSword)
+			end
+
+			if HasItem("iron_sword") then
+				PurchaseItem(DiamondSword)
+			end
+
+			if HasItem("stone_sword") then
+				PurchaseItem(IronSword)
+			end
+
+			if HasItem("wood_sword") then
+				PurchaseItem(StoneSword)
+			end
+		end)
+
+		task.spawn(function()			
+			if HasItem("diamond_chestplate") then
+				PurchaseItem(EmeraldArmor)
+			end	
+			
+			if HasItem("iron_chestplate") then
+				PurchaseItem(DiamondArmor)
+			end	
+			
+			if HasItem("leather_chestplate") then
+				PurchaseItem(IronArmor)
+			end	
+			
+			if HasItem("stone_sword") then
+				PurchaseItem(LeatherArmor)
+			end		
+		end)
+	end	
 end
 
 function AutoKit()
@@ -1587,11 +1672,13 @@ task.spawn(function()
 	repeat
 		task.wait(1 / Settings.AutoClicker.Cps)
 
-		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 and BlockPlacementController.blockPlacer then
+		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			task.spawn(function()
-				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
-				
-				BlockPlacementController.blockPlacer:placeBlock()
+				if BlockPlacementController.blockPlacer then
+					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
+
+					BlockPlacementController.blockPlacer:placeBlock()
+				end				
 			end)
 
 			task.spawn(function()
