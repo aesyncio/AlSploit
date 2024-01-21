@@ -1295,14 +1295,6 @@ function GetSpeed()
 			Speed = Speed + 20
 		end
 
-		local Armor = GetInventory().Armor[3]
-
-		if type(Armor) ~= "table" then Armor = {itemType = ""} end
-
-		if Armor.itemType == "Speed_boots" then 
-			Speed = Speed + 25
-		end
-
 		if ZephyrOrb ~= 0 then
 			Speed = Speed + 19
 		end
