@@ -1228,6 +1228,32 @@ local function HasItem(Name)
 end
 
 function AutoBuy()
+	local NearestNpc = FindNearestNpc(30)
+	
+	local LeatherArmor ={
+		[1] = {
+			["shopItem"] = {
+				["lockAfterPurchase"] = true,
+				["itemType"] = "leather_chestplate",
+				["price"] = 50,
+				["customDisplayName"] = "Leather Armor",
+				["currency"] = "iron",
+				["category"] = "Combat",
+				["nextTier"] = "iron_chestplate",
+				["ignoredByKit"] = {
+					[1] = "bigman"
+				},
+				["spawnWithItems"] = {
+					[1] = "leather_helmet",
+					[2] = "leather_chestplate",
+					[3] = "leather_boots"
+				},
+				["amount"] = 1
+			},
+			["shopId"] = NearestNpc.Name
+		}
+	}
+	
 	local EmeraldSword = {
 		[1] = {
 			["shopItem"] = {
@@ -1328,21 +1354,29 @@ function AutoBuy()
 		}
 	}
 		
-	if HasItem("diamond_sword") then
-		PurchaseItem(EmeraldSword)
-	end
+	task.spawn(function()
+		if HasItem("diamond_sword") then
+			PurchaseItem(EmeraldSword)
+		end
+
+		if HasItem("iron_sword") then
+			PurchaseItem(DiamondSword)
+		end
+
+		if HasItem("stone_sword") then
+			PurchaseItem(IronSword)
+		end
+
+		if HasItem("wood_sword") then
+			PurchaseItem(StoneSword)
+		end
+	end)
 	
-	if HasItem("iron_sword") then
-		PurchaseItem(DiamondSword)
-	end
-	
-	if HasItem("stone_sword") then
-		PurchaseItem(IronSword)
-	end
-	
-	if HasItem("wood_sword") then
-		PurchaseItem(StoneSword)
-	end
+	task.spawn(function()
+		if HasItem("stone_sword") then
+			PurchaseItem(LeatherArmor)
+		end		
+	end)
 end
 
 function AutoKit()
