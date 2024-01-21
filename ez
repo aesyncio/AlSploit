@@ -1116,7 +1116,15 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	
+	repeat
+		task.wait()
+		
+		for i, v in next, PlayerService:GetPlayers() do
+			if v:GetRankInGroup(5774246) >= 0 then
+			 	CreateNotification(60,  "A staff (" .. v.Name .. ") has joined your game!")
+			end
+		end
+	until not game
 end)
 
 task.spawn(function()	
@@ -1851,6 +1859,47 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoReport, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoReport", Settings.AutoReport.Value, function(CallBack)
+		Settings.AutoReport.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoReport.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoReport.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.AutoReport.KeyBind then
+							Settings.AutoReport.Value = not Settings.AutoReport.Value
+
+							if Settings.AutoReport.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.AutoReport.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local FpsBooster, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "FpsBooster", Settings.FpsBooster.Value, function(CallBack)
 		Settings.FpsBooster.Value = CallBack
 		
@@ -1881,47 +1930,6 @@ task.spawn(function()
 							end
 
 							if Settings.FpsBooster.Value == false then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-							end
-						end
-					end
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local AutoReport, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoReport", Settings.AutoReport.Value, function(CallBack)
-		Settings.AutoReport.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoReport.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoReport.KeyBind = CallBack
-				end)
-
-				UserInputService.InputBegan:Connect(function(Input)
-					if not UserInputService:GetFocusedTextBox() then
-						if Input.KeyCode.Name == Settings.AutoReport.KeyBind then
-							Settings.AutoReport.Value = not Settings.AutoReport.Value
-
-							if Settings.AutoReport.Value == true then
-								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-							end
-
-							if Settings.AutoReport.Value == false then
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
