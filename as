@@ -800,6 +800,7 @@ local SpoofedCamera = nil
 local AntiVoidPart = nil
 local DamageBoost = false
 local StartLevel = nil
+local ZephyrOrb = false
 local FlyDown = false
 local FlyUp = false
 
@@ -2043,7 +2044,7 @@ end)
 
 task.spawn(function()
 	RunService.Heartbeat:Connect(function(Delta)
-		if IsAlive(LocalPlayer) and Settings.Speed.Value == true then			
+		if Settings.Speed.Value == true and IsAlive(LocalPlayer) then			
 			local SpeedValue = GetSpeed()
 
 			local RaycastParameters = RaycastParams.new()
@@ -2064,6 +2065,24 @@ task.spawn(function()
 			end			
 		end
 	end)
+end)
+
+task.spawn(function()
+	repeat task.wait() until GetMatchState() ~= 0
+
+	local ZephyrUpdate = ZephyrController.updateJump
+
+	ZephyrController.updateJump = function(self, orb, ...)
+		if IsAlive(LocalPlayer) and orb then
+			ZephyrOrb = 1
+		end
+
+		if not IsAlive(LocalPlayer) or not orb then
+			ZephyrOrb = 0
+		end
+
+		return ZephyrUpdate(self, orb, ...)
+	end
 end)
 
 task.spawn(function()
