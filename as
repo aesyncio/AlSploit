@@ -1269,9 +1269,7 @@ task.spawn(function()
 
 		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			task.spawn(function()
-				local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
-
-				BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)										
+				BlockPlacementController.blockPlacer:placeBlock()										
 			end)
 
 			task.spawn(function()
@@ -2604,6 +2602,8 @@ task.spawn(function()
 			debug.setupvalue(DamageIndicator, 10, {
 				Create = function(self, obj, ...)
 					obj = OldObj
+					
+					print(obj.Parent.TextColor3)
 					
 					task.spawn(function()
 						task.wait(0.5)
