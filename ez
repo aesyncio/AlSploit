@@ -918,6 +918,12 @@ local function HashFunction(Value)
 	return {value = Value}
 end
 
+local function GetQueueType()
+	local State = ClientHandlerStore:getState()
+
+	return State.Game.queueType or "bedwars_test"
+end
+
 local function GetInventory(Player)
 	local Player = Player or LocalPlayer
 
@@ -1366,6 +1372,22 @@ task.spawn(function()
 			end 
 		end)    
 	end)
+end)
+
+task.spawn(function()
+	task.spawn(function()
+		if GetQueueType():find("skywars") then
+			repeat task.wait(1) until not IsAlive(LocalPlayer)
+
+			PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
+		end
+	end)
+
+	repeat task.wait(1) until GetMatchState() == 2
+
+	if Settings.PlayAgain.Value == true then
+		PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
+	end
 end)
 
 task.spawn(function()
@@ -1994,24 +2016,19 @@ task.spawn(function()
 				UserInputService.InputBegan:Connect(function(Input)
 					if not UserInputService:GetFocusedTextBox() then
 						if Input.KeyCode.Name == Settings.InfiniteFly.KeyBind then
-							Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value
-							
-							task.spawn(function()
-								if Settings.InfiniteFly.Value == true then
-									InfiniteFlyValue = true
-									InfiniteFly()
-								end
-
-								if Settings.InfiniteFly.Value == false then
-									InfiniteFlyValue = false
-								end
-							end)							
+							Settings.InfiniteFly.Value = not Settings.InfiniteFly.Value						
 
 							if Settings.InfiniteFly.Value == true then
+								task.spawn(function()
+									InfiniteFlyValue = true
+									InfiniteFly()
+								end)
+								
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
 							end
 
 							if Settings.InfiniteFly.Value == false then
+								InfiniteFlyValue = false
 								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 							end
 						end
@@ -2378,6 +2395,114 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local PlayAgain, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.PlayAgain.Value, function(CallBack)
+		Settings.PlayAgain.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.PlayAgain.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.PlayAgain.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.PlayAgain.KeyBind then
+							Settings.PlayAgain.Value = not Settings.PlayAgain.Value
+
+							if Settings.PlayAgain.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.PlayAgain.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local GalaxySky, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "AntiStaff", Settings.GalaxySky.Value, function(CallBack)
+		Settings.GalaxySky.Value = CallBack
+
+		if Settings.GalaxySky.Value == true then
+			if LightingService:FindFirstChild("Sky") and Settings.GalaxySky.Value == true then
+				LightingService.Sky.Parent = ReplicatedStorage
+
+				local Sky = Instance.new("Sky")
+				local ID = 8281961896
+
+				Sky.SkyboxBk = "http://www.roblox.com/asset/?id=" .. ID
+				Sky.SkyboxDn = "http://www.roblox.com/asset/?id=" .. ID
+				Sky.SkyboxFt = "http://www.roblox.com/asset/?id=" .. ID
+				Sky.SkyboxLf = "http://www.roblox.com/asset/?id=" .. ID
+				Sky.SkyboxRt = "http://www.roblox.com/asset/?id=" .. ID
+				Sky.SkyboxUp = "http://www.roblox.com/asset/?id=" .. ID
+
+				Sky.Parent = LightingService
+			end
+		end
+
+		if Settings.GalaxySky.Value == false then
+			if ReplicatedStorage:FindFirstChild("Sky") and LightingService:FindFirstChild("Sky") and Settings.GalaxySky.Value == false then
+				LightingService.Sky:Destroy()
+
+				ReplicatedStorage.Sky.Parent = LightingService 
+			end
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(WorldTab, Settings.GalaxySky.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.GalaxySky.KeyBind = CallBack
+				end)
+
+				UserInputService.InputBegan:Connect(function(Input)
+					if not UserInputService:GetFocusedTextBox() then
+						if Input.KeyCode.Name == Settings.GalaxySky.KeyBind then
+							Settings.GalaxySky.Value = not Settings.GalaxySky.Value
+
+							if Settings.GalaxySky.Value == true then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+							end
+
+							if Settings.GalaxySky.Value == false then
+								UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+							end
+						end
+					end
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local Indicators, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Indicators", Settings.Indicators.Value, function(CallBack)
 		Settings.Indicators.Value = CallBack
 		
@@ -2461,6 +2586,23 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Horizontal = {Value = 15}
+	local Vertical = {Value = 5}
+	local Depth = {Value = 35} 
+
+	local RotationZ = {Value = 5}
+
+	local ViewModel = Camera:FindFirstChild("Viewmodel")
+	local C1
+
+	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(Depth.Value / 10))
+	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (Horizontal.Value / 10))
+	LocalPlayer.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_VERTICAL_OFFSET", (Vertical.Value / 10))
+
+	C1 = ViewModel.RightHand.RightWrist.C1
+
+	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+	
 	CreateNotification(5, "AlSploit has loaded!")
 	setfpscap(999)
 end)
