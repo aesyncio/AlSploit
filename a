@@ -2912,6 +2912,10 @@ task.spawn(function()
 		
 		if Settings.AntiVoid.Value == true then
 			task.spawn(function()
+				repeat task.wait() until GetMatchState() ~= 0
+				
+				task.wait(0.3)
+				
 				local OldLowestPosition = math.huge
 				local LowestPosition = 99999
 
@@ -3008,8 +3012,8 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 100, LayoutOrder + 2, function(CallBack)
-					Settings.AntiVoid.Transparency = CallBack / 100
+				InstanceUI = CreateSlider(WorldTab, "Transparency", Settings.AntiVoid.Transparency, 1, LayoutOrder + 2, function(CallBack)
+					Settings.AntiVoid.Transparency = CallBack
 				end)
 			end
 
