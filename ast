@@ -793,14 +793,16 @@ local FovController = KnitClient.Controllers.FovController
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
 
+local KillAuraAnimationCooldown = true
 local AnticheatDisabled = false
 local InfiniteFlyValue = false
+local FlyBodyVelocity = nil
 local SpoofedCamera = nil
-local KillAuraAnimationCooldown = true
 local AntiVoidPart = nil
 local DamageBoost = false
 local StartLevel = nil
 local ZephyrOrb = 0
+local FlyValue = false
 local FlyDown = false
 local FlyUp = false
 
@@ -840,7 +842,7 @@ local function TweenToNearestPlayer()
 
 		if NearestPlayer then
 			local TweenInformation = TweenInfo.new(0.65, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0)	
-			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.HumanoidRootPart, TweenInformation, {CFrame = NearestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 2, 0)})
+			local PlayerTpTween = TweenService:Create(LocalPlayer.Character.PrimaryPart, TweenInformation, {CFrame = NearestPlayer.Character.PrimaryPart.CFrame + Vector3.new(0, 2, 0)})
 
 			PlayerTpTween:Play()
 		end
@@ -1069,6 +1071,27 @@ function FindNearestOre(MaxDistance)
 	return NearestOre
 end
 
+function TouchingGround()
+	if IsAlive(LocalPlayer) then
+		local Parameters = RaycastParams.new()
+		Parameters.FilterType = Enum.RaycastFilterType.Include
+		Parameters.FilterDescendantsInstances = {CollectionService:GetTagged("block")}
+
+		local IsTouchingFloor = false
+
+		for x = 1, 1 do
+			local Origin = LocalPlayer.Character.PrimaryPart.Position + Vector3.new(x, 0, 0)
+
+			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
+			if Raycast and Raycast.Instance then
+				IsTouchingFloor = true			
+			end
+		end	
+
+		return IsTouchingFloor
+	end
+end
+
 function SetCollisions(Value)
 	if Value == true then
 		if IsAlive(LocalPlayer) then
@@ -1097,6 +1120,22 @@ end
 
 local function HashFunction(Value)
 	return {value = Value}
+end
+
+local function DecimalRound(Number, DigitsPast0)
+	DigitsPast0 = math.pow(10, DigitsPast0 or 0)
+
+	Number = Number * DigitsPast0
+
+	if Number >= 0 then 
+		Number = math.floor(Number + 0.5) 
+	end
+	
+	if Number < 0 then
+		Number = math.ceil(Number - 0.5) 
+	end
+
+	return Number / DigitsPast0
 end
 
 local function GetQueueType()
@@ -1313,7 +1352,7 @@ function IsMoving()
 		return true
 	end
 
-	if IsAlive(LocalPlayer) and LocalPlayer.Character.HumanoidRootPart.Position == Position then
+	if IsAlive(LocalPlayer) and LocalPlayer.Character.PrimaryPart.Position == Position then
 		Position = LocalPlayer.Character.PrimaryPart.Position
 		
 		return false
@@ -1819,7 +1858,7 @@ local function InfFly()
 		repeat 
 			task.wait()
 
-			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (FlyUp and 0.5 or 0) + (FlyDown and -0.5 or 0), LocalPlayer.Character.HumanoidRootPart.Position.Z)
+			SpoofedCamera.Position = Vector3.new(LocalPlayer.Character.PrimaryPart.Position.X, SpoofedCamera.Position.Y + (FlyUp and 0.5 or 0) + (FlyDown and -0.5 or 0), LocalPlayer.Character.PrimaryPart.Position.Z)
 			StartLevel = SpoofedCamera.Position.Y	
 		until InfiniteFlyValue == false or not IsAlive(LocalPlayer)
 
@@ -1885,6 +1924,84 @@ local function Nuker(NearestBed, NearestOre)
 	end
 end
 
+local function Fly()
+	local FlyGroundTime = tick()
+	
+	if FlyValue == true and IsAlive(LocalPlayer) then		
+		task.spawn(function()
+			local FlyHud, NumberDisplay, SliderDisplay = CreateFlyHud()
+			
+			repeat
+				task.wait()
+
+				if tick() - FlyGroundTime <= 2.4 then
+					local MaxFlyTime = 2.4
+					local FlyTime = DecimalRound(tick() - FlyGroundTime, 1)
+
+					NumberDisplay.Text = FlyTime		
+
+					local TweenInformation = TweenInfo.new(0.35, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)			
+					local Tween = TweenService:Create(SliderDisplay, TweenInformation, {Size = UDim2.new(FlyTime / MaxFlyTime, 0, 1, 0)})
+
+					Tween:Play()				
+				end				
+
+			until FlyValue == false or not IsAlive(LocalPlayer)
+
+			FlyHud:Destroy()
+		end)		
+		
+		task.spawn(function()
+			FlyBodyVelocity = Instance.new("BodyVelocity")
+			FlyBodyVelocity.MaxForce = Vector3.new(0, 9e9, 0)
+			FlyBodyVelocity.Name = "FlyBodyVelocity"
+			FlyBodyVelocity.Parent = LocalPlayer.Character.PrimaryPart
+
+			FlyGroundTime = tick()
+
+			repeat
+				task.wait()
+
+				if TouchingGround() then
+					FlyGroundTime = tick()
+				end
+
+				if FlyValue == true and IsAlive(LocalPlayer) then
+					FlyBodyVelocity.Velocity = Vector3.new(0, (FlyUp and 40 or 0) + (FlyDown and -40 or 0), 0)
+
+					if (tick() - FlyGroundTime) >= 2.4 then
+						local FlyTeleportPosition = LocalPlayer.Character.PrimaryPart.Position.Y
+
+						local FlyRaycastParameters = RaycastParams.new()
+
+						FlyRaycastParameters.FilterType = Enum.RaycastFilterType.Include
+						FlyRaycastParameters.FilterDescendantsInstances = {CollectionService:GetTagged("block")}
+
+						local Raycast = workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, Vector3.new(0, -1000, 0), FlyRaycastParameters)
+
+						if Raycast and Raycast.Instance and IsAlive(LocalPlayer) then 
+							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(Raycast.Instance.Position)
+
+							task.wait(0.12)
+
+							if IsAlive(LocalPlayer) then 
+								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + FlyTeleportPosition)
+
+								FlyGroundTime = tick()
+							end		
+						end
+					end
+				end
+			until FlyValue == false or not IsAlive(LocalPlayer)
+			
+			if LocalPlayer.Character.PrimaryPart:FindFirstChild("FlyBodyVelocity") then
+				LocalPlayer.Character.PrimaryPart:FindFirstChild("FlyBodyVelocity"):Destroy()
+				FlyGroundTime = tick()
+			end
+		end)
+	end	
+end
+
 task.spawn(function()
 	repeat
 		task.wait()
@@ -1913,12 +2030,12 @@ task.spawn(function()
 		end)
 		
 		task.spawn(function()		
-			if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and NearestEntity and not NearestEntity:FindFirstChildOfClass("ForceField") then	
+			if Settings.Aimbot.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0  then	
 				local NearestEntity, NearestEntityDistance = FindNearestEntity()
 				
 				local BestBow = GetBow()
 
-				if BestBow and IsAlive(LocalPlayer) and NearestEntityDistance > 18 then
+				if BestBow and IsAlive(LocalPlayer) and NearestEntity and not NearestEntity:FindFirstChildOfClass("ForceField") and NearestEntityDistance > 18  then
 					if Settings.Aimbot.ToolCheck == true then
 						if HasItem(BestBow.itemType) and HasItem("arrow") then
 							local Bow = HasItem(BestBow.itemType)
@@ -1983,7 +2100,7 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.Scaffold.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				for i = 1, Settings.Scaffold.ExpandDistance do
-					local ScaffoldCFrame = LocalPlayer.Character.HumanoidRootPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * (i * 3.3)) - Vector3.new(0, (LocalPlayer.Character.HumanoidRootPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
+					local ScaffoldCFrame = LocalPlayer.Character.PrimaryPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * (i * 3.3)) - Vector3.new(0, (LocalPlayer.Character.PrimaryPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
 					local Position = GetServerPosition(ScaffoldCFrame)
 					local Block = GetBlock()
 
@@ -2185,16 +2302,16 @@ task.spawn(function()
 
 			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
 
-			local Raycast = game.Workspace:Raycast(LocalPlayer.Character.HumanoidRootPart.Position, SpeedCFrame, SpeedRaycastParameters)
+			local Raycast = game.Workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, SpeedCFrame, SpeedRaycastParameters)
 
 			if Raycast then
-				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.HumanoidRootPart.Position) 
+				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.PrimaryPart.Position) 
 
-				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame - SpeedCFrame
+				LocalPlayer.Character.PrimaryPart.CFrame = LocalPlayer.Character.PrimaryPart.CFrame - SpeedCFrame
 			end
 
 			if not Raycast then
-				LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame + SpeedCFrame
+				LocalPlayer.Character.PrimaryPart.CFrame = LocalPlayer.Character.PrimaryPart.CFrame + SpeedCFrame
 			end			
 		end
 	end)
@@ -3604,6 +3721,111 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoBank, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoBank", Settings.AutoBank.Value, function(CallBack)
+		Settings.AutoBank.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBank.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoBank.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoBank.KeyBind then
+					Settings.AutoBank.Value = not Settings.AutoBank.Value
+
+					if Settings.AutoBank.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoBank.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateSlider(UtilityTab, "Range", Settings.AutoBank.Range, 30, LayoutOrder + 2, function(CallBack)
+					Settings.AutoBank.Range = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
+		Settings.AutoBuy.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoBuy.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
+					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
+
+					if Settings.AutoBuy.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoBuy.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local AntiStaff, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AntiStaff.Value, function(CallBack)
 		Settings.AntiStaff.Value = CallBack
 	end)
@@ -3660,111 +3882,6 @@ task.spawn(function()
 
 			if Value == false then
 				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local AutoBank, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoBank", Settings.AutoBank.Value, function(CallBack)
-		Settings.AutoBank.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBank.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoBank.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.AutoBank.KeyBind then
-					Settings.AutoBank.Value = not Settings.AutoBank.Value
-
-					if Settings.AutoBank.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.AutoBank.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateSlider(BlatantTab, "Range", Settings.AutoBank.Range, 30, LayoutOrder + 2, function(CallBack)
-					Settings.AutoBank.Range = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
-		Settings.AutoBuy.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoBuy.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
-					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
-
-					if Settings.AutoBuy.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.AutoBuy.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
 			end
 		end)
 	end)
@@ -4383,6 +4500,64 @@ task.spawn(function()
 					end
 
 					if Settings.Cape.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local Fly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Fly", Settings.Fly.Value, function(CallBack)
+		Settings.Fly.Value = CallBack
+		
+		task.spawn(function()
+			if Settings.Fly.Value == true then
+				FlyValue = true
+				Fly()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(WorldTab, Settings.Fly.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Fly.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Fly.KeyBind then
+					Settings.Fly.Value = not Settings.Fly.Value
+
+					if Settings.Fly.Value == true then
+						task.spawn(function()
+							if Settings.Fly.Value == true then
+								FlyValue = true
+								Fly()
+							end
+						end)
+						
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+					
+					if Settings.Fly.Value == false then
+						FlyValue = false
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
