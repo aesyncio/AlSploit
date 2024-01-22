@@ -2028,7 +2028,7 @@ local function FlyMe()
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
-								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + Vector3.new(0, FlyTeleportPosition, 0))
+								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + (Vector3.new(0, FlyTeleportPosition, 0) - Vector3.new(0, LocalPlayer.Character.PrimaryPart.Position.Y, 0)))
 
 								FlyGroundTime = tick()
 							end		
@@ -3483,6 +3483,64 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Fly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "Fly", Settings.Fly.Value, function(CallBack)
+		Settings.Fly.Value = CallBack
+
+		task.spawn(function()
+			if Settings.Fly.Value == true then
+				FlyValue = true
+				FlyMe()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.Fly.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Fly.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Fly.KeyBind then
+					Settings.Fly.Value = not Settings.Fly.Value
+
+					if Settings.Fly.Value == true then
+						task.spawn(function()
+							if Settings.Fly.Value == true then
+								FlyValue = true
+								FlyMe()
+							end
+						end)
+
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.Fly.Value == false then
+						FlyValue = false
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local DamageBoost, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "DamageBoost", Settings.DamageBoost.Value, function(CallBack)
 		Settings.DamageBoost.Value = CallBack
 	end)
@@ -3974,7 +4032,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Esp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoKit", Settings.Esp.Value, function(CallBack)
+	local Esp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "Esp", Settings.Esp.Value, function(CallBack)
 		Settings.Esp.Value = CallBack
 		
 		if Settings.Esp.Value == true then
@@ -4660,64 +4718,6 @@ task.spawn(function()
 					end
 
 					if Settings.Cape.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
-	local Fly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Fly", Settings.Fly.Value, function(CallBack)
-		Settings.Fly.Value = CallBack
-		
-		task.spawn(function()
-			if Settings.Fly.Value == true then
-				FlyValue = true
-				FlyMe()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(WorldTab, Settings.Fly.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.Fly.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.Fly.KeyBind then
-					Settings.Fly.Value = not Settings.Fly.Value
-
-					if Settings.Fly.Value == true then
-						task.spawn(function()
-							if Settings.Fly.Value == true then
-								FlyValue = true
-								FlyMe()
-							end
-						end)
-						
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-					
-					if Settings.Fly.Value == false then
-						FlyValue = false
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
