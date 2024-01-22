@@ -646,6 +646,37 @@ local function CreateFlyHud()
 	return Background, Text, Display
 end
 
+function CreateOutline(Player)
+	if IsAlive(Player) then
+		local BillBoard = Instance.new("BillboardGui")
+
+		BillBoard.Size = UDim2.new(4, 0, 4, 0)
+		BillBoard.AlwaysOnTop = true
+		BillBoard.Name = "Esp"
+
+		local Frame = Instance.new("Frame")
+
+		Frame.Size = UDim2.new(1, 0, 1.5, 0)
+		Frame.Position = UDim2.new(0, 0, -Player.Character.LowerTorso.Size.Y / 2 or -Player.PrimaryPart.Size.Y / 2, 0)
+		Frame.BackgroundTransparency = 1
+
+		local Stroke = Instance.new("UIStroke")
+
+		Stroke.Thickness = 1.5
+		Stroke.Color = Color3.new(0.635294, 0.313725, 1)
+		Stroke.Transparency = 0
+
+		local UICorner = Instance.new("UICorner")
+
+		UICorner.Parent = Frame
+		UICorner.CornerRadius = UDim.new(0, 3)
+
+		Stroke.Parent = Frame
+		Frame.Parent = BillBoard
+		BillBoard.Parent = Player.Character.PrimaryPart
+	end
+end
+
 local Settings = {}
 local Loaded = false
 
@@ -1924,7 +1955,7 @@ local function Nuker(NearestBed, NearestOre)
 	end
 end
 
-local function Fly()
+local function FlyMe()
 	local FlyGroundTime = tick()
 	
 	if FlyValue == true and IsAlive(LocalPlayer) then		
@@ -3025,57 +3056,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
-		Settings.HighJump.Value = CallBack
-
-		task.spawn(function()
-			UserInputService.JumpRequest:Connect(function()
-				if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
-					LocalPlayer.Character.PrimaryPart.Velocity = LocalPlayer.Character.PrimaryPart.Velocity + Vector3.new(0, 16.5, 0)
-				end
-			end)
-		end)	
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(BlatantTab, Settings.HighJump.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.HighJump.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.HighJump.KeyBind then
-					Settings.HighJump.Value = not Settings.HighJump.Value
-
-					if Settings.HighJump.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.HighJump.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local InfiniteFly, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "InfiniteFly", Settings.InfiniteFly.Value, function(CallBack)
 		Settings.InfiniteFly.Value = CallBack
 
@@ -3127,6 +3107,57 @@ task.spawn(function()
 
 					if Settings.InfiniteFly.Value == false then
 						InfiniteFlyValue = false
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local HighJump, DropDownButton, LayoutOrder, UIGradient = CreateToggle(BlatantTab, "HighJump", Settings.HighJump.Value, function(CallBack)
+		Settings.HighJump.Value = CallBack
+
+		task.spawn(function()
+			UserInputService.JumpRequest:Connect(function()
+				if IsAlive(LocalPlayer) and Settings.HighJump.Value == true then
+					LocalPlayer.Character.PrimaryPart.Velocity = LocalPlayer.Character.PrimaryPart.Velocity + Vector3.new(0, 16.5, 0)
+				end
+			end)
+		end)	
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(BlatantTab, Settings.HighJump.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.HighJump.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.HighJump.KeyBind then
+					Settings.HighJump.Value = not Settings.HighJump.Value
+
+					if Settings.HighJump.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.HighJump.Value == false then
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
@@ -3783,49 +3814,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
-		Settings.AutoBuy.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.AutoBuy.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
-					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
-
-					if Settings.AutoBuy.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.AutoBuy.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local AntiStaff, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AntiStaff", Settings.AntiStaff.Value, function(CallBack)
 		Settings.AntiStaff.Value = CallBack
 	end)
@@ -3888,6 +3876,49 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local AutoBuy, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoBuy", Settings.AutoBuy.Value, function(CallBack)
+		Settings.AutoBuy.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.AutoBuy.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.AutoBuy.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.AutoBuy.KeyBind then
+					Settings.AutoBuy.Value = not Settings.AutoBuy.Value
+
+					if Settings.AutoBuy.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.AutoBuy.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local AutoKit, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoKit", Settings.AutoKit.Value, function(CallBack)
 		Settings.AutoKit.Value = CallBack
 	end)
@@ -3922,6 +3953,123 @@ task.spawn(function()
 					end
 
 					if Settings.AutoKit.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
+	local Esp, DropDownButton, LayoutOrder, UIGradient = CreateToggle(UtilityTab, "AutoKit", Settings.Esp.Value, function(CallBack)
+		Settings.Esp.Value = CallBack
+		
+		if Settings.Esp.Value == true then
+			task.spawn(function()
+				for i, v in next, PlayerService:GetPlayers() do
+					if IsAlive(v) and v ~= LocalPlayer and not v.Character.PrimaryPart:FindFirstChild("Esp") then
+						CreateOutline(v)
+					end
+
+					v.CharacterAdded:Connect(function(Character)
+						task.wait(0.3)
+
+						if Settings.Esp.Value == true and IsAlive(PlayerService:FindFirstChild(Character.Name)) and v ~= LocalPlayer and not v.Character.PrimaryPart:FindFirstChild("Esp") then
+							CreateOutline(v)
+						end
+					end)
+				end
+			end)
+
+			task.spawn(function()
+				PlayerService.PlayerAdded:Connect(function(Player)
+					Player.CharacterAdded:Connect(function()
+						task.wait(0.3)
+
+						if Settings.Esp.Value == true and IsAlive(Player) and Player ~= LocalPlayer and not Player.Character.PrimaryPart:FindFirstChild("Esp") then
+							CreateOutline(Player)
+						end
+					end)
+				end)
+			end)
+		end
+		
+		if Settings.Esp.Value == false then
+			for i, v in next, PlayerService:GetPlayers() do
+				if IsAlive(v) and CallBack == false and v.Character.PrimaryPart:FindFirstChild("Esp") then
+					v.Character.PrimaryPart:FindFirstChild("Esp"):Destroy()
+				end
+			end
+		end
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(UtilityTab, Settings.Esp.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Esp.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Esp.KeyBind then
+					Settings.Esp.Value = not Settings.Esp.Value
+
+					if Settings.Esp.Value == true then
+						task.spawn(function()
+							for i, v in next, PlayerService:GetPlayers() do
+								if IsAlive(v) and v ~= LocalPlayer and not v.Character.PrimaryPart:FindFirstChild("Esp") then
+									CreateOutline(v)
+								end
+
+								v.CharacterAdded:Connect(function(Character)
+									task.wait(0.3)
+
+									if Settings.Esp.Value == true and IsAlive(PlayerService:FindFirstChild(Character.Name)) and v ~= LocalPlayer and not v.Character.PrimaryPart:FindFirstChild("Esp") then
+										CreateOutline(v)
+									end
+								end)
+							end
+						end)
+
+						task.spawn(function()
+							PlayerService.PlayerAdded:Connect(function(Player)
+								Player.CharacterAdded:Connect(function()
+									task.wait(0.3)
+
+									if Settings.Esp.Value == true and IsAlive(Player) and Player ~= LocalPlayer and not Player.Character.PrimaryPart:FindFirstChild("Esp") then
+										CreateOutline(Player)
+									end
+								end)
+							end)
+						end)
+						
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.Esp.Value == false then
+						task.spawn(function()
+							for i, v in next, PlayerService:GetPlayers() do
+								if IsAlive(v) and v.Character.PrimaryPart:FindFirstChild("Esp") then
+									v.Character.PrimaryPart:FindFirstChild("Esp"):Destroy()
+								end
+							end
+						end)
+								
 						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
 					end
 				end
@@ -4515,7 +4663,7 @@ task.spawn(function()
 		task.spawn(function()
 			if Settings.Fly.Value == true then
 				FlyValue = true
-				Fly()
+				FlyMe()
 			end
 		end)
 	end)
@@ -4549,7 +4697,7 @@ task.spawn(function()
 						task.spawn(function()
 							if Settings.Fly.Value == true then
 								FlyValue = true
-								Fly()
+								FlyMe()
 							end
 						end)
 						
