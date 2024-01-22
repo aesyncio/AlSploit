@@ -596,7 +596,7 @@ local function CreateFlyHud()
 	Background.BackgroundTransparency = 0.250
 	Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Background.BorderSizePixel = 0
-	Background.Position = UDim2.new(0.5, 0, 0.7, 0)
+	Background.Position = UDim2.new(0.41, 0, 0.7, 0)
 	Background.Size = UDim2.new(0.178, 0, 0.085, 0)
 
 	UIStroke.Parent = Background
