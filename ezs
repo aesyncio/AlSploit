@@ -575,14 +575,13 @@ local function CreateNotification(Duration, Message)
 			task.wait(TweenInformation.Time)
 
 			Notification:Destroy()
-			UIStroke:Destroy()
-			Text:Destroy()
 		end)
 	end)
 end
 
 local function CreateFlyHud()
 	local Background = Instance.new("Frame")
+	local UIStroke = Instance.new("UIStroke")
 	local UICorner = Instance.new("UICorner")
 	local Text = Instance.new("TextLabel")
 	local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
@@ -597,9 +596,22 @@ local function CreateFlyHud()
 	Background.BackgroundTransparency = 0.250
 	Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Background.BorderSizePixel = 0
-	Background.Position = UDim2.new(0.40931946, 0, 0.786585391, 0)
-	Background.Size = UDim2.new(0.177424029, 0, 0.0853658691, 0)
+	Background.Position = UDim2.new(0.434, 0, 0.712, 0)
+	Background.Size = UDim2.new(0.131, 0, 0.085, 0)
 
+	UIStroke.Parent = Background
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Thickness = 2
+	
+	
+	task.spawn(function()
+		repeat
+			task.wait(0.001)
+
+			UIStroke.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+		until not game
+	end)
+	
 	UICorner.Parent = Background
 
 	Text.Name = "Text"
@@ -637,7 +649,7 @@ local function CreateFlyHud()
 	Display.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Display.BorderSizePixel = 0
 	Display.Position = UDim2.new(-0.0466447435, 0, -0.0290079489, 0)
-	Display.Size = UDim2.new(0.740091681, 0, 1, 0)
+	Display.Size = UDim2.new(0, 0, 1, 0)
 	Display.ZIndex = 2
 
 	UICorner_3.CornerRadius = UDim.new(0, 6)
@@ -2016,7 +2028,7 @@ local function FlyMe()
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
-								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + FlyTeleportPosition)
+								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + Vector3.new(0, FlyTeleportPosition, 0))
 
 								FlyGroundTime = tick()
 							end		
