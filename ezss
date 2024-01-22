@@ -1977,8 +1977,8 @@ local function FlyMe()
 			repeat
 				task.wait()
 
-				if tick() - FlyGroundTime <= 2.4 then
-					local MaxFlyTime = 2.4
+				if tick() - FlyGroundTime <= 2.5 then
+					local MaxFlyTime = 2.5
 					local FlyTime = DecimalRound(tick() - FlyGroundTime, 1)
 
 					NumberDisplay.Text = FlyTime		
@@ -2012,7 +2012,7 @@ local function FlyMe()
 				if FlyValue == true and IsAlive(LocalPlayer) then
 					FlyBodyVelocity.Velocity = Vector3.new(0, (FlyUp and 40 or 0) + (FlyDown and -40 or 0), 0)
 
-					if (tick() - FlyGroundTime) >= 2.4 then
+					if (tick() - FlyGroundTime) >= 2.5 then
 						local FlyTeleportPosition = LocalPlayer.Character.PrimaryPart.Position.Y
 
 						local FlyRaycastParameters = RaycastParams.new()
