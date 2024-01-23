@@ -1829,8 +1829,10 @@ local function SwordHit(Entity, Weapon)
 
 	task.spawn(function()
 		if Settings.KillAura.ToolCheck == false then
-			SwitchItem(Weapon.itemType)
-
+			task.spawn(function()
+				SwitchItem(Weapon.itemType)
+			end)
+			
 			SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
 
 			SwordHitRemote:FireServer({
@@ -2215,9 +2217,9 @@ task.spawn(function()
 					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 					
 					if MouseInformation then
-						BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)		
+						BlockPlacementController.blockPlacer:placeBlock(MouseInformation.placementPosition)
 					end
-				end					
+				end
 			end)
 
 			task.spawn(function()
