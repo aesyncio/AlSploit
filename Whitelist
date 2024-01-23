@@ -1,6 +1,0 @@
-local WhitelistedUsers = {
-	AlSploitRevamped = {Priority = 1},
-	bananjoy_3 = {Priority = 3},
-}
-
-return WhitelistedUsers
