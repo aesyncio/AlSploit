@@ -4306,7 +4306,7 @@ task.spawn(function()
 		local OldObj = debug.getupvalue(DamageIndicator, 10)
 
 		if Settings.Indicators.Value == true then
-			local Messages = {"AlSploit", "Best Client", ":D", "XD"}
+			local Messages = {"AlSploit", "Best Client", ":D", "💀"}
 
 			debug.setupvalue(DamageIndicator, 10, {
 				Create = function(self, obj, ...)
