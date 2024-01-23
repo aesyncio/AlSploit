@@ -1,3 +1,5 @@
+repeat task.wait() until shared.AlSploitLoaded == true
+
 local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -862,9 +864,7 @@ local Animations = {
 
 task.spawn(function()
 	for i, v in next, WhitelistedUsers do
-		print(v)
-		
-		if v.Name == LocalPlayer.Name then
+		if v == LocalPlayer.Name then
 			Whitelisted = true
 			WhitelistPriority = v.Priority
 			
