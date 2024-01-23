@@ -1,3 +1,5 @@
+repeat task.wait() until shared.AlSploitLoaded == true
+
 local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -862,6 +864,8 @@ local Animations = {
 
 task.spawn(function()
 	for i, v in next, WhitelistedUsers do
+		print(v)
+		
 		if v.Name == LocalPlayer.Name then
 			Whitelisted = true
 			WhitelistPriority = v.Priority
@@ -2273,7 +2277,7 @@ task.spawn(function()
 
 		if Cooldown == false and Settings.AntiStaff.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
-				if v:GetRankInGroup(5774246) >= 2 then
+				if v:IsInGroup(5774246) and v:GetRankInGroup(5774246) >= 2 then
 					if Settings.AntiStaff.Kick == true then
 						LocalPlayer:Kick("A staff has joined your game!")
 					end
