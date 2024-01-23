@@ -2211,7 +2211,7 @@ task.spawn(function()
 
 		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			task.spawn(function()
-				if BlockPlacementController.blockPlacer.clientManager then
+				if BlockPlacementController.blockPlacer.clientManager and ClientHandlerStore:getstate().Inventory.observedInventory == "block" then
 					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 					
 					if MouseInformation then
