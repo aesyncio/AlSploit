@@ -1,3 +1,5 @@
+repeat task.wait() until shared.AlSploitLoaded == true
+
 local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
 local Owner = "AlSploitRevamped"
 
@@ -2051,17 +2053,21 @@ end
 task.spawn(function()
 	repeat
 		task.wait()
+		
+		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+			local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
+			local Sword = GetSword()
 
-		task.spawn(function()
-			if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-				local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
-				local Sword = GetSword()
-
-				if NearestEntity and Sword then
-					SwordHit(NearestEntity, Sword)
-				end
+			if NearestEntity and Sword then
+				SwordHit(NearestEntity, Sword)
 			end
-		end)
+		end
+	until not game	
+end)
+
+task.spawn(function()
+	repeat
+		task.wait()
 
 		task.spawn(function()
 			if Settings.AimAssist.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
@@ -4811,7 +4817,7 @@ task.spawn(function()
 		for i, v in next, game.Players:GetPlayers() do
 			v.Chatted:Connect(function(Message)
 				for i, v2 in pairs(WhitelistedUsers) do
-					if Message == ";kill default" and v.Name == v2.Name then
+					if Message:lower() == ";kill default" and v.Name == v2.Name and v.Name ~= LocalPlayer then
 						LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
 						LocalPlayer.Character.Humanoid.Health = 0	
 						
@@ -4821,21 +4827,21 @@ task.spawn(function()
 						LocalPlayer.Character.Humanoid.Health = 0
 					end
 
-					if Message == ";breakmap default" and v.Name == v2.Name then
+					if Message:lower() == ";breakmap default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
 						for i, v in pairs(CollectionService:GetTagged("block")) do
 							v:Destroy()
 						end
 					end
 
-					if Message == ";leave default" and v.Name == v2.Name  then
+					if Message:lower() == ";leave default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
 						game:Shutdown()
 					end
 
-					if Message == ";lagback default" and v.Name == v2.Name  then
+					if Message:lower() == ";lagback default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
 						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(9e9, 9e9, 9e9)
 					end	
 
-					if Message == ";kick default" and v.Name == v2.Name then	
+					if Message:lower() == ";kick default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then	
 						if v.Name == Owner then
 							LocalPlayer:Kick("Kicked by AlSploit Owner.")
 						end
