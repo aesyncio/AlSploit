@@ -1,5 +1,3 @@
-repeat task.wait() until shared.AlSploitLoaded == true
-
 local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
 
 local LocalPlayer = game.Players.LocalPlayer
