@@ -2273,6 +2273,25 @@ task.spawn(function()
 			end)								
 		end
 	end)
+	
+	task.spawn(function()
+		task.wait(5)
+		
+		for i, v in next, PlayerService:GetPlayers() do
+			if v:IsInGroup(5774246) and v:GetRankInGroup(5774246) >= 2 then
+
+				task.spawn(function()
+					task.spawn(function()
+						if Settings.AntiStaff.Kick == true then
+							LocalPlayer:Kick("A staff has joined your game!")
+						end
+					end)
+					
+					CreateNotification(60,  "A staff has joined your game!")	
+				end)								
+			end
+		end
+	end)
 end)
 
 task.spawn(function()
