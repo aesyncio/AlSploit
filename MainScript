@@ -1267,7 +1267,7 @@ end
 
 local function SwitchItem(Item)
 	if LocalPlayer.Character.HandInvItem.Value ~= Item then
-		EquipItemRemote:InvokeServer({hand = ReplicatedStorage:WaitForChild("Inventories"):WaitForChild("AlSploitRevamped"):WaitForChild(Item)})
+		EquipItemRemote:InvokeServer({hand = (ReplicatedStorage:WaitForChild("Inventories"):FindFirstChild(Item).Parent.Name == LocalPlayer.Name and ReplicatedStorage:WaitForChild("Inventories"):FindFirstChild(Item) or ReplicatedStorage:WaitForChild("Inventories"):FindFirstChild(Item))})
 	end	
 end
 
@@ -2270,7 +2270,7 @@ task.spawn(function()
 				end
 				
 				CreateNotification(60,  "A staff has joined your game!")	
-			end)								
+			end)
 		end
 	end)
 	
