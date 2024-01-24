@@ -11,7 +11,7 @@ local PlayerService = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
-local WorkSpace = game:GetService("Workspace") or workspace
+local WorkSpace = game:GetService("Workspace") or game.Workspace or workspace
 local CoreGui = game:GetService("CoreGui")
 
 local AlSploit = Instance.new("ScreenGui")
@@ -1049,7 +1049,7 @@ function ShootProjectile(Item, Projectile)
 			[6] = Vector3.new(0, -25, 0),
 			[7] = HttpService:GenerateGUID(true),
 			[8] = {["drawDurationSeconds"] = 0.96, ["shotId"] = HttpService:GenerateGUID(false)},
-			[9] = (game.Workspace:GetServerTimeNow() - 0.11)
+			[9] = (WorkSpace:GetServerTimeNow() - 0.11)
 		}
 
 		ProjectileRemote:InvokeServer(unpack(Args))
@@ -1128,7 +1128,7 @@ function TouchingGround()
 		for x = 1, 1 do
 			local Origin = LocalPlayer.Character.PrimaryPart.Position + Vector3.new(x, 0, 0)
 
-			local Raycast = game.Workspace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
+			local Raycast = WorkSpace:Raycast(Origin, Vector3.new(0, -2.5, 0), Parameters)
 			if Raycast and Raycast.Instance then
 				IsTouchingFloor = true			
 			end
@@ -1919,12 +1919,12 @@ local function InfFly()
 
 			task.wait(0.025)
 
-			game.Workspace.Gravity = 50
+			WorkSpace.Gravity = 50
 			LocalPlayer.Character.PrimaryPart.Anchored = false
 
 			task.wait(1)
 
-			game.Workspace.Gravity = 196.2
+			WorkSpace.Gravity = 196.2
 		end
 	end	
 end
@@ -1938,7 +1938,7 @@ local function Nuker(NearestBed, NearestOre)
 		NukerRaycastParameters.FilterDescendantsInstances = {LocalPlayer.Character}
 		NukerRaycastParameters.IgnoreWater = true
 
-		local RaycastResult = game.Workspace:Raycast(NearestBed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), NukerRaycastParameters)
+		local RaycastResult = WorkSpace:Raycast(NearestBed.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), NukerRaycastParameters)
 
 		if RaycastResult then
 			if RaycastResult.Instance then
@@ -2369,7 +2369,7 @@ task.spawn(function()
 
 			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
 
-			local Raycast = game.Workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, SpeedCFrame, SpeedRaycastParameters)
+			local Raycast = WorkSpace:Raycast(LocalPlayer.Character.PrimaryPart.Position, SpeedCFrame, SpeedRaycastParameters)
 
 			if Raycast then
 				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.PrimaryPart.Position) 
@@ -4441,7 +4441,7 @@ task.spawn(function()
 				end
 
 				AntiVoidPart.Touched:Connect(function()
-					if IsAlive(LocalPlayer) and AntiVoidPart and LocalPlayer.Character.PrimaryPart.Position.Y <= game.Workspace.AntiVoidPart.Position.Y then
+					if IsAlive(LocalPlayer) and AntiVoidPart and LocalPlayer.Character.PrimaryPart.Position.Y <= WorkSpace.AntiVoidPart.Position.Y then
 						for i = 1, 3 do
 							if IsAlive(LocalPlayer) then
 								LocalPlayer.Character.PrimaryPart.Velocity = Vector3.new(LocalPlayer.Character.PrimaryPart.Velocity.X, 100, LocalPlayer.Character.PrimaryPart.Velocity.Z)
