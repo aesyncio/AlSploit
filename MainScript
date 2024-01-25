@@ -1,5 +1,5 @@
 local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
-local Owner = "AlSploitRevamped"
+local Owner = "GgAlSploit"
 
 local LocalPlayer = game.Players.LocalPlayer
 
@@ -2205,6 +2205,16 @@ task.spawn(function()
 			if Settings.AutoBuy.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				AutoBuy()
 			end			
+		end)
+		
+		task.spawn(function()
+			if Settings.Fov.Value == true then 
+				FovController:setFOV(Settings.Fov.Fov) 
+			end 
+			
+			if Settings.Fov.Value == false then 
+				FovController:setFOV(ClientHandlerStore:getState().Settings.fov) 
+			end
 		end)
 	until not game
 end)
