@@ -4837,7 +4837,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	while task.wait(math.huge) do
+	while task.wait(1) do
 		for i, v in next, game.Players:GetPlayers() do
 			v.Chatted:Connect(function(Message)
 				for i, v2 in pairs(WhitelistedUsers) do
