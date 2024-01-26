@@ -1,5 +1,5 @@
-local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelist"))()
-local Owner = "GgAlSploit"
+local WhitelistedUsers = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Whitelisted"))()
+local Owner = "AlSploitRevamped"
 
 local LocalPlayer = game.Players.LocalPlayer
 
@@ -4125,7 +4125,7 @@ task.spawn(function()
 			Value = not Value
 
 			if Value == true then
-				InstanceUI = CreateSlider(UtilityTab, "Speed", Settings.Fov.Fov, 120, LayoutOrder + 2, function(CallBack)
+				InstanceUI = CreateSlider(UtilityTab, "Fov", Settings.Fov.Fov, 120, LayoutOrder + 2, function(CallBack)
 					Settings.Fov.Fov = CallBack
 
 					if Settings.Fov.Value == true then
@@ -4837,7 +4837,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	while task.wait(1) do
+	while task.wait(0.1) do
 		for i, v in next, game.Players:GetPlayers() do
 			v.Chatted:Connect(function(Message)
 				for i, v2 in pairs(WhitelistedUsers) do
