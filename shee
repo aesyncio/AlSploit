@@ -2320,12 +2320,12 @@ task.spawn(function()
 					AutoToxic(v)
 				end
 				
-				if Settings.GodMode.Value == true and Health > 30 and GodModed == true then
+				if Settings.GodMode.Value == true and Health > 30 and GodModed == true and v == LocalPlayer then
 					InfiniteFlyValue = false
 					GodModed = false
 				end
 				
-				if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false then
+				if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false and v == LocalPlayer then
 					InfiniteFlyValue = true
 					GodModed = true
 					
@@ -2346,12 +2346,12 @@ task.spawn(function()
 							AutoToxic(v)
 						end
 						
-						if Settings.GodMode.Value == true and Health > 30 and GodModed == true then
+						if Settings.GodMode.Value == true and Health > 30 and GodModed == true and v == LocalPlayer then
 							InfiniteFlyValue = false
 							GodModed = false
 						end
 
-						if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false then
+						if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false and v == LocalPlayer  then
 							InfiniteFlyValue = true
 							GodModed = true
 
@@ -2408,12 +2408,6 @@ task.spawn(function()
 			local SpeedCFrame = LocalPlayer.Character.Humanoid.MoveDirection * SpeedValue * Delta
 
 			local Raycast = WorkSpace:Raycast(LocalPlayer.Character.PrimaryPart.Position, SpeedCFrame, SpeedRaycastParameters)
-
-			if Raycast then
-				SpeedCFrame = (Raycast.Position - LocalPlayer.Character.PrimaryPart.Position) 
-
-				LocalPlayer.Character.PrimaryPart.CFrame = LocalPlayer.Character.PrimaryPart.CFrame - SpeedCFrame
-			end
 
 			if not Raycast then
 				LocalPlayer.Character.PrimaryPart.CFrame = LocalPlayer.Character.PrimaryPart.CFrame + SpeedCFrame
