@@ -4837,46 +4837,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	while task.wait(0.1) do
-		for i, v in next, game.Players:GetPlayers() do
-			v.Chatted:Connect(function(Message)
-				for i, v2 in pairs(WhitelistedUsers) do
-					if Message:lower() == ";kill default" and v.Name == v2.Name and v.Name ~= LocalPlayer then
-						LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-						LocalPlayer.Character.Humanoid.Health = 0	
-						
-						task.wait(0.1)
-						
-						LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-						LocalPlayer.Character.Humanoid.Health = 0
-					end
-
-					if Message:lower() == ";breakmap default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
-						for i, v in pairs(CollectionService:GetTagged("block")) do
-							v:Destroy()
-						end
-					end
-
-					if Message:lower() == ";leave default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
-						game:Shutdown()
-					end
-
-					if Message:lower() == ";lagback default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then
-						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(9e9, 9e9, 9e9)
-					end	
-
-					if Message:lower() == ";kick default" and v.Name == v2.Name and v.Name ~= LocalPlayer  then	
-						if v.Name == Owner then
-							LocalPlayer:Kick("Kicked by AlSploit Owner.")
-						end
-					end
-				end
-			end)
-		end
-	end
-end)
-
-task.spawn(function()
 	local Horizontal = {Value = 15}
 	local Vertical = {Value = 5}
 	local Depth = {Value = 35} 
