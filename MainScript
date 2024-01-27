@@ -1757,14 +1757,14 @@ function AutoBuy()
 			if HasItem("iron_chestplate") then
 				PurchaseItem(DiamondArmor)
 			end	
+			
+			if HasItem("stone_sword") then
+				PurchaseItem(LeatherArmor)
+			end	
 
 			if HasItem("leather_chestplate") then
 				PurchaseItem(IronArmor)
-			end	
-
-			if HasItem("stone_sword") then
-				PurchaseItem(LeatherArmor)
-			end		
+			end					
 		end)
 
 		task.spawn(function()
