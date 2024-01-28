@@ -1,3 +1,0 @@
-local BlacklistedUsers = {}
-
-return BlacklistedUsers
