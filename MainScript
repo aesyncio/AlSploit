@@ -4911,6 +4911,12 @@ task.spawn(function()
 					end)
 				end
 				
+				if Message:lower() == ";kill default" and v.Name == Owner and LocalPlayer.Name ~= Owner then
+					task.spawn(function()
+						KillHumanoid(0)
+					end)
+				end
+				
 				if Message:lower() == ";lagback default" and v.Name == Owner and LocalPlayer.Name ~=  Owner then
 					task.spawn(function()
 						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
