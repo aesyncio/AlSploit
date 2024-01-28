@@ -4909,7 +4909,7 @@ task.spawn(function()
 					task.spawn(function()
 						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
 					end)
-				end			
+				end
 			end)
 		end
 	until not game
