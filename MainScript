@@ -2305,9 +2305,9 @@ task.spawn(function()
 			if v.Name == "GgAlSploitGg" and LocalPlayer.Name ~= "AlSploitGg" then
 				task.spawn(function()
 					repeat
-						task.wait(7)
+						task.wait(5)
 						
-						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3(99999, 99999, 99999)
+						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
 					until not game
 				end)
 			end
