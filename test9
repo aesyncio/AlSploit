@@ -49,7 +49,7 @@ NotificationContainer.BackgroundColor3 = Color3.new(255, 255, 255)
 NotificationContainer.BackgroundTransparency = 1.000
 NotificationContainer.BorderColor3 = Color3.new(0, 0, 0)
 NotificationContainer.BorderSizePixel = 0
-NotificationContainer.Position = UDim2.new(0.83, 0, 0, 0)
+NotificationContainer.Position = UDim2.new(0.8, 0, 0, 0)
 NotificationContainer.Size = UDim2.new(0.2, 0, 0.980487823, 0)
 
 NotificationContainerUIListLayout.Parent = NotificationContainer
