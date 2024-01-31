@@ -1,0 +1,199 @@
+local LocalPlayer = game.Players.LocalPlayer
+
+local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local PlayerService = game:GetService("Players")
+local WorkSpace = game:GetService("Workspace") or game.Workspace or workspace
+
+local EquipItemRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetInvItem")
+local SwordHitRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SwordHit")
+
+local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
+local ItemTable = debug.getupvalue(require(ReplicatedStorage.TS.item["item-meta"]).getItemMeta, 1)
+
+local KillAuraAnimationCooldown = true
+local Animations = {
+	KillAura = {
+		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(220), math.rad(100), math.rad(100)),Time = 0.25},
+		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.25}
+	}
+}
+
+local Camera = WorkSpace.CurrentCamera
+local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
+
+local function FindNearestEntity(MaxDistance)
+	local MaxDistance = MaxDistance or math.huge
+
+	local NearestEntityDistance = MaxDistance
+	local NearestEntity = nil
+	local IsNotAPlayer = true
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("DiamondGuardian") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance and  Distance <= MaxDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end 
+		end
+	end)
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("GolemBoss") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end
+		end
+	end)	
+
+	task.spawn(function()
+		for i, v in next, CollectionService:GetTagged("Monster") do
+			if v.PrimaryPart then
+				local Distance = (v.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
+					NearestEntityDistance = Distance
+					NearestEntity = v
+				end
+			end
+		end
+	end)
+
+	task.spawn(function()
+		for i, v in next, PlayerService:GetPlayers() do
+			if IsAlive(v) and v ~= LocalPlayer and v.Team ~= LocalPlayer.Team then
+				local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position).Magnitude
+
+				if Distance < NearestEntityDistance and Distance <= MaxDistance then
+					NearestEntityDistance = Distance
+					NearestEntity= v
+					IsNotAPlayer = false
+				end
+			end
+		end
+	end)
+
+	if NearestEntity then	
+		return (IsNotAPlayer and NearestEntity or NearestEntity.Character), NearestEntityDistance
+	end
+
+	return nil
+end
+
+local function GetInventory(Player)
+	local Player = Player or LocalPlayer
+
+	local Inventory = InventoryUtil.getInventory(Player).items
+
+	return Inventory
+end
+
+local function HashFunction(Value)
+	return {value = Value}
+end
+
+local function SwitchItem(Item)
+	if LocalPlayer.Character.HandInvItem.Value ~= Item then
+		local InventoryItem = ReplicatedStorage.Inventories:FindFirstChild(LocalPlayer.Name):FindFirstChild(Item)
+
+		EquipItemRemote:InvokeServer({hand = InventoryItem})
+	end	
+end
+
+local function GetSword()
+	local HighestDamage, Sword = -math.huge, nil
+
+	for i, v in next, GetInventory(LocalPlayer) do 
+		local SwordMetaGame = ItemTable[v.itemType].sword
+
+		if SwordMetaGame then
+			local SwordDamage = SwordMetaGame.damage / SwordMetaGame.attackSpeed
+
+			if SwordDamage > HighestDamage then
+				HighestDamage = SwordDamage
+				Sword = v
+			end
+		end
+	end
+
+	return Sword
+end
+
+function IsAlive(Player)
+	Player = Player or LocalPlayer
+
+	if not Player.Character then return false end
+	if not Player.Character:FindFirstChild("Humanoid") then return false end
+	if Player.Character:GetAttribute("Health") <= 0 then return false end
+	if not Player.Character.PrimaryPart then return false end	
+
+	return true
+end	
+
+local function SwordHit(Entity, Weapon)
+	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
+	local EntityPrimaryPart = Entity.PrimaryPart
+
+	local SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+
+	task.spawn(function()
+		if KillAuraAnimationCooldown then
+			KillAuraAnimationCooldown = false
+
+			for i, v in next, Animations.KillAura do
+				local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+
+				task.wait(v.Time - 0.01)
+			end
+
+			KillAuraAnimationCooldown = true
+		end
+	end)
+
+	task.spawn(function()
+		task.spawn(function()
+			SwitchItem(Weapon.itemType)
+		end)
+
+		SelfPosition = LocalPlayerHumanoidRootPart.Position + (20 > 14 and (LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude > 14.4 and (CFrame.lookAt(LocalPlayerHumanoidRootPart.Position, EntityPrimaryPart.Position).lookVector * ((LocalPlayerHumanoidRootPart.Position - EntityPrimaryPart.Position).Magnitude - 14)) or Vector3.zero)
+
+		SwordHitRemote:FireServer({
+			weapon = Weapon.tool,
+			chargedAttack = {chargeRatio = 0},
+			entityInstance = Entity,
+			validate = {
+				raycast = {
+					cameraPosition = HashFunction(LocalPlayerHumanoidRootPart.Position), 
+					cursorDirection = HashFunction(CFrame.new(SelfPosition, EntityPrimaryPart.Position).lookVector)
+				},
+				targetPosition = HashFunction(EntityPrimaryPart.Position),
+				selfPosition = HashFunction(SelfPosition)
+			}
+		})
+	end)
+end
+
+task.spawn(function()
+	repeat
+		task.wait()
+
+		if IsAlive(LocalPlayer) then
+			local NearestEntity = FindNearestEntity(20)
+			local Sword = GetSword()
+
+			if NearestEntity and Sword then
+				SwordHit(NearestEntity, Sword)
+			end
+		end
+	until not game	
+end)
