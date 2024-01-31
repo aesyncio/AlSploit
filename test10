@@ -3804,8 +3804,6 @@ task.spawn(function()
 		end
 		
 		if Settings.FpsBooster.Value == false then
-			FpsBoost()
-
 			task.spawn(function()
 				CreateNotification(5, "AlSploit is now in performance mode")
 			end)
