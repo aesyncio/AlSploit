@@ -3797,6 +3797,18 @@ task.spawn(function()
 
 		if Settings.FpsBooster.Value == true then
 			FpsBoost()
+			
+			task.spawn(function()
+				CreateNotification(5, "AlSploit is now in balanced mode")
+			end)			
+		end
+		
+		if Settings.FpsBooster.Value == false then
+			FpsBoost()
+
+			task.spawn(function()
+				CreateNotification(5, "AlSploit is now in performance mode")
+			end)
 		end
 	end)
 
@@ -4953,6 +4965,8 @@ task.spawn(function()
 		Fps = GetFramerate()
 		
 		LoopWaitTime = (Settings.FpsBooster.Value == true and (1.5 / Fps) or 0)
+	
+		print(LoopWaitTime)
 	until not game
 end)
 
