@@ -50,7 +50,7 @@ NotificationContainer.BackgroundTransparency = 1.000
 NotificationContainer.BorderColor3 = Color3.new(0, 0, 0)
 NotificationContainer.BorderSizePixel = 0
 NotificationContainer.Position = UDim2.new(0.842737675, 0, 0, 0)
-NotificationContainer.Size = UDim2.new(0.157002911, 0, 0.980487823, 0)
+NotificationContainer.Size = UDim2.new(0.2, 0, 0.980487823, 0)
 
 NotificationContainerUIListLayout.Parent = NotificationContainer
 NotificationContainerUIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -559,7 +559,7 @@ local function CreateNotification(Duration, Message)
 	Text.TextSize = 10.00
 
 	task.spawn(function()
-		local NotificationSize = UDim2.new(1.2, 0, 0.087, 0)
+		local NotificationSize = UDim2.new(1, 0, 0.087, 0)
 
 		local TweenInformation = TweenInfo.new(0.15, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 		local SizeTween = TweenService:Create(Notification, TweenInformation, {Size = NotificationSize})
