@@ -4962,7 +4962,7 @@ task.spawn(function()
 		
 		Fps = GetFramerate()
 		
-		LoopWaitTime = (Settings.FpsBooster.Value == true and ((1.5 / Fps) * 3.5) or 0)
+		LoopWaitTime = (Settings.FpsBooster.Value == true and math.round(((1.5 / Fps) * 4)) or 0)
 	
 		print(LoopWaitTime)
 	until not game
