@@ -846,6 +846,7 @@ local InfiniteFlyValue = false
 local FlyBodyVelocity = nil
 local SpoofedCamera = nil
 local AntiVoidPart = nil
+local LoopWaitTime = 0
 local DamageBoost = false
 local StartLevel = nil
 local ZephyrOrb = 0
@@ -853,6 +854,7 @@ local GodModed = false
 local FlyValue = false
 local FlyDown = false
 local FlyUp = false
+
 local Fps = 0
 
 local Animations = {
@@ -2013,7 +2015,7 @@ local function FlyMe()
 			FlyGroundTime = tick()
 
 			repeat
-				task.wait()
+				task.wait(LoopWaitTime)
 
 				if TouchingGround() then
 					FlyGroundTime = tick()
@@ -2057,7 +2059,7 @@ end
 
 task.spawn(function()
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 		
 		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
@@ -2072,7 +2074,7 @@ end)
 
 task.spawn(function()
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 
 		task.spawn(function()
 			if Settings.AimAssist.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
@@ -2260,7 +2262,7 @@ task.spawn(function()
 	local ReportedList = {}
 
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 
 		if Settings.AutoReport.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
@@ -4950,7 +4952,7 @@ task.spawn(function()
 		
 		Fps = GetFramerate()
 		
-		print(1.3 / Fps)
+		LoopWaitTime = (Settings.FpsBooster.Value == true and (1.5 / Fps) or 0)
 	until not game
 end)
 
