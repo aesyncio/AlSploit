@@ -4950,7 +4950,7 @@ task.spawn(function()
 		
 		Fps = GetFramerate()
 		
-		print(1 / Fps)
+		print(1.3 / Fps)
 	until not game
 end)
 
