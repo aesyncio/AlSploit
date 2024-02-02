@@ -1881,7 +1881,7 @@ local function SwordHit(Entity, Weapon, NearestEntityDistance)
 	end)
 
 	task.spawn(function()
-		if Settings.KillAura.Strafe == true and NearestEntityDistance < 16 then
+		if Settings.KillAura.Strafe == true and NearestEntityDistance < (AnticheatDisabled and 16 or 12) then
 			LocalPlayerHumanoidRootPart.CFrame = CFrame.new(EntityPrimaryPart.Position - EntityPrimaryPart.CFrame.LookVector * 5 + Vector3.new(0, 0, 5))
 
 		end
@@ -2088,14 +2088,12 @@ local function FlyMe()
 						local Raycast = workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, Vector3.new(0, -1000, 0), FlyRaycastParameters)
 
 						if Raycast and Raycast.Instance and IsAlive(LocalPlayer) then 
-							LocalPlayer.Character.PrimaryPart.Anchored = true
 							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(Raycast.Instance.Position) + Vector3.new(0, LocalPlayer.Character.Humanoid.HipHeight, 0)
 
 							task.wait(0.12)
 
 							if IsAlive(LocalPlayer) then 
 								LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position + (Vector3.new(0, FlyTeleportPosition, 0) - Vector3.new(0, LocalPlayer.Character.PrimaryPart.Position.Y, 0)))
-								LocalPlayer.Character.PrimaryPart.Anchored = false
 								
 								FlyGroundTime = tick()
 							end		
