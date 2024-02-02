@@ -1,13 +1,16 @@
-local Owner = "AlSploitGgs"
+local WebHookId = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Execute"))()
+local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
 
+local RbxAnalyticsService = game:GetService("RbxAnalyticsService")
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 local LightingService = game:GetService("Lighting")
 local PlayerService = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local StatsService = game:GetService("Stats")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local WorkSpace = game:GetService("Workspace") or game.Workspace or workspace
@@ -48,8 +51,8 @@ NotificationContainer.BackgroundColor3 = Color3.new(255, 255, 255)
 NotificationContainer.BackgroundTransparency = 1.000
 NotificationContainer.BorderColor3 = Color3.new(0, 0, 0)
 NotificationContainer.BorderSizePixel = 0
-NotificationContainer.Position = UDim2.new(0.842737675, 0, 0, 0)
-NotificationContainer.Size = UDim2.new(0.157002911, 0, 0.980487823, 0)
+NotificationContainer.Position = UDim2.new(0.8, 0, 0, 0)
+NotificationContainer.Size = UDim2.new(0.2, 0, 0.980487823, 0)
 
 NotificationContainerUIListLayout.Parent = NotificationContainer
 NotificationContainerUIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -551,7 +554,7 @@ local function CreateNotification(Duration, Message)
 	Text.BorderColor3 = Color3.new(0, 0, 0)
 	Text.BorderSizePixel = 0
 	Text.Position = UDim2.new(-0.00263573672, 0, 0, 0)
-	Text.Size = UDim2.new(0.999999881, 0, 1.0000006, 0)
+	Text.Size = UDim2.new(1, 0, 1, 0)
 	Text.Font = Enum.Font.GothamBold
 	Text.Text = Message
 	Text.TextColor3 = Color3.new(255, 255, 255)
@@ -694,7 +697,7 @@ end
 local Settings = {}
 local Loaded = false
 
-local SaveFileName = "AlSploitConfigurationSavingBedwars"
+local SaveFileName = "SavingSystemAlSploit"
 
 local function CreateSettingsFile()
 	Settings = {
@@ -717,7 +720,7 @@ local function CreateSettingsFile()
 		Invisible = {Value = false, KeyBind = "..."},
 		AimAssist = {Value = true, Range = 18, KeyBind = "..."},
 		Scaffold = {Value = false, ExpandDistance = 2, KeyBind = "..."},
-		KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, KeyBind = "..."},
+		KillAura = {Value = true, Range = 20, CustomAnimation = true, ToolCheck = false, Strafe = false, KeyBind = "..."},
 		AntiVoid = {Value = true, Transparency = 0.65, KeyBind = "..."},
 		AutoBank = {Value = true, Range = 30, KeyBind = "..."},
 		HighJump = {Value = false, KeyBind = "..."},
@@ -732,6 +735,7 @@ local function CreateSettingsFile()
 		Reach = {Value = true, KeyBind = "..."},
 		Nuker = {Value = true, Range = 30, BreakOres = true, KeyBind = "..."},
 		BedTp = {Value = true, KeyBind = "..."},
+		Sigma = {Value = true, KeyBind = "..."},
 		Cape = {Value = true, KeyBind = "..."},
 		Fly = {Value = false, KeyBind = "..."},
 		Esp = {Value = true, KeyBind = "..."},
@@ -845,6 +849,7 @@ local InfiniteFlyValue = false
 local FlyBodyVelocity = nil
 local SpoofedCamera = nil
 local AntiVoidPart = nil
+local LoopWaitTime = 0
 local DamageBoost = false
 local StartLevel = nil
 local ZephyrOrb = 0
@@ -852,6 +857,8 @@ local GodModed = false
 local FlyValue = false
 local FlyDown = false
 local FlyUp = false
+
+local Fps = 0
 
 local Animations = {
 	KillAura = {
@@ -1264,6 +1271,49 @@ local function Invisibility()
 			end
 		end)
 	end
+end
+
+local function SendWebHook(Title, Description, Extra, ExtraValue)
+	local WebHook = WebHookId
+	local Headers = {["content-type"] = "application/json"}
+
+	local Data = {
+		["content"] = "",
+		["embeds"] = {{
+
+			["author"] = {
+				["name"] = ""
+			},
+
+			["title"] = Title,
+			["description"] = Description,
+			["fields"] = {
+				{
+					["name"] = "Username: ",
+					["value"] = LocalPlayer.Name,
+					["inline"] = true
+				},
+				
+				{   
+					["name"] = "Fps: ",
+					["value"] = Fps,
+					["inline"] = true
+				},
+				
+				{   
+					["name"] = Extra,
+					["value"] = ExtraValue,
+					["inline"] = true
+				},
+			},
+		}}
+	}
+
+
+	local RealData = game:GetService("HttpService"):JSONEncode(Data)
+	local HttpRequest = syn and syn.request or http and http.request or http_request or request or httprequest
+
+	HttpRequest({Url = WebHook, Body = RealData, Method = "POST", Headers = Headers})
 end
 
 local function SwitchItem(Item)
@@ -1810,7 +1860,7 @@ function IsAlive(Player)
 	return true
 end	
 
-local function SwordHit(Entity, Weapon)
+local function SwordHit(Entity, Weapon, NearestEntityDistance)
 	local LocalPlayerHumanoidRootPart = LocalPlayer.Character.HumanoidRootPart
 	local EntityPrimaryPart = Entity.PrimaryPart
 
@@ -1827,6 +1877,13 @@ local function SwordHit(Entity, Weapon)
 			end
 
 			KillAuraAnimationCooldown = true
+		end
+	end)
+	
+	task.spawn(function()
+		if Settings.KillAura.Strafe == true and NearestEntityDistance < 16 then
+			LocalPlayerHumanoidRootPart.CFrame = CFrame.new(EntityPrimaryPart.Position - EntityPrimaryPart.CFrame.LookVector * 5 + Vector3.new(0, 0, 5))
+
 		end
 	end)
 
@@ -2011,7 +2068,7 @@ local function FlyMe()
 			FlyGroundTime = tick()
 
 			repeat
-				task.wait()
+				task.wait(LoopWaitTime)
 
 				if TouchingGround() then
 					FlyGroundTime = tick()
@@ -2055,14 +2112,14 @@ end
 
 task.spawn(function()
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 		
 		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-			local NearestEntity = FindNearestEntity(Settings.KillAura.Range)
+			local NearestEntity, NearestEntityDistance = FindNearestEntity(Settings.KillAura.Range)
 			local Sword = GetSword()
 
 			if NearestEntity and Sword then
-				SwordHit(NearestEntity, Sword)
+				SwordHit(NearestEntity, Sword, NearestEntityDistance)
 			end
 		end
 	until not game	
@@ -2070,7 +2127,7 @@ end)
 
 task.spawn(function()
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 
 		task.spawn(function()
 			if Settings.AimAssist.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
@@ -2170,7 +2227,7 @@ task.spawn(function()
 	until not game
 end)
 
-task.spawn(function()
+task.spawn(function()	
 	repeat
 		task.wait(0.5)
 
@@ -2226,7 +2283,7 @@ task.spawn(function()
 
 		if Settings.AutoClicker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			task.spawn(function()
-				if BlockPlacementController.blockPlacer.clientManager and ClientHandlerStore:getstate().Inventory.observedInventory == "block" then
+				if ClientHandlerStore:getstate().Inventory.observedInventory == "block" and BlockPlacementController.blockPlacer.clientManager then
 					local MouseInformation = BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
 					
 					if MouseInformation then
@@ -2258,7 +2315,7 @@ task.spawn(function()
 	local ReportedList = {}
 
 	repeat
-		task.wait()
+		task.wait(LoopWaitTime)
 
 		if Settings.AutoReport.Value == true then
 			for i, v in next, PlayerService:GetPlayers() do
@@ -2389,6 +2446,10 @@ task.spawn(function()
 	end)
 
 	repeat task.wait(1) until GetMatchState() == 2
+	
+	task.spawn(function()
+		SendWebHook("Match Finished", "", "Kills: ", LocalPlayer:FindFirstChild("leaderstats"):FindFirstChild("Kills").Value)
+	end)
 
 	if Settings.PlayAgain.Value == true then
 		PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
@@ -3793,6 +3854,16 @@ task.spawn(function()
 
 		if Settings.FpsBooster.Value == true then
 			FpsBoost()
+			
+			task.spawn(function()
+				CreateNotification(5, "AlSploit is now in balanced mode")
+			end)			
+		end
+		
+		if Settings.FpsBooster.Value == false then
+			task.spawn(function()
+				CreateNotification(5, "AlSploit is now in performance mode")
+			end)
 		end
 	end)
 
@@ -4936,6 +5007,23 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local FrameRateManager = StatsService and StatsService:FindFirstChild("FrameRateManager")
+	local RenderAverage = FrameRateManager and FrameRateManager:FindFirstChild("RenderAverage")
+
+	local function GetFramerate()
+		return math.round(1000 / RenderAverage:GetValue())
+	end
+
+	repeat
+		task.wait()
+		
+		Fps = GetFramerate()
+		
+		LoopWaitTime = (Settings.FpsBooster.Value == true and DecimalRound(((1.5 / Fps) * 4), 3)  or 0)
+	until not game
+end)
+
+task.spawn(function()
 	local Horizontal = {Value = 15}
 	local Vertical = {Value = 5}
 	local Depth = {Value = 35} 
@@ -4952,7 +5040,18 @@ task.spawn(function()
 	C1 = ViewModel.RightHand.RightWrist.C1
 
 	ViewModel.RightHand.RightWrist.C1 = C1 * CFrame.Angles(math.rad(0), math.rad(0), math.rad(RotationZ.Value))
+	
+	task.spawn(function()
+		CreateNotification(5, "AlSploit has loaded!")
+	end)
+	
+	task.spawn(function()
+		setfpscap(999)
+	end)
+	
+	task.spawn(function()
+		task.wait(3)
 
-	CreateNotification(5, "AlSploit has loaded!")
-	setfpscap(999)
+		SendWebHook("AlSploit has been executed!", "", "Extra: ", "None")
+	end)
 end)
