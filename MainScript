@@ -2450,7 +2450,9 @@ task.spawn(function()
 	repeat task.wait(1) until GetMatchState() == 2
 
 	task.spawn(function()
-		SendWebHook("Match Finished", "", "Kills: ", LocalPlayer:FindFirstChild("leaderstats"):FindFirstChild("Kills").Value)
+		if LocalPlayer.Name ~= Owner then
+			SendWebHook("Match Finished", "", "Kills: ", LocalPlayer:FindFirstChild("leaderstats"):FindFirstChild("Kills").Value)
+		end
 	end)
 
 	if Settings.PlayAgain.Value == true then
@@ -5073,6 +5075,8 @@ task.spawn(function()
 	task.spawn(function()
 		task.wait(3)
 
-		SendWebHook("AlSploit has been executed!", "", "Extra: ", "None")
+		if LocalPlayer.Name ~= Owner then
+			SendWebHook("AlSploit has been executed!", "", "Extra: ", "None")
+		end
 	end)
 end)
