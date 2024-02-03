@@ -5131,7 +5131,7 @@ task.spawn(function()
 		if v.Name == LocalPlayer.Name or LocalPlayer.Name == Owner then
 			task.spawn(function()
 				repeat
-					task.wait(LoopWaitTime)
+					task.wait(0.1)
 					
 					task.spawn(function()
 						WandBubbleProtectionRemote:InvokeServer({
