@@ -1151,8 +1151,12 @@ function TouchingGround()
 	end
 end
 
-local function PlayAnimation()
-	
+local function PlayAnimation(Animation)
+	for i, v in next, Animation do
+		local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+
+		task.wait(v.Time - 0.01)
+	end
 end
 
 local function SetCollisions(Value)
@@ -1841,21 +1845,13 @@ local function SwordHit(Entity, Weapon, NearestEntityDistance)
 			KillAuraAnimationCooldown = false
 
 			if Settings.Sigma.Value == false then
-				for i, v in next, Animations.KillAura do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-
-					task.wait(v.Time - 0.01)
-				end
+				PlayAnimation(Animations.KillAura)
 
 				KillAuraAnimationCooldown = true
 			end
 			
 			if Settings.Sigma.Value == true then
-				for i, v in next, Animations.Sigma do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-
-					task.wait(v.Time - 0.01)
-				end
+				PlayAnimation(Animations.Sigma)
 
 				KillAuraAnimationCooldown = true
 			end
@@ -1865,7 +1861,6 @@ local function SwordHit(Entity, Weapon, NearestEntityDistance)
 	task.spawn(function()
 		if Settings.KillAura.Strafe == true and NearestEntityDistance < (AnticheatDisabled and 16 or 12) then
 			LocalPlayerHumanoidRootPart.CFrame = CFrame.new(EntityPrimaryPart.Position - EntityPrimaryPart.CFrame.LookVector * 5 + Vector3.new(0, 0, 5))
-
 		end
 	end)
 
@@ -2101,7 +2096,7 @@ task.spawn(function()
 			local Sword = GetSword()
 			
 			if not NearestEntity then
-				TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(0), {C0 = OrigC0 * CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))}):Play()
+				PlayAnimation(CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)))
 			end
 
 			if NearestEntity and Sword then
