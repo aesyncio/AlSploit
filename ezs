@@ -4840,7 +4840,7 @@ task.spawn(function()
 		
 		if Settings.Sigma.Value == true then
 			task.spawn(function()
-				if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+				if IsAlive(LocalPlayer) and Settings.Cape.Value == true and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
 					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 13528140280
 				end
 			end)
@@ -4848,7 +4848,7 @@ task.spawn(function()
 		
 		if Settings.Sigma.Value == false then
 			task.spawn(function()
-				if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+				if IsAlive(LocalPlayer) and Settings.Cape.Value == true and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
 					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 16223063079
 				end
 			end)
@@ -5130,16 +5130,14 @@ repeat
 	task.wait()
 	local WandBubbleProtection = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("WandBubbleProtection")
 	
-	for i, v in next, PlayerService:GetPlayers() do
-		WandBubbleProtection:InvokeServer({
-			["targetPlayerUserId"] = v.UserId,
-			["handItem"] = {
-				["itemSkin"] = "",
-				["itemType"] = "villain_protector_wand",
-				["amount"] = math.huge,
-				["addedToBackpackTime"] = 0,
-				["tool"] = ReplicatedStorage.Items.villain_protector_wand,
-			},
-		})
-	end	
+	WandBubbleProtection:InvokeServer({
+		["targetPlayerUserId"] = LocalPlayer.UserId,
+		["handItem"] = {
+			["itemSkin"] = "",
+			["itemType"] = "villain_protector_wand",
+			["amount"] = math.huge,
+			["addedToBackpackTime"] = 0,
+			["tool"] = ReplicatedStorage.Items.villain_protector_wand,
+		},
+	})
 until not game
