@@ -1,4 +1,4 @@
-local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45"}
+local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45", User3 = "iusealsploit", User4 = "umother2001vjd"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -4835,7 +4835,7 @@ task.spawn(function()
 		
 		if Settings.Sigma.Value == true then
 			task.spawn(function()
-				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+				if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
 					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 13528140280
 				end
 			end)
@@ -4843,7 +4843,7 @@ task.spawn(function()
 		
 		if Settings.Sigma.Value == false then
 			task.spawn(function()
-				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+				if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
 					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 16223063079
 				end
 			end)
