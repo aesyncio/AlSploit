@@ -1153,7 +1153,10 @@ end
 
 local function PlayAnimation(Animation)
 	for i, v in next, Animation do
-		local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
+		local TweenInformation = TweenInfo.new(v.Time)
+		local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInformation, {C0 = OrigC0 * v.CFrame})
+		
+		AnimationTween:Play()
 
 		task.wait(v.Time - 0.01)
 	end
