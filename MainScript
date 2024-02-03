@@ -1,4 +1,4 @@
-local WhitelistedUsers = {User1 = "imagod_033"}
+local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -869,11 +869,10 @@ local Animations = {
 	Sigma = {
 		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
 		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
-		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
-		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
-		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
-		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
-		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.16}
+	},
+	
+	Neutral = {
+		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.15},
 	}
 }
 
@@ -1156,7 +1155,18 @@ function TouchingGround()
 	end
 end
 
-function SetCollisions(Value)
+local function PlayAnimation(Animation)
+	for i, v in next, Animation do
+		local TweenInformation = TweenInfo.new(v.Time)
+		local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInformation, {C0 = OrigC0 * v.CFrame})
+		
+		AnimationTween:Play()
+
+		task.wait(v.Time - 0.01)
+	end
+end
+
+local function SetCollisions(Value)
 	if Value == true then
 		if IsAlive(LocalPlayer) then
 			for i, v in next, (LocalPlayer.Character:GetDescendants()) do
@@ -1805,13 +1815,7 @@ function AutoKit()
 
 	task.spawn(function()
 		if FindPetrifiedPlayer then
-			Client:Get(MinerRemote):SendToServer({
-				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-			})
-			
-			MinerRemote:CallServer({
-				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-			})
+			MinerRemote:FireServer({petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")})
 		end
 	end)
 
@@ -1842,21 +1846,13 @@ local function SwordHit(Entity, Weapon, NearestEntityDistance)
 			KillAuraAnimationCooldown = false
 
 			if Settings.Sigma.Value == false then
-				for i, v in next, Animations.KillAura do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-
-					task.wait(v.Time - 0.01)
-				end
+				PlayAnimation(Animations.KillAura)
 
 				KillAuraAnimationCooldown = true
 			end
 			
 			if Settings.Sigma.Value == true then
-				for i, v in next, Animations.Sigma do
-					local AnimationTween = TweenService:Create(Camera.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = OrigC0 * v.CFrame}):Play()
-
-					task.wait(v.Time - 0.01)
-				end
+				PlayAnimation(Animations.Sigma)
 
 				KillAuraAnimationCooldown = true
 			end
@@ -1866,7 +1862,6 @@ local function SwordHit(Entity, Weapon, NearestEntityDistance)
 	task.spawn(function()
 		if Settings.KillAura.Strafe == true and NearestEntityDistance < (AnticheatDisabled and 16 or 12) then
 			LocalPlayerHumanoidRootPart.CFrame = CFrame.new(EntityPrimaryPart.Position - EntityPrimaryPart.CFrame.LookVector * 5 + Vector3.new(0, 0, 5))
-
 		end
 	end)
 
@@ -2101,9 +2096,17 @@ task.spawn(function()
 			local NearestEntity, NearestEntityDistance = FindNearestEntity(Settings.KillAura.Range)
 			local Sword = GetSword()
 
-			if NearestEntity and Sword then
-				SwordHit(NearestEntity, Sword, NearestEntityDistance)
-			end
+			task.spawn(function()
+				if not NearestEntity then
+					PlayAnimation(Animations.Neutral)
+				end
+			end)
+
+			task.spawn(function()
+				if NearestEntity and Sword then
+					SwordHit(NearestEntity, Sword, NearestEntityDistance)
+				end
+			end)
 		end
 	until not game	
 end)
@@ -4829,6 +4832,22 @@ end)
 task.spawn(function()
 	local Sigma, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Sigma", Settings.Sigma.Value, function(CallBack)
 		Settings.Sigma.Value = CallBack
+		
+		if Settings.Sigma.Value == true then
+			task.spawn(function()
+				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 13528140280
+				end
+			end)
+		end
+		
+		if Settings.Sigma.Value == false then
+			task.spawn(function()
+				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 16223063079
+				end
+			end)
+		end
 	end)
 
 	task.spawn(function()
@@ -4955,23 +4974,29 @@ task.spawn(function()
 		Settings.Cape.Value = CallBack
 
 		if Settings.Cape.Value == true then
-			CreateCape("rbxassetid://14347677597")
-
 			task.spawn(function()
-				LocalPlayer.CharacterAdded:Connect(function()
-					if IsAlive(LocalPlayer) and not LocalPlayer.Character:FindFirstChild("Cape") and CallBack == true then
-						task.wait(0.3)
+				local DecalId = (Settings.Sigma.Value and 13528140280 or 16223063079)
+				
+				CreateCape("rbxassetid://" .. DecalId)
 
-						CreateCape("rbxassetid://14347677597")
-					end
+				task.spawn(function()
+					LocalPlayer.CharacterAdded:Connect(function()
+						if IsAlive(LocalPlayer) and not LocalPlayer.Character:FindFirstChild("Cape") and CallBack == true then
+							task.wait(0.3)
+
+							CreateCape("rbxassetid://" .. DecalId)
+						end
+					end)
 				end)
-			end)
+			end)			
 		end
 
 		if Settings.Cape.Value == false then
-			if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape") then
-				LocalPlayer.Character.Cape:Destroy()
-			end
+			task.spawn(function()
+				if IsAlive(LocalPlayer) and LocalPlayer.Character:FindFirstChild("Cape") then
+					LocalPlayer.Character.Cape:Destroy()
+				end
+			end)			
 		end
 	end)
 
