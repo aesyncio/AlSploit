@@ -1,4 +1,4 @@
-local WhitelistedUsers = {User1 = "imagod_033"}
+local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -872,7 +872,7 @@ local Animations = {
 	},
 	
 	Neutral = {
-		CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0))		
+		{CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0}	
 	}
 }
 
@@ -1814,11 +1814,7 @@ function AutoKit()
 	end)
 
 	task.spawn(function()
-		if FindPetrifiedPlayer then
-			Client:Get(MinerRemote):SendToServer({
-				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-			})
-			
+		if FindPetrifiedPlayer then			
 			MinerRemote:CallServer({
 				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
 			})
