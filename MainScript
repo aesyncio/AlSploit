@@ -807,6 +807,7 @@ local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
+local BlossomWindTunnelCreateBodyForceRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("BlossomWindTunnelCreateBodyForce")
 local HannahPromptTriggerRemote = Client:Get("HannahPromptTrigger")
 local TrinitySetAngelTypeRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("SetAngelType")
 local SetObservedChestRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("Inventory/SetObservedChest")
@@ -1520,7 +1521,7 @@ function GetSpeed()
 		end
 
 		if AnticheatDisabled == true then
-			Speed = Speed + 12
+			Speed = Speed + 19
 		end
 
 		Speed = ((Speed + Settings.Speed.Speed) - 20)
@@ -2187,6 +2188,10 @@ task.spawn(function()
 					}
 
 					ElkSummonRemote:FireServer(unpack(Args))
+				end)
+				
+				task.spawn(function()
+					BlossomWindTunnelCreateBodyForceRemote:FireServer()
 				end)
 			end
 
