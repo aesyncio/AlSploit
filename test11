@@ -4832,6 +4832,22 @@ end)
 task.spawn(function()
 	local Sigma, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Sigma", Settings.Sigma.Value, function(CallBack)
 		Settings.Sigma.Value = CallBack
+		
+		if Settings.Sigma.Value == true then
+			task.spawn(function()
+				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 13528140280
+				end
+			end)
+		end
+		
+		if Settings.Sigma.Value == false then
+			task.spawn(function()
+				if LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal") then
+					LocalPlayer.Character:FindFirstChild("Cape"):FindFirstChild("Decal").Texture = "rbxassetid://" .. 16223063079
+				end
+			end)
+		end
 	end)
 
 	task.spawn(function()
