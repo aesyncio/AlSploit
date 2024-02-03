@@ -5132,18 +5132,6 @@ task.spawn(function()
 			task.spawn(function()
 				repeat
 					task.wait()
-
-					task.spawn(function()
-						if IsAlive(LocalPlayer) then
-							LocalPlayer.ChildAdded:Connect(function(Part)
-								if Part.Name == "Bubble" then
-									Part:Destroy()
-								end
-							end)
-						end
-						
-						LocalPlayer.PlayerGui:FindFirstChild("Notification"):FindFirstChild("1"):Destroy()
-					end)
 					
 					task.spawn(function()
 						WandBubbleProtectionRemote:InvokeServer({
@@ -5151,7 +5139,7 @@ task.spawn(function()
 							["handItem"] = {
 								["itemSkin"] = "",
 								["itemType"] = "villain_protector_wand",
-								["amount"] = math.huge,
+								["amount"] = 9999,
 								["addedToBackpackTime"] = 0,
 								["tool"] = ReplicatedStorage.Items.villain_protector_wand,
 							},
@@ -5164,7 +5152,7 @@ task.spawn(function()
 							["handItem"] = {
 								["itemSkin"] = "",
 								["itemType"] = "villain_protector_wand",
-								["amount"] = math.huge,
+								["amount"] = 9999,
 								["addedToBackpackTime"] = 0,
 								["tool"] = ReplicatedStorage.Items.villain_protector_wand,
 							},
