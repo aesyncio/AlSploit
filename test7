@@ -872,7 +872,8 @@ local Animations = {
 	},
 	
 	Neutral = {
-		{CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0}	
+		{CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0},
+		{CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0}
 	}
 }
 
@@ -1814,10 +1815,8 @@ function AutoKit()
 	end)
 
 	task.spawn(function()
-		if FindPetrifiedPlayer then			
-			MinerRemote:CallServer({
-				petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")
-			})
+		if FindPetrifiedPlayer then
+			MinerRemote:FireServer({petrifyId = FindPetrifiedPlayer:GetAttribute("PetrifyId")})
 		end
 	end)
 
@@ -2097,14 +2096,18 @@ task.spawn(function()
 		if Settings.KillAura.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 			local NearestEntity, NearestEntityDistance = FindNearestEntity(Settings.KillAura.Range)
 			local Sword = GetSword()
-			
-			if not NearestEntity then
-				PlayAnimation(Animations.Neutral)
-			end
 
-			if NearestEntity and Sword then
-				SwordHit(NearestEntity, Sword, NearestEntityDistance)
-			end
+			task.spawn(function()
+				if not NearestEntity then
+					PlayAnimation(Animations.Neutral)
+				end
+			end)
+
+			task.spawn(function()
+				if NearestEntity and Sword then
+					SwordHit(NearestEntity, Sword, NearestEntityDistance)
+				end
+			end)
 		end
 	until not game	
 end)
