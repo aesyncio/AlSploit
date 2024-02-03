@@ -1,4 +1,4 @@
-local WebHookId = loadstring(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/main/Execute"))()
+local WhitelistedUsers = {User1 = "imagod_033"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -15,6 +15,7 @@ local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local WorkSpace = game:GetService("Workspace") or game.Workspace or workspace
 local CoreGui = game:GetService("CoreGui")
+
 local AlSploit = Instance.new("ScreenGui")
 local ContainerFrame = Instance.new("Frame")
 local ContainerFrameUIListLayout = Instance.new("UIListLayout")
@@ -868,6 +869,10 @@ local Animations = {
 	Sigma = {
 		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
 		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
+		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
+		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
+		{CFrame = CFrame.new(0.2, 0, -1.3) * CFrame.Angles(math.rad(111), math.rad(111), math.rad(130)), Time = 0.16},
+		{CFrame = CFrame.new(0, -0.2, -1.7) * CFrame.Angles(math.rad(30), math.rad(111), math.rad(190)), Time = 0.16},
 		{CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(0), math.rad(0), math.rad(0)), Time = 0.16}
 	}
 }
@@ -1276,49 +1281,6 @@ local function Invisibility()
 			end
 		end)
 	end
-end
-
-local function SendWebHook(Title, Description, Extra, ExtraValue)
-	local WebHook = WebHookId
-	local Headers = {["content-type"] = "application/json"}
-
-	local Data = {
-		["content"] = "",
-		["embeds"] = {{
-
-			["author"] = {
-				["name"] = ""
-			},
-
-			["title"] = Title,
-			["description"] = Description,
-			["fields"] = {
-				{
-					["name"] = "Username: ",
-					["value"] = LocalPlayer.Name,
-					["inline"] = true
-				},
-
-				{   
-					["name"] = "Fps: ",
-					["value"] = Fps,
-					["inline"] = true
-				},
-
-				{   
-					["name"] = Extra,
-					["value"] = ExtraValue,
-					["inline"] = true
-				},
-			},
-		}}
-	}
-
-
-	local RealData = game:GetService("HttpService"):JSONEncode(Data)
-	local HttpRequest = syn and syn.request or http and http.request or http_request or request or httprequest
-
-	HttpRequest({Url = WebHook, Body = RealData, Method = "POST", Headers = Headers})
 end
 
 local function SwitchItem(Item)
@@ -2469,12 +2431,6 @@ task.spawn(function()
 	end)
 
 	repeat task.wait(1) until GetMatchState() == 2
-
-	task.spawn(function()
-		if LocalPlayer.Name ~= Owner then
-			SendWebHook("Match Finished", "", "Kills: ", LocalPlayer:FindFirstChild("leaderstats"):FindFirstChild("Kills").Value)
-		end
-	end)
 
 	if Settings.PlayAgain.Value == true then
 		PlayAgainRemote.joinQueue:FireServer({["queueType"] = GetQueueType()})
@@ -4871,6 +4827,49 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local Sigma, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Sigma", Settings.Sigma.Value, function(CallBack)
+		Settings.Sigma.Value = CallBack
+	end)
+
+	task.spawn(function()
+		local InstanceUI
+		local Value = false
+
+		DropDownButton.Activated:Connect(function()
+			Value = not Value
+
+			if Value == true then
+				InstanceUI = CreateKeyBind(WorldTab, Settings.Sigma.KeyBind, LayoutOrder + 1, function(CallBack)
+					Settings.Sigma.KeyBind = CallBack
+				end)
+			end
+
+			if Value == false then
+				InstanceUI:Destroy()
+			end
+		end)
+	end)
+
+	task.spawn(function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if not UserInputService:GetFocusedTextBox() then
+				if Input.KeyCode.Name == Settings.Sigma.KeyBind then
+					Settings.Sigma.Value = not Settings.Sigma.Value
+
+					if Settings.Sigma.Value == true then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
+					end
+
+					if Settings.Sigma.Value == false then
+						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
+					end
+				end
+			end
+		end)
+	end)
+end)
+
+task.spawn(function()
 	local Nuker, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Nuker", Settings.Nuker.Value, function(CallBack)
 		Settings.Nuker.Value = CallBack
 	end)
@@ -4952,49 +4951,6 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local Sigma, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Sigma", Settings.Sigma.Value, function(CallBack)
-		Settings.Sigma.Value = CallBack
-	end)
-
-	task.spawn(function()
-		local InstanceUI
-		local Value = false
-
-		DropDownButton.Activated:Connect(function()
-			Value = not Value
-
-			if Value == true then
-				InstanceUI = CreateKeyBind(WorldTab, Settings.Sigma.KeyBind, LayoutOrder + 1, function(CallBack)
-					Settings.Sigma.KeyBind = CallBack
-				end)
-			end
-
-			if Value == false then
-				InstanceUI:Destroy()
-			end
-		end)
-	end)
-
-	task.spawn(function()
-		UserInputService.InputBegan:Connect(function(Input)
-			if not UserInputService:GetFocusedTextBox() then
-				if Input.KeyCode.Name == Settings.Sigma.KeyBind then
-					Settings.Sigma.Value = not Settings.Sigma.Value
-
-					if Settings.Sigma.Value == true then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(0.635294, 0.313725, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(0.831373, 0.686275, 1))}
-					end
-
-					if Settings.Sigma.Value == false then
-						UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(1.00, Color3.new(1, 1, 1))}
-					end
-				end
-			end
-		end)
-	end)
-end)
-
-task.spawn(function()
 	local Cape, DropDownButton, LayoutOrder, UIGradient = CreateToggle(WorldTab, "Cape", Settings.Cape.Value, function(CallBack)
 		Settings.Cape.Value = CallBack
 
@@ -5063,33 +5019,35 @@ task.spawn(function()
 		task.wait(1)
 
 		for i, v in next, PlayerService:GetPlayers() do
-			v.Chatted:Connect(function(Message)				
-				if Message:lower() == ";kick default" and v.Name == Owner and LocalPlayer.Name ~= Owner then
-					task.spawn(function()
-						LocalPlayer:Kick("Kicked by AlSploit owner")
-					end)
-				end
+			for i, v1 in next, WhitelistedUsers do
+				v.Chatted:Connect(function(Message)				
+					if Message:lower() == ";kick default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner then
+						task.spawn(function()
+							LocalPlayer:Kick("Kicked by AlSploit owner")
+						end)
+					end
 
-				if Message:lower() == ";kill default" and v.Name == Owner and LocalPlayer.Name ~= Owner then
-					task.spawn(function()
-						KillHumanoid(0)
-					end)
-				end
+					if Message:lower() == ";kill default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~= Owner then
+						task.spawn(function()
+							KillHumanoid(0)
+						end)
+					end
 
-				if Message:lower() == ";lagback default" and v.Name == Owner and LocalPlayer.Name ~=  Owner then
-					task.spawn(function()
-						LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
-					end)
-				end				
+					if Message:lower() == ";lagback default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner then
+						task.spawn(function()
+							LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(99999, 99999, 99999)
+						end)
+					end				
 
-				if Message:lower() == ";breakmap default" and v.Name == Owner and LocalPlayer.Name ~=  Owner then
-					task.spawn(function()
-						for i, v in next, CollectionService:GetTagged("block") do
-							v:Destroy()
-						end
-					end)
-				end
-			end)
+					if Message:lower() == ";breakmap default" and (v.Name == Owner or v.Name == v1) and LocalPlayer.Name ~=  Owner then
+						task.spawn(function()
+							for i, v in next, CollectionService:GetTagged("block") do
+								v:Destroy()
+							end
+						end)
+					end
+				end)
+			end			
 		end
 	until not game
 end)
@@ -5135,13 +5093,5 @@ task.spawn(function()
 
 	task.spawn(function()
 		setfpscap(999)
-	end)
-
-	task.spawn(function()
-		task.wait(3)
-
-		if LocalPlayer.Name ~= Owner then
-			SendWebHook("AlSploit has been executed!", "", "Extra: ", "None")
-		end
 	end)
 end)
