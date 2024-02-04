@@ -805,12 +805,24 @@ task.spawn(function()
 	until not game
 end)
 
-repeat task.wait() until Loaded == true
+
+local KnitGotten, KnitClient
+
+task.spawn(function()
+	repeat
+		task.wait()
+
+		KnitGotten, KnitClient = pcall(function()
+			return debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
+		end)
+	until KnitGotten
+end)
+
+repeat task.wait() until Loaded == true and KnitGotten and debug.getupvalue(KnitClient.Start, 1)
 
 local Camera = WorkSpace.CurrentCamera
 local OrigC0 = ReplicatedStorage.Assets.Viewmodel.RightHand.RightWrist.C0
 
-local KnitClient = debug.getupvalue(require(LocalPlayer.PlayerScripts.TS.knit).setup, 6)
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 
 local BlossomWindTunnelCreateBodyForceRemote = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("BlossomWindTunnelCreateBodyForce")
