@@ -744,6 +744,8 @@ local function CreateSettingsFile()
 
 	if not (writefile or makefolder or readfile or isfile) then
 		CreateNotification(5, "Your executor does not support saving.")
+		
+		Loaded = true
 	end
 
 	if writefile and makefolder and readfile and isfile then 
