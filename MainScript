@@ -790,14 +790,18 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	LoadSettings()
+	if isfile then
+		LoadSettings()
+	end
 end)
 
 task.spawn(function()
 	repeat
 		task.wait(1)
 
-		SaveSettings()
+		if writefile then
+			SaveSettings()
+		end	
 	until not game
 end)
 
