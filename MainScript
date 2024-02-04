@@ -818,6 +818,14 @@ task.spawn(function()
 	until KnitGotten
 end)
 
+task.spawn(function()
+	task.wait(5)
+	
+	if not KnitGotten then
+		CreateNotification(5, "Your executor does not support AlSploit.")
+	end
+end)
+
 repeat task.wait() until Loaded == true and KnitGotten and debug.getupvalue(KnitClient.Start, 1)
 
 local Camera = WorkSpace.CurrentCamera
