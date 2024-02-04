@@ -2427,39 +2427,45 @@ task.spawn(function()
 		end)
 
 		task.spawn(function()
-			LocalPlayer.Character.ChildAdded:Connect(function(Part)
-				if Part.Name:lower() == "bubble" then
-					Part.Transparency = 1
-				end
-			end)
-			
-			if Settings.GodMode.Value == true then
+			if IsAlive(LocalPlayer) then
 				task.spawn(function()
-					WandBubbleProtectionRemote:InvokeServer({
-						["targetPlayerUserId"] = LocalPlayer.UserId,
-						["handItem"] = {
-							["itemSkin"] = "",
-							["itemType"] = "villain_protector_wand",
-							["amount"] = 9999,
-							["addedToBackpackTime"] = 0,
-							["tool"] = ReplicatedStorage.Items.villain_protector_wand,
-						},
-					})
-				end)
+					LocalPlayer.Character.ChildAdded:Connect(function(Part)
+						if Part.Name:lower() == "bubble" then
+							Part.Transparency = 1
+						end
+					end)
+				end)				
 				
-				task.spawn(function()
-					WandHealPlayerRemote:InvokeServer({
-						["targetPlayerUserId"] = LocalPlayer.UserId,
-						["handItem"] = {
-							["itemSkin"] = "",
-							["itemType"] = "villain_protector_wand",
-							["amount"] = 9999,
-							["addedToBackpackTime"] = 0,
-							["tool"] = ReplicatedStorage.Items.villain_protector_wand,
-						},
-					})
-				end)			
-			end			
+				if Settings.GodMode.Value == true then
+					task.spawn(function()
+						WandBubbleProtectionRemote:InvokeServer({
+							["targetPlayerUserId"] = LocalPlayer.UserId,
+							["handItem"] = {
+								["itemSkin"] = "",
+								["itemType"] = "villain_protector_wand",
+								["amount"] = 9999,
+								["addedToBackpackTime"] = 0,
+								["tool"] = ReplicatedStorage.Items.villain_protector_wand,
+							},
+						})
+					end)
+
+					task.spawn(function()
+						if LocalPlayer.Character:GetAttribute("Health") < 100 then
+							WandHealPlayerRemote:InvokeServer({
+								["targetPlayerUserId"] = LocalPlayer.UserId,
+								["handItem"] = {
+									["itemSkin"] = "",
+									["itemType"] = "villain_protector_wand",
+									["amount"] = 9999,
+									["addedToBackpackTime"] = 0,
+									["tool"] = ReplicatedStorage.Items.villain_protector_wand,
+								},
+							})
+						end						
+					end)	
+				end
+			end
 		end)
 	until not game
 end)
