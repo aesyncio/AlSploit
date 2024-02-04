@@ -2372,7 +2372,7 @@ task.spawn(function()
 
 			if not Raycast then
 				LocalPlayer.Character.PrimaryPart.CFrame = LocalPlayer.Character.PrimaryPart.CFrame + SpeedCFrame
-			end			
+			end
 		end
 	end)
 end)
