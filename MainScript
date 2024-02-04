@@ -2451,7 +2451,7 @@ task.spawn(function()
 					end)
 
 					task.spawn(function()
-						if LocalPlayer.Character:GetAttribute("Health") < 100 then
+						if LocalPlayer.Character:GetAttribute("Health") < 95 then
 							WandHealPlayerRemote:InvokeServer({
 								["targetPlayerUserId"] = LocalPlayer.UserId,
 								["handItem"] = {
