@@ -1,3 +1,4 @@
+local WhitelistedUsers = {User1 = "imagod_033", User2 = "4SaD45", User3 = "iusealsploit", User4 = "umother2001vjd", User5 = "ncm_hack", User6 = "bananjoy_4", User7 = "codexexperince123456"}
 local Owner = "AlSploitEzWins"
 
 local LocalPlayer = game.Players.LocalPlayer
@@ -854,7 +855,6 @@ local LoopWaitTime = 0
 local DamageBoost = false
 local StartLevel = nil
 local ZephyrOrb = 0
-local GodModed = false
 local FlyValue = false
 local FlyDown = false
 local FlyUp = false
@@ -2169,38 +2169,6 @@ task.spawn(function()
 		end)
 
 		task.spawn(function()
-			local HipHeight = 1.99999
-
-			if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
-				local Elk = LocalPlayer.Character:FindFirstChild("elk")
-
-				LocalPlayer.Character.Humanoid.HipHeight = HipHeight
-				AnticheatDisabled = true
-
-				if Elk and Elk:FindFirstChild("body_mesh") then
-					Elk:FindFirstChild("body_mesh"):Destroy()
-					Elk.PrimaryPart:Destroy()
-				end
-
-				task.spawn(function()
-					local Args = {
-						[1] = "elk_summon"
-					}
-
-					ElkSummonRemote:FireServer(unpack(Args))
-				end)
-				
-				task.spawn(function()
-					BlossomWindTunnelCreateBodyForceRemote:FireServer()
-				end)
-			end
-
-			if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
-				AnticheatDisabled = false
-			end
-		end)
-
-		task.spawn(function()
 			if Settings.Scaffold.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
 				for i = 1, Settings.Scaffold.ExpandDistance do
 					local ScaffoldCFrame = LocalPlayer.Character.PrimaryPart.Position + (LocalPlayer.Character.Humanoid.MoveDirection * (i * 3.3)) - Vector3.new(0, (LocalPlayer.Character.PrimaryPart.Size.Y / 2) + (LocalPlayer.Character.Humanoid.HipHeight + 1.5), 0)
@@ -2357,62 +2325,6 @@ task.spawn(function()
 	end)
 end)
 
-task.spawn(function()
-	repeat task.wait() until GetMatchState() ~= 0
-
-	task.wait(0.3)
-
-	for i, v in next, PlayerService:GetPlayers() do
-		if IsAlive(v) then
-			v.Character.Humanoid.HealthChanged:Connect(function(Health)
-				if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
-					AutoToxic(v)
-				end
-
-				if Settings.GodMode.Value == true and Health > 30 and GodModed == true and v == LocalPlayer then
-					InfiniteFlyValue = false
-					GodModed = false
-				end
-
-				if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false and v == LocalPlayer then
-					InfiniteFlyValue = true
-					GodModed = true
-
-					InfFly()
-				end
-			end)
-		end	
-
-		task.spawn(function()
-			v.CharacterAdded:Connect(function(Character)
-				task.wait(0.3)
-
-				local v = PlayerService:FindFirstChild(Character.Name) or v
-
-				if IsAlive(v) then
-					v.Character.Humanoid.HealthChanged:Connect(function(Health)
-						if Health <= 0 and v.Team ~= LocalPlayer.Team and v ~= LocalPlayer and Settings.AutoToxic.Value == true then
-							AutoToxic(v)
-						end
-
-						if Settings.GodMode.Value == true and Health > 30 and GodModed == true and v == LocalPlayer then
-							InfiniteFlyValue = false
-							GodModed = false
-						end
-
-						if Settings.GodMode.Value == true and Health <= 30 and GodModed == false and InfiniteFlyValue == false and v == LocalPlayer  then
-							InfiniteFlyValue = true
-							GodModed = true
-
-							InfFly()
-						end
-					end)
-				end
-			end)
-		end)
-	end
-end)
-
 task.spawn(function()	
 	Client:WaitFor("EntityDamageEvent"):andThen(function(v)
 		v:Connect(function(Player) 
@@ -2469,14 +2381,84 @@ task.spawn(function()
 	repeat
 		task.wait(0.1)			
 
-		if Settings.Nuker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
-			local NearestBed = FindNearestBed(Settings.Nuker.Range) or nil
-			local NearestOre = FindNearestOre(Settings.Nuker.Range) or nil
+		task.spawn(function()
+			if Settings.Nuker.Value == true and IsAlive(LocalPlayer) and GetMatchState() ~= 0 then
+				local NearestBed = FindNearestBed(Settings.Nuker.Range) or nil
+				local NearestOre = FindNearestOre(Settings.Nuker.Range) or nil
 
-			if NearestBed or NearestOre then
-				Nuker(NearestBed, NearestOre)
+				if NearestBed or NearestOre then
+					Nuker(NearestBed, NearestOre)
+				end			
+			end
+		end)
+		
+		task.spawn(function()
+			local HipHeight = 1.99999
+
+			if Settings.AcDisabler.Value == true and IsAlive(LocalPlayer) then
+				local Elk = LocalPlayer.Character:FindFirstChild("elk")
+
+				LocalPlayer.Character.Humanoid.HipHeight = HipHeight
+				AnticheatDisabled = true
+
+				if Elk and Elk:FindFirstChild("body_mesh") then
+					Elk:FindFirstChild("body_mesh"):Destroy()
+					Elk.PrimaryPart:Destroy()
+				end
+
+				task.spawn(function()
+					local Args = {
+						[1] = "elk_summon"
+					}
+
+					ElkSummonRemote:FireServer(unpack(Args))
+				end)
+
+				task.spawn(function()
+					BlossomWindTunnelCreateBodyForceRemote:FireServer()
+				end)
+			end
+
+			if Settings.AcDisabler.Value == false or not IsAlive(LocalPlayer) or not LocalPlayer.Character:FindFirstChild("elk") then
+				AnticheatDisabled = false
+			end
+		end)
+
+		task.spawn(function()
+			LocalPlayer.Character.ChildAdded:Connect(function(Part)
+				if Part.Name:lower() == "bubble" then
+					Part.Transparency = 1
+				end
+			end)
+			
+			if Settings.GodMode.Value == true then
+				task.spawn(function()
+					WandBubbleProtectionRemote:InvokeServer({
+						["targetPlayerUserId"] = LocalPlayer.UserId,
+						["handItem"] = {
+							["itemSkin"] = "",
+							["itemType"] = "villain_protector_wand",
+							["amount"] = 9999,
+							["addedToBackpackTime"] = 0,
+							["tool"] = ReplicatedStorage.Items.villain_protector_wand,
+						},
+					})
+				end)
+				
+				task.spawn(function()
+					WandHealPlayerRemote:InvokeServer({
+						["targetPlayerUserId"] = LocalPlayer.UserId,
+						["handItem"] = {
+							["itemSkin"] = "",
+							["itemType"] = "villain_protector_wand",
+							["amount"] = 9999,
+							["addedToBackpackTime"] = 0,
+							["tool"] = ReplicatedStorage.Items.villain_protector_wand,
+						},
+					})
+				end)			
 			end			
-		end
+		end)
 	until not game
 end)
 
@@ -5123,8 +5105,4 @@ task.spawn(function()
 	task.spawn(function()
 		setfpscap(999)
 	end)
-end)
-
-task.spawn(function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/MaxlaserTechAlt/MoonWareInf/main/CapeV2.lua"))()
 end)
